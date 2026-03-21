@@ -1,0 +1,50 @@
+{
+    "welcome":"Добро пожаловать в приложение «Автомобильное масло»",
+    "lang":"Выберите язык приложения",
+    "kirish":"Входить",
+    "telefon_raqamingizni_kiriting":"Введите свой номер телефона",
+    "sizga_tasdiqlash_kodini_SMS_orqali_yuboramiz":"Мы вышлем вам код подтверждения по SMS.",
+    "davom_etish":"Продолжать",
+    "kodni_kiriting":"Введите код",
+    "raqamiga_yuborilgan_5_xonali_kodni_kiriting":"Введите 5-значный код, отправленный на ваш номер.",
+    "agar_kod_kelmasa_siz_60_soniya_ichida_yangisini_olishingiz_mumkin":"Если код не придет, вы можете получить новый в течение 60 секунд.",
+    "telefon_raqamingiz":"Ваш номер телефона",
+    "parolingiz":"Ваш пароль",
+    "parolni_unutdingzmi":"Забыли пароль?",
+    "akaunt_yaratish":"Завести аккаунт",
+    "parolingizni_yozing":"Введите свой пароль",
+    "siz_platformaga_qanday_qo‘shilasiz":"Как зарегистрироваться на платформе?",
+    "mexanik":"Механик",
+    "haydovchi":"Водитель",
+    "fill_profile":"Предоставьте свои данные, чтобы использовать все функции приложения.",
+    "ismingizni_kiriting":"Введите свое имя*",
+    "ism":"Имя",
+    "parolni_kiriting":"Введите пароль*",
+    "parol":"Пароль",
+    "tayyor":"Готовый",
+    "parolinizni_qayta_kiriting":"повторно введите свой пароль",
+    "davom__etish":"Продолжать...",
+    "tayyor__":"Готовый...",
+    "Bu_yerda_parolga_oid_text_yoziladi":"Здесь вводится текст пароля.",
+    "eng_kamida_8_ta_belgi":"Не менее 8 символов",
+    "parol_tiklandi":"Пароль успешно сброшен. Теперь вы можете войти в систему.",
+    "parol_to'liq_emas":"Это поле не может быть пустым.",
+    "parol_8_ta_bolishi_kerak":"Пароль должен состоять не менее чем из 8 символов.",
+
+    "kodni_qayta_yuborishda_xatolik":"Ошибка при повторной отправке кода!",
+    "Kod_xato_qayta_urinib_koring":"Ошибка в коде, попробуйте еще раз!",
+
+    "parol_togri":"Пароль правильный",
+    "bu_telefon_raqamiga_ega_foydalanuvchi_allaqachon_mavjud":"Пользователь с таким номером телефона уже существует.",
+    "parol_mos_emas":"Пароль не совпадает",
+
+    "maydonni_toldiring":"Вставьте пропуск.",
+    "muvaffaqqiyatli_otildi":"Успешно пройдено",
+    "berilgan_hisob_malumotlari_bilan_faol_hisob_topilmadi":"Активных учетных записей с предоставленными данными не обнаружено."
+    
+
+
+    
+
+
+}

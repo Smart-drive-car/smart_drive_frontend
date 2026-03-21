@@ -1,0 +1,45 @@
+{ 
+        "welcome":"Car oil ilovasiga hush kelibsiz",
+    "kirish":"Kirish",
+    "telefon_raqamingizni_kiriting":"Telefon raqamingizni kiriting",
+    "sizga_tasdiqlash_kodini_SMS_orqali_yuboramiz":"Sizga tasdiqlash kodini SMS orqali yuboramiz.",
+    "davom_etish":"Davom etish",
+    "kodni_kiriting":"Kodni kiriting",
+    "raqamiga_yuborilgan_5_xonali_kodni_kiriting":"raqamiga yuborilgan 5 xonali kodni kiriting",
+    "agar_kod_kelmasa_siz_60_soniya_ichida_yangisini_olishingiz_mumkin":"agar kod kelmasa siz 60 soniya ichida yangisini olishingiz mumkin.",
+    "telefon_raqamingiz":"telefon raqamingiz",
+    "parolni_unutdingzmi":"Parolni unutdingzmi",
+    "parolingizni_yozing":"Parolingizni yozing",
+    "akaunt_yaratish":"Akaunt yaratish",
+    "siz_platformaga_qanday_qo‘shilasiz":"Siz platformaga qanday qo‘shilasiz",
+    "mexanik":"Mexanik",
+    "haydovchi":"Haydovchi",
+    "fill_profile":"Ilovaning barcha funksiyalaridan foydalanish uchun ma'lumotlaringizni taqdim eting.",
+    "ismingizni_kiriting":"Ismingizni kiriting*",
+    "ism":"Ism",
+    "parolni_kiriting":"Parolni kiriting*",
+    "parol":"Parol",
+    "tayyor":"Tayyor",
+    "parolinizni_qayta_kiriting":"Parolingizni qayta kiriting",
+    "davom__etish":"Davom etish...",
+    "tayyor__":"Tayyor...",
+     "Bu_yerda_parolga_oid_text_yoziladi":"Bu yerda parolga oid text yoziladi",
+    "eng_kamida_8_ta_belgi":"Eng kamida 8 ta belgi",
+    "parol_tiklandi":"Parolingiz muvaffaqiyatli tiklandi. Endi tizimga kirishingiz mumkin.",
+    "parol_to'liq_emas":"Bu maydon boʻsh boʻlishi mumkin emas.",
+    "parol_8_ta_bolishi_kerak":"Parol kamida 8 ta belgidan iborat bo'lishi kerak.",
+
+    "kodni_qayta_yuborishda_xatolik":"Kodni qayta yuborishda xatolik!",
+    "Kod_xato_qayta_urinib_koring":"Kod xato, qayta urinib ko'ring!",
+
+     "parol_togri":"Parol to'gri",
+    "bu_telefon_raqamiga_ega_foydalanuvchi_allaqachon_mavjud":"Bu telefon raqamiga ega foydalanuvchi allaqachon mavjud.",
+    "parol_mos_emas":"Parol mos emas",
+
+     "maydonni_toldiring":"Maydonni to'ldiring",
+    "muvaffaqqiyatli_otildi":"Muvaffaqqiyatli o'tildi",
+    "berilgan_hisob_malumotlari_bilan_faol_hisob_topilmadi":"Berilgan hisob maʼlumotlari bilan faol hisob topilmadi"
+
+
+
+}
