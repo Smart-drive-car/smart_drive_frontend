@@ -14,46 +14,40 @@ const ReEnterPassword = () => {
     const {t} = useTranslation()
     const [resetPassword ,setResetPassword] = useState("")
     const [loading,setloading] = useState(false)
-    const {names} = useContext(AuthContext) as AuthContextType
-    const {password} = useContext(AuthContext) as AuthContextType
-    const {selectRole} = useContext(AuthContext) as AuthContextType
-    const {phoneNumber} = useContext(AuthContext) as AuthContextType
-    console.log(names);
-    console.log(password);
-    console.log(selectRole);
-    console.log(phoneNumber);
+    const {names,password,selectRole,phoneNumber} = useContext(AuthContext) as AuthContextType
     
 // request api 
-  const handleSubmit =(e:React.FormEvent<HTMLFormElement>) =>{
+  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) =>{
     setloading(true)
     e.preventDefault()
+
+
     if(resetPassword == password){
-      toast.success(t("parol_togri"))
-      localStorage.setItem("phone_number",phoneNumber)
       const formDate = new FormData()
-      
       formDate.append("phone_number",phoneNumber)
       formDate.append("full_name",names)
       formDate.append("password",password)
       formDate.append("password_confirm",resetPassword)
       formDate.append("role",selectRole)
       
-      axios.post(`${BASE_URL}/api/auth/register/`, formDate).then(res =>{
-        console.log(res.data.tokens);
-        setloading(false)
+     try{
+       const res = await axios.post(`${BASE_URL}/api/auth/register/`, formDate)
+        localStorage.setItem("phone_number",phoneNumber)
+        toast.success(t("parol_togri"))
         Cookies.set('access_token', res.data.tokens.access, { expires: 7 })
         Cookies.set('refresh_token', res.data.tokens.refresh, { expires: 30 })
         navigate("/dashboard")
-        
-       }).catch(err =>{
-        setloading(false)
-        toast.error(t("bu_telefon_raqamiga_ega_foydalanuvchi_allaqachon_mavjud"))
-        console.log("Xato:", err) 
-        
-       })
+
+     } catch(err:any){
+      
+       toast.error(t("bu_telefon_raqamiga_ega_foydalanuvchi_allaqachon_mavjud"))
+      navigate("/log-in")
+
+     } finally{
+       setloading(false)
+     }
     }
     else{
-
       toast.error(t("parol_mos_emas"))
       setloading(false)
     }

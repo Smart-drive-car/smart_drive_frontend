@@ -61,11 +61,7 @@ const handleSubmit   = async (e:React.FormEvent<HTMLFormElement>) =>{
   } finally{
     setLoading(false)
   }
-  
-
 }
-
-
   return (
     <section className=' flex items-center h-screen justify-center'>
       <div className='text-center w-80 px-3  md:px-0 md:w-100'>

@@ -6,12 +6,13 @@ import { CustomButton } from "../../components";
 
 const LanguageSelect = () => {
   const navigate = useNavigate();
-  const { i18n } = useTranslation();
-  const [selectedLang, setSelectedLang] = useState("uz");
+  const { i18n, t } = useTranslation();  // ← ikkalasini bitta yerdan ol
+  const [selectedLang, setSelectedLang] = useState(
+    localStorage.getItem('lang') || "uz"  // ✅
+)
 
   const handleContinue = () => {
-    i18n.changeLanguage(selectedLang); 
-    localStorage.setItem('lang', selectedLang);
+    localStorage.setItem('lang', selectedLang);  // ← bir marta yetarli
     navigate("/log-in");
   };
 
@@ -20,9 +21,9 @@ const LanguageSelect = () => {
       <div className="w-80 md:min-w-100 px-3! mx-auto md:px-0">
         <div className="text-center">
           <h2 className="font-semibold text-[20px] text-[#2D2D2D]">
-           Car oil ilovasiga hush kelibsiz
+            {t("welcome")}
           </h2>
-          <p className="text-[16px] text-[#7B7B7B]">Ilova tilini tanlang</p>
+          <p className="text-[16px] text-[#7B7B7B]">{t("lang")}</p>
         </div>
 
         <div>
@@ -33,7 +34,11 @@ const LanguageSelect = () => {
                 name="language"
                 className="block w-5 h-5"
                 checked={selectedLang === "uz"}
-                onChange={() => setSelectedLang("uz")} 
+                onChange={() => {
+                  setSelectedLang("uz")
+                  i18n.changeLanguage("uz") 
+                  localStorage.setItem('lang', "uz") 
+                }}
               />
               <p>O'zbekcha</p>
             </div>
@@ -47,17 +52,22 @@ const LanguageSelect = () => {
                 name="language"
                 className="block w-5 h-5"
                 checked={selectedLang === "ru"}
-                onChange={() => setSelectedLang("ru")} // ← rus
+                onChange={() => {
+                  setSelectedLang("ru")
+                  i18n.changeLanguage("ru")
+                  localStorage.setItem('lang', "ru") 
+                }}
               />
               <p>Русский</p>
             </div>
             <RusFlagIcon />
           </label>
         </div>
+
         <CustomButton
-          text="Davom etish"
+          text={t("davom_etish")}
           className="w-full! py-2.5 bg-[#1E5DE5]! rounded-4xl!"
-          onClick={handleContinue} // ← bu yerda til o'rnatiladi
+          onClick={handleContinue}
         />
       </div>
     </section>

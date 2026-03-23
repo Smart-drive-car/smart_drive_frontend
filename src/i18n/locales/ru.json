@@ -39,8 +39,13 @@
     "parol_mos_emas":"Пароль не совпадает",
 
     "maydonni_toldiring":"Вставьте пропуск.",
+    "xatolik_yuz_berdi":"Произошла ошибка",
+    "royxatdan_otilmagan":"Этот номер не зарегистрирован, вы будете перенаправлены на страницу регистрации",
+    "placeholder_telefon_raqam":"+998 90 123 45 67",
+    "placeholder_parol":"Введите пароль",
     "muvaffaqqiyatli_otildi":"Успешно пройдено",
-    "berilgan_hisob_malumotlari_bilan_faol_hisob_topilmadi":"Активных учетных записей с предоставленными данными не обнаружено."
+    "berilgan_hisob_malumotlari_bilan_faol_hisob_topilmadi":"Активных учетных записей с предоставленными данными не обнаружено.",
+    "kodni_qayta_yuborish":"Отправить код повторно"
     
 
 

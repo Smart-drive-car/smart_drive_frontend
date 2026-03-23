@@ -11,7 +11,6 @@ const ChooseRole = () => {
   const navigate = useNavigate()
   const {t} = useTranslation()
   const {selectRole,setSelectRole} = useContext(AuthContext) as AuthContextType
-  console.log(selectRole);
   
   
   return (

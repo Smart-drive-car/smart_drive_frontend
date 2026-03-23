@@ -1,5 +1,6 @@
 { 
-        "welcome":"Car oil ilovasiga hush kelibsiz",
+    "welcome":"Car oil ilovasiga hush kelibsiz",
+     "lang":"Ilova tilini tanlang",
     "kirish":"Kirish",
     "telefon_raqamingizni_kiriting":"Telefon raqamingizni kiriting",
     "sizga_tasdiqlash_kodini_SMS_orqali_yuboramiz":"Sizga tasdiqlash kodini SMS orqali yuboramiz.",
@@ -37,8 +38,13 @@
     "parol_mos_emas":"Parol mos emas",
 
      "maydonni_toldiring":"Maydonni to'ldiring",
+    "xatolik_yuz_berdi":"Xatolik yuz berdi",
+    "royxatdan_otilmagan":"Bu raqam bilan ro'yxatdan o'tilmagan, ro'yxatdan o'tish sahifasiga yo'naltiriladi",
+    "placeholder_telefon_raqam":"+998 90 123 45 67",
+    "placeholder_parol":"Parol kiriting",
     "muvaffaqqiyatli_otildi":"Muvaffaqqiyatli o'tildi",
-    "berilgan_hisob_malumotlari_bilan_faol_hisob_topilmadi":"Berilgan hisob maʼlumotlari bilan faol hisob topilmadi"
+    "berilgan_hisob_malumotlari_bilan_faol_hisob_topilmadi":"Berilgan hisob maʼlumotlari bilan faol hisob topilmadi",
+    "kodni_qayta_yuborish":"Kodni qayta yuborish"
 
 
 

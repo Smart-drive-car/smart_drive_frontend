@@ -18,37 +18,28 @@ const ResetPassword = () => {
     const [loading,setLoading] = useState(false)
     const navigate = useNavigate()
 
-
-
-
-  const handleSubmit =(e:ChangeEvent<HTMLFormElement, Element>) =>{
+  const handleSubmit = async (e:ChangeEvent<HTMLFormElement, Element>) =>{
     e.preventDefault()
     setLoading(true)
-    console.log(newPassword,"yangi parol");
-    console.log(resetToken,"code");
-    if(newPassword >= "8"){
+     
         const data = {
             reset_token:resetToken,
             new_password:newPassword
         }
-        axios.post(`${BASE_URL}/api/auth/password-reset/`,data).then(() =>{
-            toast.success(t("parol_tiklandi"))
-            setLoading(false)
-            navigate("/log-in")
-            
-            
-        }).catch(err =>{
-            setLoading(false)
-            toast.error(t("parol_to'liq_emas"))
-            console.log(err);
-        })
-    }
-    else{
-        toast.error(t("parol_8_ta_bolishi_kerak"))
-        return
-    }
+       try{
+            await axios.post(`${BASE_URL}/api/auth/password-reset/`,data)
+
+               toast.success(t("parol_tiklandi"))
+               navigate("/log-in")
+       } catch(err){
+           toast.error(t("parol_to'liq_emas"))
+       }
+       finally{
+         setLoading(false)
+       }
 
   }
+  
     
   return (
     <section className="flex items-center h-screen text-center ">
@@ -62,7 +53,7 @@ const ResetPassword = () => {
                 <span  className="block text-start text-[12px] pl-3 text-[#2D2D2D]">{t("parol")}*</span>
                  <Space vertical className="w-full!">
                         <Input.Password onChange={(e) =>setNewPassword(e.target.value) } className="py-2.5! pl-4! bg-[#F5F6F9]! rounded-4xl! text-[16px] w-full!"
-                            placeholder="s45ds86"
+                            placeholder={t("placeholder_parol")}
                             required
                             iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                         />

@@ -7,6 +7,9 @@ import AuthProvider from './context/UseContext.tsx'
 import './i18n/index.tsx';
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import i18n from './i18n/index.tsx';
+const savedLang = localStorage.getItem('lang') || 'uz'
+i18n.changeLanguage(savedLang)  
 
 createRoot(document.getElementById('root')!).render(
   <AuthProvider>
