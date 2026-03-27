@@ -15,6 +15,7 @@
     "siz_platformaga_qanday_qo‘shilasiz":"Siz platformaga qanday qo‘shilasiz",
     "mexanik":"Mexanik",
     "haydovchi":"Haydovchi",
+    "workshop":"Ustaxona",
     "fill_profile":"Ilovaning barcha funksiyalaridan foydalanish uchun ma'lumotlaringizni taqdim eting.",
     "ismingizni_kiriting":"Ismingizni kiriting*",
     "ism":"Ism",
@@ -29,14 +30,11 @@
     "parol_tiklandi":"Parolingiz muvaffaqiyatli tiklandi. Endi tizimga kirishingiz mumkin.",
     "parol_to'liq_emas":"Bu maydon boʻsh boʻlishi mumkin emas.",
     "parol_8_ta_bolishi_kerak":"Parol kamida 8 ta belgidan iborat bo'lishi kerak.",
-
     "kodni_qayta_yuborishda_xatolik":"Kodni qayta yuborishda xatolik!",
     "Kod_xato_qayta_urinib_koring":"Kod xato, qayta urinib ko'ring!",
-
      "parol_togri":"Parol to'gri",
     "bu_telefon_raqamiga_ega_foydalanuvchi_allaqachon_mavjud":"Bu telefon raqamiga ega foydalanuvchi allaqachon mavjud.",
     "parol_mos_emas":"Parol mos emas",
-
      "maydonni_toldiring":"Maydonni to'ldiring",
     "xatolik_yuz_berdi":"Xatolik yuz berdi",
     "royxatdan_otilmagan":"Bu raqam bilan ro'yxatdan o'tilmagan, ro'yxatdan o'tish sahifasiga yo'naltiriladi",
@@ -44,8 +42,23 @@
     "placeholder_parol":"Parol kiriting",
     "muvaffaqqiyatli_otildi":"Muvaffaqqiyatli o'tildi",
     "berilgan_hisob_malumotlari_bilan_faol_hisob_topilmadi":"Berilgan hisob maʼlumotlari bilan faol hisob topilmadi",
-    "kodni_qayta_yuborish":"Kodni qayta yuborish"
-
-
-
+    "kodni_qayta_yuborish":"Kodni qayta yuborish",
+    "ustaxona_nomini_kiriting":"Ustaxona nomini kiriting*",
+    "manzil":"Manzil*",
+    "manzil_kiriting":"Manzil kiriting*",
+    "ish_vaqtini_kiriting":"Ish vaqtini kiriting*",
+    "servis_haqida_yozing":"Servis haqida yozing*",
+    "telefon_raqami":"Telefon raqami*",
+    "telefon_raqami_notogri":"Telefon raqami noto'g'ri formatda",
+    "telefon_raqami_9_raqam":"Telefon raqami 9 ta raqam bo'lishi kerak",
+    "parol_kamida_6_belgi":"Parol kamida 6 ta belgi bo'lishi kerak",
+    "parollar_mos_kelmaydi":"Parollar mos kelmaydi",
+    "ustaxona_nomi_kiritilmagan":"Ustaxona nomi kiritilmagan",
+    "manzil_kiritilmagan":"Manzil kiritilmagan",
+    "telefon_raqami_kiritilmagan":"Telefon raqami kiritilmagan",
+    "malumotlar_toliq_emas":"Ma'lumotlar to'liq emas",
+    "royxatdan_otishda_xatolik":"Ro'yxatdan o'tishda xatolik yuz berdi",
+    "sorov_xatosi":"So'rov xatosi",
+    "nomlum_xato":"Noma'lum xato",
+    "yuklanmoqda":"Yuklanmoqda..."
 }

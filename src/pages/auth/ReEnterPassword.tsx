@@ -14,7 +14,7 @@ const ReEnterPassword = () => {
     const {t} = useTranslation()
     const [resetPassword ,setResetPassword] = useState("")
     const [loading,setloading] = useState(false)
-    const {names,password,selectRole,phoneNumber} = useContext(AuthContext) as AuthContextType
+    const {names,password,selectRole,phoneNumber, clearDriverData} = useContext(AuthContext) as AuthContextType
     
 // request api 
   const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) =>{
@@ -32,11 +32,16 @@ const ReEnterPassword = () => {
       
      try{
        const res = await axios.post(`${BASE_URL}/api/auth/register/`, formDate)
+       console.log(res.data.user);
+       localStorage.setItem("role",res.data.user.role),
+       localStorage.setItem("phone_number",res.data.user.phone_number)
+       localStorage.setItem("profile",JSON.stringify(res.data.user.profile))
+       
         localStorage.setItem("phone_number",phoneNumber)
         toast.success(t("parol_togri"))
         Cookies.set('access_token', res.data.tokens.access, { expires: 7 })
         Cookies.set('refresh_token', res.data.tokens.refresh, { expires: 30 })
-        navigate("/dashboard")
+        clearDriverData?.();
 
      } catch(err:any){
       

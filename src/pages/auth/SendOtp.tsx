@@ -103,6 +103,8 @@ const SendOtp: React.FC = () => {
         const res = await axios.post(`${BASE_URL}/api/auth/verify-otp/`, data)
           setCode(res.data.otp_code);
         setTrueCode(true);
+        // Telefon raqamni sessionStorage'da saqlash
+        sessionStorage.setItem('verified_phone', phoneNumber);
         setTimeout(() => {
           navigate("/choose-role");
         }, 500);

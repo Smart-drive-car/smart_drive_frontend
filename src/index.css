@@ -27,9 +27,29 @@
 
 body{
     font-family: "Poppins",sans-serif;
+    height: 100vh;
+   
+
 }
 
 .containers{
     max-width: 1300px;
     margin: 0 auto;
+}
+
+
+
+/* Oddiy item */
+.menu-custom .ant-menu-item {
+  color: #333333 !important;
+}
+
+/* Active (tanlangan) item */
+.menu-custom .ant-menu-item-selected {
+  background-color: #1677ff !important;
+  color: #ffffff !important;
+}
+/* Icon rangi */
+.menu-custom .ant-menu-item .anticon {
+  color: inherit !important;
 }

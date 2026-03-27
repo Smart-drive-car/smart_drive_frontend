@@ -9,20 +9,20 @@
     "raqamiga_yuborilgan_5_xonali_kodni_kiriting":"Введите 5-значный код, отправленный на ваш номер.",
     "agar_kod_kelmasa_siz_60_soniya_ichida_yangisini_olishingiz_mumkin":"Если код не придет, вы можете получить новый в течение 60 секунд.",
     "telefon_raqamingiz":"Ваш номер телефона",
-    "parolingiz":"Ваш пароль",
     "parolni_unutdingzmi":"Забыли пароль?",
-    "akaunt_yaratish":"Завести аккаунт",
     "parolingizni_yozing":"Введите свой пароль",
+    "akaunt_yaratish":"Завести аккаунт",
     "siz_platformaga_qanday_qo‘shilasiz":"Как зарегистрироваться на платформе?",
     "mexanik":"Механик",
     "haydovchi":"Водитель",
+    "workshop":"Автосервис",
     "fill_profile":"Предоставьте свои данные, чтобы использовать все функции приложения.",
     "ismingizni_kiriting":"Введите свое имя*",
     "ism":"Имя",
     "parolni_kiriting":"Введите пароль*",
     "parol":"Пароль",
     "tayyor":"Готовый",
-    "parolinizni_qayta_kiriting":"повторно введите свой пароль",
+    "parolinizni_qayta_kiriting":"Повторно введите свой пароль",
     "davom__etish":"Продолжать...",
     "tayyor__":"Готовый...",
     "Bu_yerda_parolga_oid_text_yoziladi":"Здесь вводится текст пароля.",
@@ -30,14 +30,11 @@
     "parol_tiklandi":"Пароль успешно сброшен. Теперь вы можете войти в систему.",
     "parol_to'liq_emas":"Это поле не может быть пустым.",
     "parol_8_ta_bolishi_kerak":"Пароль должен состоять не менее чем из 8 символов.",
-
     "kodni_qayta_yuborishda_xatolik":"Ошибка при повторной отправке кода!",
     "Kod_xato_qayta_urinib_koring":"Ошибка в коде, попробуйте еще раз!",
-
     "parol_togri":"Пароль правильный",
     "bu_telefon_raqamiga_ega_foydalanuvchi_allaqachon_mavjud":"Пользователь с таким номером телефона уже существует.",
     "parol_mos_emas":"Пароль не совпадает",
-
     "maydonni_toldiring":"Вставьте пропуск.",
     "xatolik_yuz_berdi":"Произошла ошибка",
     "royxatdan_otilmagan":"Этот номер не зарегистрирован, вы будете перенаправлены на страницу регистрации",
@@ -45,11 +42,23 @@
     "placeholder_parol":"Введите пароль",
     "muvaffaqqiyatli_otildi":"Успешно пройдено",
     "berilgan_hisob_malumotlari_bilan_faol_hisob_topilmadi":"Активных учетных записей с предоставленными данными не обнаружено.",
-    "kodni_qayta_yuborish":"Отправить код повторно"
-    
-
-
-    
-
-
+    "kodni_qayta_yuborish":"Отправить код повторно",
+    "ustaxona_nomini_kiriting":"Введите название автосервиса*",
+    "manzil":"Адрес*",
+    "manzil_kiriting":"Введите адрес*",
+    "ish_vaqtini_kiriting":"Введите рабочее время*",
+    "servis_haqida_yozing":"Напишите о сервисе*",
+    "telefon_raqami":"Номер телефона*",
+    "telefon_raqami_notogri":"Номер телефона в неправильном формате",
+    "telefon_raqami_9_raqam":"Номер телефона должен содержать 9 цифр",
+    "parol_kamida_6_belgi":"Пароль должен содержать не менее 6 символов",
+    "parollar_mos_kelmaydi":"Пароли не совпадают",
+    "ustaxona_nomi_kiritilmagan":"Название автосервиса не введено",
+    "manzil_kiritilmagan":"Адрес не введен",
+    "telefon_raqami_kiritilmagan":"Номер телефона не введен",
+    "malumotlar_toliq_emas":"Данные неполные",
+    "royxatdan_otishda_xatolik":"Произошла ошибка при регистрации",
+    "sorov_xatosi":"Ошибка запроса",
+    "nomlum_xato":"Неизвестная ошибка",
+    "yuklanmoqda":"Загрузка..."
 }

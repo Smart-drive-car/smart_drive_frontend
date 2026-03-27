@@ -1,3 +1,4 @@
 import CustomButton from "./CustomButton";
+import CustomMenu from "./CustomMenu";
 
-export {CustomButton}
+export {CustomButton,CustomMenu}

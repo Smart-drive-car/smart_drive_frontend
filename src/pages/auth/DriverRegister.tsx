@@ -9,7 +9,7 @@ import { AuthContext, type AuthContextType } from "../../context/UseContext"
 const DriverRegister = () => {
     const navigate = useNavigate()
     const {t} = useTranslation()
-    const {setNames,setPassword} = useContext(AuthContext) as AuthContextType
+    const {names, password, setNames, setPassword} = useContext(AuthContext) as AuthContextType
    
 
     
@@ -28,6 +28,7 @@ const DriverRegister = () => {
               type="text" 
               placeholder={t("ism")} 
               className='py-2.5 pl-4  bg-[#F5F6F9] text-[#2D2D2D] rounded-4xl outline-none' 
+              value={names}
             />
           </label>
             <label className='flex flex-col gap-1 mt-4'>
@@ -36,6 +37,7 @@ const DriverRegister = () => {
               type="password" 
               placeholder={t("parol")} 
               className='py-2.5 pl-4  bg-[#F5F6F9] text-[#2D2D2D] rounded-4xl outline-none' 
+              value={password}
             />
           </label>
            <CustomButton text={t("tayyor")} className="w-full! py-2.5 bg-[#1E5DE5]! rounded-4xl! mt-9" onClick={() => navigate("/reenter-password")}/>

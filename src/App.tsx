@@ -3,17 +3,18 @@ import Cookies from 'js-cookie'
 import AppRoutes from "./routes/AppRoutes"
 
 function App() {
-  // const [token, setToken] = useState(!!Cookies.get('access_token'))
+  const [token, setToken] = useState(!!Cookies.get('access_token'))
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setToken(!!Cookies.get('access_token'))
-  //   }, 500) 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setToken(!!Cookies.get('access_token'))
+    }, 500) 
 
-  //   return () => clearInterval(interval)
-  // }, [])
+    return () => clearInterval(interval)
+  }, [])
 
-  const token = false
+
+
   return <AppRoutes token={token} />
 }
 
