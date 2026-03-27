@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import type { ProfileType, ProfileWorkshopType } from "../@types";
 import { LocationImg } from "../assets/images";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 
 type Language = "uz" | "ru";
@@ -19,6 +20,7 @@ const Header = () => {
   const [fullName, setFullName] = useState("");
   const [profileModal, setProfileModal] = useState(false);
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   // Preview uchun base64, upload uchun original File
   const [profileImage, setProfileImage] = useState<string | null>(() => {
@@ -72,7 +74,7 @@ const Header = () => {
   const updateProfile = async () => {
     const token = Cookies.get("access_token");
     if (!token) {
-      toast.error("Autentifikatsiya xatoligi");
+      toast.error(t("auth_error"));
       return;
     }
 
@@ -127,11 +129,10 @@ const Header = () => {
 
       setSelectedFile(null); // Yuborilgan faylni tozala
       setIsEditingName(false);
-      toast.success("Profil muvaffaqiyatli yangilandi");
+      toast.success(t("profile_updated"));
     } catch (error: any) {
-      console.error("Profile update error:", error);
       toast.error(
-        error.response?.data?.message || "Profilni yangilashda xatolik yuz berdi"
+        error.response?.data?.message || t("profile_update_error")
       );
     } finally {
       setIsUpdating(false);
@@ -172,7 +173,6 @@ const Header = () => {
   useEffect(() => {
     const token = Cookies.get("access_token");
     if (!token) {
-      console.log("Token topilmadi");
       return;
     }
 
@@ -187,7 +187,6 @@ const Header = () => {
            })
            .then((res) => {
              const profile: ProfileType = res.data;
-             console.log(profile);
              
              setPhoneNumber(profile.phone_number);
              setFullName(profile.profile?.full_name || "");
@@ -199,15 +198,14 @@ const Header = () => {
              }
            })
            .catch((err) => {
-             console.error("Profile xatoligi:", err);
              if (err.response?.status === 401) {
                Cookies.remove("access_token");
                Cookies.remove("refresh_token");
                window.location.href = "/log-in";
              } else if (err.response?.status === 500) {
-               toast.error("Serverda xatolik yuz berdi, iltimos keyinroq urinib ko'ring");
+               toast.error(t("server_error_try_later"));
              } else {
-               toast.error(err.response?.data?.message || "Xatolik yuz berdi");
+               toast.error(err.response?.data?.message || t("error_generic"));
              }
            });
        }
@@ -221,24 +219,21 @@ const Header = () => {
            })
            .then((res) => {
              const profile: ProfileWorkshopType = res.data;
-             console.log(profile);
-
              
-             setTitle(profile.profile.title);
-             setPhoneNumber(profile.phone_number)
+             setTitle(profile.profile?.title || "");
+             setPhoneNumber(profile.phone_number || "")
    
             
            })
            .catch((err) => {
-             console.error("Profile xatoligi:", err);
              if (err.response?.status === 401) {
                Cookies.remove("access_token");
                Cookies.remove("refresh_token");
                window.location.href = "/log-in";
              } else if (err.response?.status === 500) {
-               toast.error("Serverda xatolik yuz berdi, iltimos keyinroq urinib ko'ring");
+               toast.error(t("server_error_try_later"));
              } else {
-               toast.error(err.response?.data?.message || "Xatolik yuz berdi");
+               toast.error(err.response?.data?.message || t("error_generic"));
              }
            });
 
@@ -266,7 +261,7 @@ const Header = () => {
       <div className="flex items-center justify-between">
         {/* Left */}
         <div>
-          <p className="text-sm text-gray-400">Hayrli kun</p>
+          <p className="text-sm text-gray-400">{t("good_day")}</p>
           <p className="text-xl font-semibold text-gray-800">{role == "DRIVER" ? fullName : title}</p>
         </div>
 
@@ -298,14 +293,24 @@ const Header = () => {
               {isOpen && (
                 <div className="absolute right-0 top-10 bg-white rounded-2xl shadow-lg overflow-hidden z-50 min-w-40 py-1">
                   <button
-                    onClick={() => { setLang("uz"); setIsOpen(false); }}
+                    onClick={() => {
+                      setLang("uz");
+                      localStorage.setItem("lang", "uz");
+                      i18n.changeLanguage("uz");
+                      setIsOpen(false);
+                    }}
                     className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <UzbFlagIcon />
                     <span className="text-sm text-gray-800">O'zbekcha</span>
                   </button>
                   <button
-                    onClick={() => { setLang("ru"); setIsOpen(false); }}
+                    onClick={() => {
+                      setLang("ru");
+                      localStorage.setItem("lang", "ru");
+                      i18n.changeLanguage("ru");
+                      setIsOpen(false);
+                    }}
                     className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <RusFlagIcon />
@@ -350,7 +355,7 @@ const Header = () => {
               <div className="w-5.5 h-5.5 rounded-full bg-[#F5F6F9] flex items-center justify-center">
                 <LeftOutlined className="w-2 h-1" />
               </div>
-              <p className="text-[#2D2D2D]">Profil</p>
+              <p className="text-[#2D2D2D]">{t("profile")}</p>
             </div>
 
             {/* Avatar */}
@@ -408,7 +413,7 @@ const Header = () => {
 
             {/* Settings */}
             <strong className="block mt-5.5 mb-2 text-[20px] text-[#2D2D2D]">
-              Sozlamalar
+              {t("settings")}
             </strong>
             <ul className="bg-[#F5F6F9] rounded-[20px] p-4 flex flex-col gap-2 cursor-pointer">
               <li
@@ -419,20 +424,20 @@ const Header = () => {
                 }}
                 className="flex items-center justify-between border-b border-white pb-2"
               >
-                <p>Tel. raqam</p>
+                <p>{t("phone_number_short")}</p>
                 <div className="flex items-center gap-1.5">
                   <p>{formatPhoneNumberDisplay(phoneNumber)}</p>
                   <RightOutlined className="w-2 h-1" />
                 </div>
               </li>
               <li className="flex items-center justify-between border-b border-white pb-2">
-                <p>Support</p>
+                <p>{t("support")}</p>
                 <div className="flex items-center gap-1.5">
                   <RightOutlined className="w-2 h-1" />
                 </div>
               </li>
               <li className="flex items-center justify-between border-b border-white pb-2">
-                <p>About us</p>
+                <p>{t("about_us")}</p>
                 <div className="flex items-center gap-1.5">
                   <RightOutlined className="w-2 h-1" />
                 </div>

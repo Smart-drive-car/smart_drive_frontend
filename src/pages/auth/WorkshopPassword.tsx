@@ -17,15 +17,15 @@ const WorkshopPassword: React.FC = () => {
 
   const handleContinue = () => {
     if (!password) {
-      setError(t("parol_to'liq_emas") || "Parol kiritilishi kerak");
+      setError(t("parol_to'liq_emas"));
       return;
     }
     if (password !== confirmPassword) {
-      setError(t("parollar_mos_kelmaydi") || "Parollar mos kelmaydi");
+      setError(t("parollar_mos_kelmaydi"));
       return;
     }
     if (password.length < 6) {
-      setError(t("parol_kamida_6_belgi") || "Parol kamida 8 ta belgi bo'lishi kerak");
+      setError(t("parol_kamida_6_belgi"));
       return;
     }
     setWorkshopPassword(password);
@@ -44,7 +44,7 @@ const WorkshopPassword: React.FC = () => {
             {t("parolni_kiriting")}
           </span>
           <Input.Password
-            placeholder="********"
+            placeholder={t("placeholder_password")}
             className="py-3.5! pl-4! bg-[#F5F6F9]! rounded-4xl! text-[#2D2D2D]!    border-none! shadow-none!
     hover:border-none! hover:shadow-none! hover:outline-none!
     focus:border-none! focus:shadow-none! focus:outline-none!
@@ -60,7 +60,7 @@ const WorkshopPassword: React.FC = () => {
             {t("parolinizni_qayta_kiriting")}
           </span>
           <Input.Password
-            placeholder="input password"
+            placeholder={t("placeholder_password_confirm")}
             className="py-3.5! pl-4! bg-[#F5F6F9]! rounded-4xl! text-[#2D2D2D]! outline-none!
                  border-none! shadow-none!
     hover:border-none! hover:shadow-none! hover:outline-none!

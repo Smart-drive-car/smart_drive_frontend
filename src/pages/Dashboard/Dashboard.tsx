@@ -26,8 +26,9 @@ const Dashboard = () => {
         </div>
         </div>
         ):(
-          <div>
-          <HeaderPages/>
+          <div className="p-7.5">
+            <HeaderPages/>
+            <Outlet/>
           </div>
         )
       }

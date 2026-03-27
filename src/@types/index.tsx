@@ -17,17 +17,18 @@ export interface ProfileType {
 }
 
 export interface ProfileWorkshopType {
-    title:string
-    address: string
-    profile: ProfileType
-    description: string
-    working_time: string
-    latitude: string
-    longitude: string
-    images: [
-        
-            id:number,
+    phone_number: string
+    role: string
+    profile: {
+        title: string
+        address: string
+        description: string
+        working_time: string
+        latitude: string
+        longitude: string
+        images: Array<{
+            id: number
             image: string
-        
-    ]
+        }>
+    }
 }

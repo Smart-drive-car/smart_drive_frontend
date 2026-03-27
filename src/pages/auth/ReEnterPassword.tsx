@@ -5,7 +5,7 @@ import { useContext, useState } from "react"
 import { AuthContext, type AuthContextType } from "../../context/UseContext"
 import axios from "axios"
 import BASE_URL from "../../hooks/Env"
-import Cookies from 'js-cookie'
+import { setAuthTokens } from "../../services/authTokens";
 import { toast } from "react-toastify"
 
 
@@ -32,15 +32,12 @@ const ReEnterPassword = () => {
       
      try{
        const res = await axios.post(`${BASE_URL}/api/auth/register/`, formDate)
-       console.log(res.data.user);
        localStorage.setItem("role",res.data.user.role),
        localStorage.setItem("phone_number",res.data.user.phone_number)
        localStorage.setItem("profile",JSON.stringify(res.data.user.profile))
-       
-        localStorage.setItem("phone_number",phoneNumber)
+        // one source of truth is response.data.user.phone_number
         toast.success(t("parol_togri"))
-        Cookies.set('access_token', res.data.tokens.access, { expires: 7 })
-        Cookies.set('refresh_token', res.data.tokens.refresh, { expires: 30 })
+        setAuthTokens({ access: res.data.tokens.access, refresh: res.data.tokens.refresh })
         clearDriverData?.();
 
      } catch(err:any){

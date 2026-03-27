@@ -1,6 +1,8 @@
 import { PlusOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 
 const AddCarsPages = () => {
+  const { t } = useTranslation();
   return (
     <section className="p-4 rounded-[20px] bg-[#F5F6F9]">
         <div className="flex items-center justify-between">
@@ -16,7 +18,7 @@ const AddCarsPages = () => {
             </li>
           </ul>
             <button className="text-[#1E5DE5] bg-[#E4ECFE] rounded-[50px] py-2.5 flex items-center gap-2 pl-4 pr-2.5 cursor-pointer">
-                <span className="text-[#1E5DE5] ">Mashina qo’shish</span>
+                <span className="text-[#1E5DE5] ">{t("add_car")}</span>
                 <PlusOutlined className="w-3 h-3" />
             </button>
         </div>

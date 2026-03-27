@@ -4,7 +4,7 @@ import { CustomButton } from '../../components';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import BASE_URL from '../../hooks/Env';
-import Cookies from 'js-cookie'
+import { setAuthTokens } from '../../services/authTokens';
 import { toast } from 'react-toastify';
 
 
@@ -50,8 +50,18 @@ const handleSubmit   = async (e:React.FormEvent<HTMLFormElement>) =>{
   try{
        const res =  await  axios.post(`${BASE_URL}/api/auth/login/`,data)
        setLoading(false)
-     Cookies.set('access_token', res.data.access, { expires: 7 })
-     Cookies.set('refresh_token', res.data.refresh, { expires: 30 })
+     setAuthTokens({ access: res.data.access, refresh: res.data.refresh })
+
+     // Role/layout switching relies on localStorage("role") in `Dashboard.tsx`
+     // so we fetch profile once after login and store role.
+     try {
+       const profileRes = await axios.get(`${BASE_URL}/api/auth/profile/`, {
+         headers: { Authorization: `Bearer ${res.data.access}` },
+       });
+       if (profileRes.data?.role) localStorage.setItem("role", profileRes.data.role);
+     } catch {
+       // non-blocking: user can still enter, layout may fallback until refreshed
+     }
      toast.success(t("muvaffaqqiyatli_otildi"))
      navigate("/dashboard")
       

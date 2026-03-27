@@ -1,5 +1,6 @@
 import { LeftOutlined } from "@ant-design/icons"
 import { CustomButton } from "../../components"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import axios from "axios"
@@ -17,6 +18,7 @@ const formatPhoneNumber = (value: string) => {
 
 const PhoneNumberEdit = () => {
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const [newPhoneNumber, setNewPhoneNumber] = useState(() => {
     const stored = localStorage.getItem("phone_number") || ""
@@ -34,25 +36,23 @@ const PhoneNumberEdit = () => {
     e?.preventDefault()
     const digitsOnly = newPhoneNumber.replace(/\s/g, '')
     if (digitsOnly.length !== 9) {
-      toast.error("Telefon raqam 9 ta raqamdan iborat bo'lishi kerak")
+      toast.error(t("telefon_raqami_9_raqam"))
       return
     }
     const fullPhoneNumber = '+998' + digitsOnly
     setIsLoading(true)
     try {
       const token = Cookies.get('access_token')
-     const res =  await axios.post(
+     await axios.post(
         `${BASE_URL}/api/auth/profile/change-phone/send-otp/`,
         { new_phone_number: fullPhoneNumber },
         { headers: { Authorization: `Bearer ${token}` } }
       )
-      console.log(res.data);
-      
-      toast.success("OTP yuborildi")
+      toast.success(t("muvaffaqqiyatli_otildi"))
       localStorage.setItem("new_phone_number", fullPhoneNumber)
       navigate("/otp-edit-code")
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "OTP yuborishda xatolik")
+      toast.error(error.response?.data?.message || t("xatolik_yuz_berdi"))
     } finally {
       setIsLoading(false)
     }
@@ -69,7 +69,7 @@ const PhoneNumberEdit = () => {
           >
             <LeftOutlined className="w-3 h-3" />
           </div>
-          <p className="font-medium text-[#2D2D2D]">Tahrirlash</p>
+          <p className="font-medium text-[#2D2D2D]">{t("settings")}</p>
         </div>
         <form onSubmit={handleSendOTP}>
           <div className="flex items-center bg-[#F5F6F9] rounded-[70px] px-4">
@@ -79,7 +79,7 @@ const PhoneNumberEdit = () => {
               value={newPhoneNumber}
               onChange={handlePhoneNumberChange}
               required
-              placeholder="XX XXX XX XX"
+              placeholder={t("placeholder_phone_mask")}
               maxLength={12}
               className="py-2.5 pl-2 bg-transparent w-full outline-none"
             />
@@ -87,7 +87,7 @@ const PhoneNumberEdit = () => {
           <div className="flex justify-end mt-4">
             <CustomButton
               onClick={handleSendOTP}
-              text={isLoading ? "Tayyor..." : "Tayyor"}
+              text={isLoading ? t("tayyor__") : t("tayyor")}
               className={`w-30 py-2.5 rounded-4xl ${isLoading ? 'opacity-60' : ''}`}
               disabled={isLoading}
             />

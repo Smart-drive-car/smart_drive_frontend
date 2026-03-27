@@ -12,7 +12,8 @@ const LanguageSelect = () => {
 )
 
   const handleContinue = () => {
-    localStorage.setItem('lang', selectedLang);  // ← bir marta yetarli
+    localStorage.setItem('lang', selectedLang);
+    i18n.changeLanguage(selectedLang);
     navigate("/log-in");
   };
 
@@ -36,8 +37,7 @@ const LanguageSelect = () => {
                 checked={selectedLang === "uz"}
                 onChange={() => {
                   setSelectedLang("uz")
-                  i18n.changeLanguage("uz") 
-                  localStorage.setItem('lang', "uz") 
+                  i18n.changeLanguage("uz")
                 }}
               />
               <p>O'zbekcha</p>
@@ -55,7 +55,6 @@ const LanguageSelect = () => {
                 onChange={() => {
                   setSelectedLang("ru")
                   i18n.changeLanguage("ru")
-                  localStorage.setItem('lang', "ru") 
                 }}
               />
               <p>Русский</p>
