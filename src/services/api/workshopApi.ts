@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import BASE_URL from "../../hooks/Env";
 import axios from "axios";
-import Cookies from "js-cookie";
+import { setAuthTokens } from "../authTokens";
 
 export interface WorkshopRegisterData {
   phone_number: string;
@@ -63,9 +63,7 @@ export const registerWorkshop = async (
         'Content-Type': 'multipart/form-data',
       },
     });
-    console.log(response.data.user);
-    
-      Cookies.set("access_token",response.data.tokens.access);
+    setAuthTokens({ access: response.data.tokens.access, refresh: response.data.tokens.refresh });
        localStorage.setItem("role",response.data.user.role),
       
     toast.success(t("muvaffaqqiyatli_otildi"));

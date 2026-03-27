@@ -8,25 +8,23 @@ import axios from "axios"
 import BASE_URL from "../../hooks/Env"
 import Cookies from "js-cookie"
 import { toast } from "react-toastify"
+import { useTranslation } from "react-i18next"
 
 const OtpEditCode = () => {
   const [otpCode, setOtpCode] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const onChange: OTPProps['onChange'] = (text) => {
-    console.log('onChange:', text);
-    console.log('Kiritilgan OTP kod:', text);
     setOtpCode(text);
   };
 
-  const onInput: OTPProps['onInput'] = (value) => {
-    console.log('onInput:', value);
-  };
+  const onInput: OTPProps['onInput'] = () => {};
 
   const handleVerifyOTP = async () => {
     if (otpCode.length !== 6) {
-      toast.error("Kod 6 ta raqamdan iborat bo'lishi kerak")
+      toast.error(t("Kod_xato_qayta_urinib_koring"))
       return
     }
 
@@ -34,11 +32,6 @@ const OtpEditCode = () => {
     try {
       const storedPhoneNumber = localStorage.getItem("new_phone_number")
       const token = Cookies.get('access_token')
-      
-      console.log("Yuborilayotgan ma'lumotlar:", {
-        new_phone_number: storedPhoneNumber,
-        code: otpCode
-      })
 
       const response = await axios.post(
         `${BASE_URL}/api/auth/profile/change-phone/verify-otp/`,
@@ -53,12 +46,11 @@ const OtpEditCode = () => {
         }
       )
 
-      console.log("Kelgan javob:", response.data.user)
       const updatedPhoneNumber = response.data.user.phone_number
       if (updatedPhoneNumber) {
         localStorage.setItem("phone_number", updatedPhoneNumber)
       }
-      toast.success("Telefon raqam muvaffaqiyatli o'zgartirildi")
+      toast.success(t("muvaffaqqiyatli_otildi"))
       
       // Clean up temporary storage
       localStorage.removeItem("new_phone_number")
@@ -66,9 +58,7 @@ const OtpEditCode = () => {
       // Navigate back to profile
       navigate(`/`)
     } catch (error: any) {
-      console.error('OTP tasdiqlash xatoligi:', error)
-      console.log("Xatolik javobi:", error.response?.data)
-      toast.error(error.response?.data?.message || "Kodni tasdiqlashda xatolik")
+      toast.error(error.response?.data?.message || t("xatolik_yuz_berdi"))
     } finally {
       setIsLoading(false)
     }
@@ -87,11 +77,11 @@ const OtpEditCode = () => {
           <div onClick={() => navigate(-1)} className="bg-[#F5F6F9] w-9 h-9 rounded-full flex items-center justify-center cursor-pointer">
             <LeftOutlined className="w-3 h-3" />
           </div>
-          <p className="font-medium text-[#2D2D2D]">Tahrirlash</p>
+          <p className="font-medium text-[#2D2D2D]">{t("settings")}</p>
         </div>
         <form onSubmit={handleVerifyOTP}>
           <p className="text-center text-[#7B7B7B] mt-5">
-            Telefon raqamingizni o'zgartirish uchun tergan raqamingizga borgan sms kodni kiriting
+            {t("kodni_kiriting")}
           </p>
            <Flex gap="small" align="center" justify="center" vertical>
             <Input.OTP
@@ -119,7 +109,7 @@ const OtpEditCode = () => {
           <div className="flex justify-end mt-4">
             <CustomButton 
               onClick={handleVerifyOTP}
-              text={isLoading ? "Tayyor.." : "Tayyor"} 
+              text={isLoading ? t("tayyor__") : t("tayyor")} 
               className={`w-30 py-2.5 rounded-4xl ${isLoading ? 'bg-blue-400' : ''}`}
               disabled={isLoading}
             />

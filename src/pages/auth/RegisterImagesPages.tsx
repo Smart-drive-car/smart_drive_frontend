@@ -2,10 +2,12 @@ import { DeleteOutlined, LeftOutlined, PlusOutlined } from '@ant-design/icons';
 import { useRef, useState, useContext,  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext, type AuthContextType } from '../../context/UseContext';
+import { useTranslation } from 'react-i18next';
 
 const STORAGE_KEY = 'workshop_images';
 
 const RegisterImagesPages = () => {
+  const { t } = useTranslation();
   const { workshopImages, setWorkshopImages } = useContext(AuthContext) as AuthContextType;
   const [images, setImages] = useState<string[]>(() => {
     // Context dan yuklash
@@ -67,7 +69,7 @@ const RegisterImagesPages = () => {
     <div className="max-w-md mx-auto bg-white min-h-screen p-4 font-sans">
       <button onClick={() => navigate(-1)} className="flex items-center gap-3 ml-4 mb-3 cursor-pointer">
         <LeftOutlined className="w-2 h-2" />
-        <span className="font-medium text-[#000000] text-[12px]">Qaytish</span>
+        <span className="font-medium text-[#000000] text-[12px]">{t("back")}</span>
       </button>
 
       <div
@@ -91,7 +93,7 @@ const RegisterImagesPages = () => {
             <div className="bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-md">
               <PlusOutlined className="text-gray-400 text-xl" />
             </div>
-            <span className="text-gray-400 text-sm font-medium">Rasm qo'shish</span>
+            <span className="text-gray-400 text-sm font-medium">{t("add_image")}</span>
           </div>
         )}
       </div>
@@ -117,7 +119,7 @@ const RegisterImagesPages = () => {
             <div className="bg-white w-7 h-7 p-1 rounded-full flex items-center justify-center shadow-sm group-hover:scale-110 transition">
               <PlusOutlined className="text-gray-400" />
             </div>
-            <span className="text-[10px] text-gray-400 mt-2 font-medium">Rasm qo'shish</span>
+            <span className="text-[10px] text-gray-400 mt-2 font-medium">{t("add_image")}</span>
           </button>
         </div>
       )}

@@ -15,15 +15,13 @@ type OTPProps = GetProps<typeof Input.OTP>;
 const SendOtp: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { phoneNumber, code, setCode, setResetToken, isForgotPassword } = useContext(
+  const { phoneNumber, setCode, setResetToken, isForgotPassword } = useContext(
     AuthContext,
   ) as AuthContextType;
   const [trueCode, setTrueCode] = useState<boolean | null>(null);
   const [timer, setTimer] = useState(59);
   const [canResend, setCanResend] = useState(false);
   const [loading, setLoading] = useState(false);
-  
-  console.log(code);
 
   
  
@@ -53,7 +51,6 @@ const SendOtp: React.FC = () => {
       })
       .then((res) => {
         setCode(res.data.otp_code);
-        console.log(res.data.otp_code);
       })
       .catch(() => {
         toast.error(t("kodni_qayta_yuborishda_xatolik"));

@@ -36,19 +36,18 @@ const WorkshopRegister = () => {
           <span>{t("mexanik")}</span>
         </button>
         <p className="mt-5 mb-10 text-center">
-          Ilovaning barcha funksiyalaridan foydalanish uchun
-          ma'lumotlaringizni taqdim eting.
+          {t("fill_profile")}
         </p>
         <form onSubmit={(e) => { e.preventDefault(); handleContinue(); }} className="flex flex-col gap-4">
           {/* Ustaxona nomi */}
           <label className="flex flex-col">
             <span className="block pl-3 text-[12px] text-[#7B7B7B]">
-              Ustaxona nomini kiriting*
+              {t("ustaxona_nomini_kiriting")}
             </span>
             <input
               type="text"
               required
-              placeholder="Autoservis"
+              placeholder={t("placeholder_workshop_name")}
               className="py-2.5 pl-4 rounded-4xl bg-[#F5F6F9] outline-none"
               value={workshopName}
               onChange={(e) => setWorkshopName(e.target.value)}
@@ -58,12 +57,12 @@ const WorkshopRegister = () => {
           {/* Manzil */}
           <label className="flex flex-col">
             <span className="block pl-3 text-[12px] text-[#7B7B7B]">
-              Manzil*
+              {t("manzil")}
             </span>
             <input
               type="text"
               required
-              placeholder="Toshkent, Chilonzor"
+              placeholder={t("placeholder_address")}
               className="py-2.5 pl-4 rounded-4xl bg-[#F5F6F9] outline-none"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
@@ -73,7 +72,7 @@ const WorkshopRegister = () => {
           {/* Ish vaqti - soat tanlagich */}
           <label className="flex flex-col">
             <span className="block pl-3 text-[12px] text-[#7B7B7B]">
-              Ish vaqtini kiriting*
+              {t("ish_vaqtini_kiriting")}
             </span>
             <div
               className="flex items-center gap-2 py-2.5 px-4 rounded-4xl bg-[#F5F6F9] cursor-pointer"
@@ -126,7 +125,7 @@ const WorkshopRegister = () => {
             </span>
             <textarea
               required
-              placeholder="Ma'lumot"
+              placeholder={t("placeholder_info")}
               rows={3}
               value={info}
               onChange={(e) => setInfo(e.target.value)}

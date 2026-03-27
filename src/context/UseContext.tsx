@@ -69,7 +69,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [code, setCode] = useState(() => getStoredValue('auth_code', ''));
     const [selectRole, setSelectRole] = useState(() => getStoredValue('auth_selectRole', ''));
     const [names, setNames] = useState(() => getStoredValue('auth_names', ''));
-    const [password, setPassword] = useState(() => getStoredValue('auth_password', ''));
+    // ❗ Security: parolni storage'ga yozmaymiz (faqat memory'da saqlanadi)
+    const [password, setPassword] = useState<string>('');
     const [resetToken, setResetToken] = useState(() => getStoredValue('auth_resetToken', ''));
     const [isForgotPassword, setIsForgotPassword] = useState(() => {
   const item = sessionStorage.getItem('auth_isForgotPassword');
@@ -81,8 +82,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [workshopAddress, setWorkshopAddress] = useState(() => getStoredValue('workshop_address', ''));
     const [workshopDescription, setWorkshopDescription] = useState(() => getStoredValue('workshop_description', ''));
     const [workshopWorkingTime, setWorkshopWorkingTime] = useState(() => getStoredValue('workshop_workingTime', ''));
-    const [workshopPassword, setWorkshopPassword] = useState(() => getStoredValue('workshop_password', ''));
-    const [workshopPasswordConfirm, setWorkshopPasswordConfirm] = useState(() => getStoredValue('workshop_passwordConfirm', ''));
+    // ❗ Security: parollar storage'ga yozilmaydi (faqat memory'da saqlanadi)
+    const [workshopPassword, setWorkshopPassword] = useState<string>('');
+    const [workshopPasswordConfirm, setWorkshopPasswordConfirm] = useState<string>('');
    const [workshopLocation, setWorkshopLocation] = useState<{ lat: number; lng: number } | undefined>(() => {
   const item = sessionStorage.getItem('workshop_location');
   if (!item || item === 'undefined' || item === 'null') return undefined;
@@ -107,9 +109,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       sessionStorage.setItem('auth_names', JSON.stringify(names));
     }, [names]);
     useEffect(() => {
-      sessionStorage.setItem('auth_password', JSON.stringify(password));
-    }, [password]);
-    useEffect(() => {
       sessionStorage.setItem('auth_resetToken', JSON.stringify(resetToken));
     }, [resetToken]);
     useEffect(() => {
@@ -128,12 +127,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       sessionStorage.setItem('workshop_workingTime', JSON.stringify(workshopWorkingTime));
     }, [workshopWorkingTime]);
     useEffect(() => {
-      sessionStorage.setItem('workshop_password', JSON.stringify(workshopPassword));
-    }, [workshopPassword]);
-    useEffect(() => {
-      sessionStorage.setItem('workshop_passwordConfirm', JSON.stringify(workshopPasswordConfirm));
-    }, [workshopPasswordConfirm]);
-    useEffect(() => {
       sessionStorage.setItem('workshop_location', JSON.stringify(workshopLocation));
     }, [workshopLocation]);
     useEffect(() => {
@@ -145,7 +138,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       setNames('');
       setPassword('');
       sessionStorage.removeItem('auth_names');
-      sessionStorage.removeItem('auth_password');
+      sessionStorage.removeItem('auth_password'); // backward-compat cleanup
     };
 
     const clearWorkshopData = () => {
@@ -161,8 +154,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       sessionStorage.removeItem('workshop_address');
       sessionStorage.removeItem('workshop_description');
       sessionStorage.removeItem('workshop_workingTime');
-      sessionStorage.removeItem('workshop_password');
-      sessionStorage.removeItem('workshop_passwordConfirm');
+      sessionStorage.removeItem('workshop_password'); // backward-compat cleanup
+      sessionStorage.removeItem('workshop_passwordConfirm'); // backward-compat cleanup
       sessionStorage.removeItem('workshop_location');
       sessionStorage.removeItem('workshop_images');
     };
