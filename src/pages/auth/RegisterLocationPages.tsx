@@ -173,9 +173,9 @@ const RegisterLocationPages = () => {
         longitude: String(position.lng.toFixed(6)),
         workshop_images: workshopImagesList,
       },t);
-      
-
+         
       if (response.success && response.token) {
+        
         localStorage.setItem('token', response.token);
         clearWorkshopData?.();
         navigate('/');

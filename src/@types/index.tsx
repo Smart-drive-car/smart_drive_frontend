@@ -12,8 +12,23 @@ export interface ProfileType {
     profile: {
         full_name:string
         image:string[],
-        cars:string[]
+        cars:Car[]
 }
+}
+export interface Car {
+    id:number
+    car_plate_number:string,
+    released_year: number
+    current_mileage:number
+    vehicle_model: {
+        id: number
+        brand: {
+            id: number
+            name: string
+        },
+        model_name: string
+        image:string
+    }
 }
 
 export interface ProfileWorkshopType {
@@ -32,3 +47,86 @@ export interface ProfileWorkshopType {
         }>
     }
 }
+export interface CarAddType {
+    id: string
+    car_plate_number: string
+    released_year: number
+    current_mileage:string
+    vehicle_model: {
+        id: number,
+        brand: {
+           
+            name: string
+        },
+        model_name:string,
+        image:string
+    }
+}
+
+export interface AllCarsType {
+  id: number;
+  car_plate_number: string;
+  vehicle: {
+    brand: string;
+    model: string;
+  };
+  driver: {
+    full_name: string;
+    phone_number: string;
+    image: string | null;
+  };
+}
+
+export interface ServiceType {
+  id: number;
+  name: string;
+  
+}
+
+export interface ImgType{
+  id:number,
+  image:string
+}
+
+export interface Workshop {
+  id: number;
+  title: string;
+  address: string;
+  phone_number: string;
+  image: string;
+  lat: number;  
+  lng: number;
+  images:ImgType[],
+  latitude:string,
+  longitude:string
+  working_time:string
+  description:string
+  rating:number,
+  total_customers:number
+  
+}
+
+export interface LastServiceType {
+  id: number;
+  description: string;
+  probeg: number;
+  service_type: ServiceType;
+  workshop: Workshop;
+  phone_number: string;
+  
+}
+
+export interface ServiceCategory {
+  id: number;
+  name: string;
+}
+
+export interface WorkshopType {
+  id: number;
+  title: string;
+  address: string;
+  phone_number: string;
+  image: string;
+  
+}
+

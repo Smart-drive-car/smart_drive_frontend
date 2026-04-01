@@ -1,8 +1,9 @@
 import { Outlet, useLocation } from "react-router-dom"
 import { CustomMenu } from "../../components"
-import { HeaderPages } from "../../modules"
+import { Cliend, HeaderPages, Service, WorkshopHeader } from "../../modules"
 import AddCarsPages from "./AddCarsPages"
 import LastServisPages from "../../modules/LastServisPages"
+
 
 
 
@@ -27,7 +28,9 @@ const Dashboard = () => {
         </div>
         ):(
           <div className="p-7.5">
-            <HeaderPages/>
+           <WorkshopHeader/>
+           <Service/>
+            <Cliend/>
             <Outlet/>
           </div>
         )

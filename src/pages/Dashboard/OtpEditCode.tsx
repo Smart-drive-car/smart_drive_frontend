@@ -48,14 +48,20 @@ const OtpEditCode = () => {
 
       const updatedPhoneNumber = response.data.user.phone_number
       if (updatedPhoneNumber) {
+        // ✅ Bir xil kalit bilan saqlaymiz
         localStorage.setItem("phone_number", updatedPhoneNumber)
+
+        // ✅ WorkshopHeader tinglaydigan eventni jo‘natamiz
+        window.dispatchEvent(new CustomEvent('profileUpdate', {
+          detail: { type: 'phone_number', value: updatedPhoneNumber }
+        }))
       }
       toast.success(t("muvaffaqqiyatli_otildi"))
       
-      // Clean up temporary storage
+      // Vaqtinchalik ma'lumotni tozalaymiz
       localStorage.removeItem("new_phone_number")
       
-      // Navigate back to profile
+      // Profilga qaytamiz
       navigate(`/`)
     } catch (error: any) {
       toast.error(error.response?.data?.message || t("xatolik_yuz_berdi"))

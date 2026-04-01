@@ -43,12 +43,14 @@ const PhoneNumberEdit = () => {
     setIsLoading(true)
     try {
       const token = Cookies.get('access_token')
-     await axios.post(
+    const res = await axios.post(
         `${BASE_URL}/api/auth/profile/change-phone/send-otp/`,
         { new_phone_number: fullPhoneNumber },
         { headers: { Authorization: `Bearer ${token}` } }
       )
       toast.success(t("muvaffaqqiyatli_otildi"))
+      console.log(res.data);
+      
       localStorage.setItem("new_phone_number", fullPhoneNumber)
       navigate("/otp-edit-code")
     } catch (error: any) {
