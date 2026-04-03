@@ -19,7 +19,6 @@ interface Brand {
   };
 }
 
-
 interface Errors {
   brand?: string;
   modelId?: string;
@@ -35,40 +34,49 @@ const AddCarsPages = () => {
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [carToDelete, setCarToDelete] = useState<number | null>(null);
   const [carToEdit, setCarToEdit] = useState<Car | null>(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [brands, setBrands] = useState<Brand[]>([]);
-  const [filteredModels, setFilteredModels] = useState<Brand[]>([]); 
-  const [selectedBrandId, setSelectedBrandId] = useState<number | null>(null); 
-  const [selectedModelId, setSelectedModelId] = useState<number | null>(null); 
+  const [filteredModels, setFilteredModels] = useState<Brand[]>([]);
+  const [selectedBrandId, setSelectedBrandId] = useState<number | null>(null);
+  const [selectedModelId, setSelectedModelId] = useState<number | null>(null);
   const [year, setYear] = useState<string>("");
   const [carNumber, setCarNumber] = useState<string>("");
   const [carProbeg, setCarProbeg] = useState<string>("");
-  const [cars, setCars] = useState<Car[]>(() => {
-  const saved = localStorage.getItem("cars")
-  return saved ? JSON.parse(saved) : []
-})
-
-
-console.log(cars);
-
+  const [cars, setCars] = useState<Car[]>([]);
+const [,setDeleteId] = useState<number>(0)
   const [errors, setErrors] = useState<Errors>({});
+  const [activeCar, setActiveCar] = useState<Car | null>(null);
+
 
   const token = Cookies.get("access_token");
 
+  // all cars
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/api/auth/profile/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        console.log(res.data, "get");
 
-// all cars 
-// useEffect(() =>{  
-//   axios.get(`${BASE_URL}/api/auth/profile/`, {
-//       headers: { Authorization: `Bearer ${token}` },
-//     })
-//       .then((res) => {
-//         const profile:ProfileType = res.data;
-//         setCars(profile.profile.cars)
-//       })
-// },[])
+        const profile: ProfileType = res.data;
+        const formattedCars = profile.profile.cars.map((car: any) => ({
+          id: car.id,
+          car_plate_number: car.plate ?? car.car_plate_number,
+          current_mileage: car.mileage ?? car.current_mileage,
+          released_year: car.released_year,
+          vehicle_model: {
+            ...car.vehicle_model,
+            image: car.vehicle_model.image.startsWith("http")
+              ? car.vehicle_model.image // to'liq URL bo'lsa — o'zgartirilmaydi
+              : `${BASE_URL}${car.vehicle_model.image}`,
+          }, // qisqa bo'lsa — BASE_URL qo'shiladi
+        }));
+        console.log(formattedCars, "cars");
 
-
-
+        setCars(formattedCars);
+      });
+  }, []);
 
   // Barcha modellarni yuklash
   useEffect(() => {
@@ -88,11 +96,16 @@ console.log(cars);
     setErrors((prev) => ({ ...prev, brand: undefined }));
   };
 
-  const formatMileage = (val: string) => {
-    const onlyNums = val.replace(/\D/g, "");
+  const formatMileage = (val: string | number) => {
+    // Agar qiymat kelmasa, bo'sh qaytaramiz
+    if (val === undefined || val === null) return "";
+
+    // Qiymatni stringga o'tkazamiz va faqat raqamlarni olamiz
+    const onlyNums = val.toString().replace(/\D/g, "");
+
+    // Har 3 ta raqamdan keyin bo'sh joy qo'shamiz
     return onlyNums.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   };
-
   const handleCarAdd = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -133,16 +146,17 @@ console.log(cars);
       vehicle_model_id: selectedModelId,
     };
 
+    console.log(data, "qo'shishdan oldingi");
+
     axios
       .post(`${BASE_URL}/api/vehicles/create/`, data, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        console.log(res.data);
-        
+        console.log(data, "keyingi");
         const newCars = [...cars, res.data];
+        console.log("Backenddan qaytgan javob:", res.data);
         setCars(newCars);
-        localStorage.setItem("cars", JSON.stringify(newCars));
         setModal(false);
         setLoading(false);
         toast.success("Mashina qo'shildi!");
@@ -162,15 +176,15 @@ console.log(cars);
 
   const handleDeleteCar = () => {
     if (carToDelete === null) return;
-    setLoading(true)
+    setLoading(true);
 
     axios
       .delete(`${BASE_URL}/api/vehicles/${carToDelete}/`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(() => {
-        setLoading(false)
-        const updatedCars = cars.filter(car => car.id !== carToDelete);
+        setLoading(false);
+        const updatedCars = cars.filter((car) => car.id !== carToDelete);
         setCars(updatedCars);
         localStorage.setItem("cars", JSON.stringify(updatedCars));
         setDeleteModal(false);
@@ -181,6 +195,7 @@ console.log(cars);
         toast.error("Xatolik yuz berdi");
       });
   };
+  
 
   const handleCarEdit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -223,17 +238,18 @@ console.log(cars);
       current_mileage: Number(carProbeg.replace(/\s/g, "")),
       vehicle_model_id: selectedModelId,
     };
+    console.log(data, "Update");
 
     axios
       .patch(`${BASE_URL}/api/vehicles/${carToEdit.id}/`, data, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        const updatedCars = cars.map(car => 
-          car.id === carToEdit.id ? res.data : car
+        const updatedCar = res.data;
+        const updatedCarsList = cars.map((car) =>
+          car.id === updatedCar.id ? { ...updatedCar } : car,
         );
-        setCars(updatedCars);
-        localStorage.setItem("cars", JSON.stringify(updatedCars));
+        setCars([...updatedCarsList]);
         setEditModal(false);
         setCarToEdit(null);
         setLoading(false);
@@ -252,31 +268,66 @@ console.log(cars);
       });
   };
 
+  // ================== EDIT MODAL OCHISH ==================
   const openEditModal = (car: Car) => {
+    console.log("Backenddan kelgan ob'ekt:", car);
+    if (!car) return;
+
     setCarToEdit(car);
-    setYear(car.released_year.toString());
-    setCarNumber(car.car_plate_number);
-    setCarProbeg(car.current_mileage.toString());
-    setSelectedBrandId(car.vehicle_model.brand.id);
-    const filtered = brands.filter((b) => b.brand.id === car.vehicle_model.brand.id);
-    setFilteredModels(filtered);
-    setSelectedModelId(car.vehicle_model.id);
+
+    // 1. Yilni tekshirish (Eng ko'p xato shu yerda bo'ladi)
+    // API dan released_year yoki year bo'lib kelishini tekshiramiz
+    const rawYear = car.released_year || (car as any).year;
+
+    if (rawYear) {
+      setYear(String(rawYear)); // Raqam bo'lsa stringga o'tkazamiz
+    } else {
+      setYear(""); // Agar yil umuman yo'q bo'lsa bo'sh qoldiramiz
+    }
+
+    // 2. Mashina raqami
+    setCarNumber(car.car_plate_number || "");
+
+    // 3. Probeg (Sizda bu qism ishlayotgan edi)
+    const mileage = car.current_mileage ?? 0;
+    setCarProbeg(formatMileage(mileage));
+
+    // 4. Brend va Model mantiqi
+    const brandId = car.vehicle_model?.brand?.id;
+    if (brandId) {
+      setSelectedBrandId(brandId);
+
+      // Modellarni filtrlab olamiz
+      const filtered = brands.filter((b) => b.brand.id === brandId);
+      setFilteredModels(filtered);
+
+      // Mashina modelini tanlaymiz
+      setSelectedModelId(car.vehicle_model?.id || null);
+    } else {
+      setSelectedBrandId(null);
+      setFilteredModels([]);
+      setSelectedModelId(null);
+    }
+
+    // 5. Modalni ochish
     setEditModal(true);
   };
-
   const openDeleteModal = (carId: number) => {
     setCarToDelete(carId);
     setDeleteModal(true);
   };
 
-
-  
-
   return (
     <>
       <section className="px-4 pt-4 rounded-[20px] bg-[#F5F6F9] overflow-y-auto h-[30%] custom-scrollbar">
         <div className="flex items-start justify-between">
-          <CarManagement cars={cars} />
+          <CarManagement
+            cars={cars}
+            onCarSelect={(car) => {
+              setActiveCar(car); 
+              setDeleteId( car.id); 
+            }}
+          />
           <div className="flex flex-col justify-end items-end">
             <button
               onClick={() => setModal(true)}
@@ -286,15 +337,20 @@ console.log(cars);
               <PlusOutlined className="w-3 h-3" />
             </button>
             <div className="flex items-center gap-4 mt-5">
-             <button className="cursor-pointer" onClick={() => cars.length > 0 && openEditModal(cars[0])}>
-               <EditIcon/>
-             </button>
-              <button className="cursor-pointer" onClick={() => cars.length > 0 && openDeleteModal(cars[0].id)}>
-                <DeleteIcon/>
+              <button
+                className="cursor-pointer"
+                onClick={() => activeCar && openEditModal(activeCar)}
+              >
+                <EditIcon />
+              </button>
+              <button
+                className="cursor-pointer"
+                onClick={() => cars.length > 0 && openDeleteModal(cars[0].id)}
+              >
+                <DeleteIcon />
               </button>
             </div>
           </div>
-         
         </div>
       </section>
 
@@ -682,11 +738,10 @@ console.log(cars);
                   onClick={handleDeleteCar}
                   className="px-6 py-2.5 cursor-pointer rounded-4xl bg-[#D423231A]  font-medium text-[#D42323] transition-colors"
                 >
-                 {loading ? "O'chirish...":"O'chirish"}
+                  {loading ? "O'chirish..." : "O'chirish"}
                 </button>
               </div>
             </div>
-
           </div>
         </>
       )}

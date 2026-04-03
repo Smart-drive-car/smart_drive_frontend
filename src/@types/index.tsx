@@ -130,3 +130,14 @@ export interface WorkshopType {
   
 }
 
+export interface NotificatonType {
+    id: number,
+    description:string
+    probeg:number,
+    service_type: {
+        id:number ,
+        name:string
+    },
+    workshop:Workshop
+}
+

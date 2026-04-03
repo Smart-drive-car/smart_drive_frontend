@@ -307,33 +307,20 @@ const SearchPages: React.FC = () => {
   useEffect(() => {
     const searchTerm = searchInput.trim();
 
-    // 1. Bo'sh bo'lsa — so'rov yubormaymiz
-    if (!searchTerm) {
-      // setWorkshops([]);   // yoki oldingi natijalarni tozalash
-      return;
-    }
-
-    // 2. Debounce effekti (ixtiyoriy, lekin tavsiya etiladi)
     const timeoutId = setTimeout(() => {
       axios
         .get(`${BASE_URL}/api/workshops/search/`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            search: searchTerm,
-          },
+          headers: { Authorization: `Bearer ${token}` },
+          params: { title: searchTerm },
         })
         .then((res) => {
-          console.log(`"${searchTerm}" bo'yicha natija:`, res.data);
-          // setWorkshops(res.data.results || res.data); // natijani state ga saqlang
+          setWorkshops(res.data);
         })
         .catch((err) => {
-          console.error("Search xatosi:", err.response?.data || err.message);
+          console.error("Search xatosi:", err);
         });
-    }, 500); // 500ms kutib turadi
+    }, 500);
 
-    // Cleanup
     return () => clearTimeout(timeoutId);
   }, [searchInput, BASE_URL, token]);
 
@@ -341,17 +328,62 @@ const SearchPages: React.FC = () => {
     <div className="flex gap-4">
       <div className="relative w-full h-screen overflow-hidden">
         {/* ✅ Search - xarita ustida o'ng tomonda */}
-        <div className="absolute top-4 right-4 z-10 w-70">
+        <div className="absolute top-4 right-4 z-10 w-80">
           <div className="relative">
+            {/* Input maydoni */}
             <input
+              value={searchInput}
               onChange={(e) => setSearchinput(e.target.value)}
               type="text"
               placeholder={t("search")}
               className="w-full py-3 pl-4 pr-10 text-[#7B7B7B] text-[13px] rounded-[40px] bg-white shadow-lg outline-none border border-gray-100 focus:border-blue-300 transition-colors"
             />
+
+            {/* Qidiruv/Tozalash tugmasi */}
             <button className="absolute right-3 top-1/2 -translate-y-1/2">
-              <SearchIcon />
+              {searchInput ? (
+                <span
+                  onClick={() => setSearchinput("")}
+                  className="cursor-pointer text-gray-400"
+                >
+                  ✕
+                </span>
+              ) : (
+                <SearchIcon />
+              )}
             </button>
+
+            {/* --- NATIJALAR DROPDOWNI --- */}
+            {searchInput && workshops.length > 0 && (
+              <div className="absolute left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl overflow-hidden max-h-400px overflow-y-auto border border-gray-100">
+                {workshops.map((item, index) => (
+                  <div
+                    key={item.id || index}
+                    className="p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-none transition-colors"
+                    onClick={() => {
+                     handleShowWorkshop(item.id)
+                      console.log("Tanlandi:", item);
+                      setSearchinput(item.title);
+                      setWorkshops([]);
+                    }}
+                  >
+                    <h4 className="text-blue-600 font-semibold text-[15px] mb-1">
+                      {item.title}
+                    </h4>
+                    <p className="text-gray-500 text-[12px] leading-tight">
+                      {item.address || "Manzil ko'rsatilmagan"}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Natija topilmaganda (ixtiyoriy) */}
+            {searchInput && workshops.length === 0 && (
+              <div className="absolute left-0 right-0 mt-2 bg-white p-4 rounded-2xl shadow-lg text-center text-gray-400 text-sm">
+                Natija topilmadi
+              </div>
+            )}
           </div>
         </div>
 
@@ -583,8 +615,11 @@ const SearchPages: React.FC = () => {
       {workshopDataModal && (
         <div className="w-[60%] bg-[#F5F6F9] rounded-[20px] p-4 h-screen overflow-scroll custom-scrollbar pb-4">
           <div className="pt-3 pb-4 relative">
-            <button onClick={() => setWorkshopDataModa(false)} className="mb-3 cursor-pointer">
-               <LeftOutlined style={{ fontSize: 11 }} />
+            <button
+              onClick={() => setWorkshopDataModa(false)}
+              className="mb-3 cursor-pointer"
+            >
+              <LeftOutlined style={{ fontSize: 11 }} />
             </button>
             {/* ‹ Orqaga tugma */}
             <button

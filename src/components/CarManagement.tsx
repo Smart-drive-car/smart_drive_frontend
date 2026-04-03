@@ -6,7 +6,9 @@ interface Car {
   released_year: number;
   current_mileage: number;
   vehicle_model: {
+    id: number; // ← bu yo'q edi, qo'shing
     brand: {
+      id: number; // ← bu yo'q edi, qo'shing
       name: string;
     };
     model_name: string;
@@ -16,13 +18,33 @@ interface Car {
 
 interface CarManagementProps {
   cars: Car[];
+  onCarSelect?: (car: Car) => void;
 }
 
-const CarManagement = ({ cars }: CarManagementProps) => {
+const CarManagement = ({ cars = [], onCarSelect }: CarManagementProps) => {
   const [selectedCar, setSelectedCar] = useState<Car | null>(
     cars.length > 0 ? cars[0] : null,
   );
+  console.log("update bo'lgandan keyin",cars);
+  
 
+  useEffect(() => {
+    if (cars.length > 0 && !selectedCar) {
+      const firstCar = cars[0];
+      setSelectedCar(firstCar);
+      onCarSelect?.(firstCar); // Ota komponentga 1-mashinani yubordik
+    }
+  }, [cars]);
+
+// new update car 
+  useEffect(() => {
+  if (selectedCar && cars.length > 0) {
+    const freshData = cars.find(c => c.id === selectedCar.id);
+    if (freshData) {
+      setSelectedCar({ ...freshData }); // 
+    }
+  }
+}, [cars]);
   const formatCarNumber = (plateNumber: string) => {
     if (plateNumber.length >= 2) {
       return `${plateNumber.slice(0, 2)} ${plateNumber.slice(2, 3)}${plateNumber.slice(3, 6)} ${plateNumber.slice(6)}`;
@@ -67,7 +89,10 @@ const CarManagement = ({ cars }: CarManagementProps) => {
             {cars.map((car) => (
               <button
                 key={car.id}
-                onClick={() => setSelectedCar(car)}
+                onClick={() => {
+                  setSelectedCar(car);
+                  onCarSelect?.(car);
+                }}
                 className={`py-2.5 px-4 rounded-[20px] flex items-center gap-2 whitespace-nowrap transition-colors ${
                   selectedCar?.id === car.id
                     ? "bg-[#1E5DE5] text-white"
@@ -92,7 +117,7 @@ const CarManagement = ({ cars }: CarManagementProps) => {
               {/* Car Image */}
               <div className="">
                 <img
-                  src={selectedCar.vehicle_model.image}
+                  src={`${selectedCar.vehicle_model.image}?t=${new Date().getTime()}`}
                   alt={selectedCar.vehicle_model.model_name}
                   className="w-110   object-cover rounded-lg"
                   onError={(e) => {
@@ -100,7 +125,8 @@ const CarManagement = ({ cars }: CarManagementProps) => {
                     target.src =
                       "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='128' viewBox='0 0 192 128'%3E%3Crect width='192' height='128' fill='%23F5F6F9'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='14' fill='%23999'%3ECar Image%3C/text%3E%3C/svg%3E";
                   }}
-                  width={400} height={100}
+                  width={400}
+                  height={100}
                 />
                 <div className="flex items-center justify-between px-15 mt-5.5">
                   <p className="font-semibold text-gray-800 mb-1">

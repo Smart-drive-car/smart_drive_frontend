@@ -244,7 +244,6 @@ const WorkshopHeader = () => {
     fetchVehicles();
   }, []);
 
-// seach cliend 
 
 // Debounce — har harf bosganda emas, 500ms kutib so'rov yuboradi
 useEffect(() => {

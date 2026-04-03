@@ -1,11 +1,18 @@
 import { useEffect, useState, useRef } from "react";
-import { NotificationIcon, PensilIcon, RusFlagIcon, UzbFlagIcon, CheckIcon } from "../assets/icons";
+import {
+  NotificationIcon,
+  PensilIcon,
+  RusFlagIcon,
+  UzbFlagIcon,
+  CheckIcon,
+  ExitIcon,
+} from "../assets/icons";
 import axios from "axios";
 import BASE_URL from "../hooks/Env";
 import Cookies from "js-cookie";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
-import type {  ProfileType } from "../@types";
+import type { NotificatonType, ProfileType } from "../@types";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -19,24 +26,28 @@ const Header = () => {
   const [profileModal, setProfileModal] = useState(false);
   const [logoutModal, setLogoutModal] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(
-    () => localStorage.getItem("profileImage") || null
+    () => localStorage.getItem("profileImage") || null,
   );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isEditingName, setIsEditingName] = useState(false);
   const [tempFullName, setTempFullName] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [notificationModal, setNotificationModal] = useState<boolean>(false);
+  const [allNotification, setAllNotification] = useState<NotificatonType[]>([]);
 
-
-  
-
+  const token = Cookies.get("access_token");
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isMouseDownOnSave = useRef(false);
   const phoneNumberRef = useRef(phoneNumber);
   const profileImageRef = useRef(profileImage);
 
-  useEffect(() => { phoneNumberRef.current = phoneNumber; }, [phoneNumber]);
-  useEffect(() => { profileImageRef.current = profileImage; }, [profileImage]);
+  useEffect(() => {
+    phoneNumberRef.current = phoneNumber;
+  }, [phoneNumber]);
+  useEffect(() => {
+    profileImageRef.current = profileImage;
+  }, [profileImage]);
 
   const formatPhoneNumber = (phone: string) => {
     if (!phone) return "";
@@ -66,20 +77,30 @@ const Header = () => {
 
   const updateProfile = async () => {
     const token = Cookies.get("access_token");
-    if (!token) { toast.error(t("auth_error")); return; }
+    if (!token) {
+      toast.error(t("auth_error"));
+      return;
+    }
 
     const nameChanged = tempFullName.trim() !== fullName.trim();
     const imageChanged = selectedFile !== null;
-    if (!nameChanged && !imageChanged) { setIsEditingName(false); return; }
+    if (!nameChanged && !imageChanged) {
+      setIsEditingName(false);
+      return;
+    }
 
     setIsUpdating(true);
     try {
       const formData = new FormData();
       if (nameChanged) formData.append("full_name", tempFullName.trim());
-      if (imageChanged && selectedFile) formData.append("image", selectedFile, selectedFile.name);
+      if (imageChanged && selectedFile)
+        formData.append("image", selectedFile, selectedFile.name);
 
       await axios.patch(`${BASE_URL}/api/drivers/profile/update/`, formData, {
-        headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (nameChanged) setFullName(tempFullName.trim());
@@ -109,27 +130,31 @@ const Header = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Escape") { setIsEditingName(false); setTempFullName(fullName); }
-    else if (e.key === "Enter") updateProfile();
+    if (e.key === "Escape") {
+      setIsEditingName(false);
+      setTempFullName(fullName);
+    } else if (e.key === "Enter") updateProfile();
   };
 
   const handleLogout = () => {
     Cookies.remove("access_token");
     Cookies.remove("refresh_token");
-    localStorage.clear();
+    // localStorage.clear();
     toast.success("Profildan chiqdingiz!");
     window.location.href = "/log-in";
   };
 
+  //  profile
   useEffect(() => {
-    const token = Cookies.get("access_token");
     if (!token) return;
 
-    axios.get(`${BASE_URL}/api/auth/profile/`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    axios
+      .get(`${BASE_URL}/api/auth/profile/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((res) => {
         const profile: ProfileType = res.data;
+        
         setPhoneNumber(profile.phone_number);
         setFullName(profile.profile?.full_name || "");
         if (profile.profile?.image?.length > 0) {
@@ -156,25 +181,50 @@ const Header = () => {
     };
 
     const handleCustomUpdate = (event: CustomEvent) => {
-      if (event.detail.type === "phone_number") setPhoneNumber(event.detail.value);
-      if (event.detail.type === "profileImage") setProfileImage(event.detail.value);
+      if (event.detail.type === "phone_number")
+        setPhoneNumber(event.detail.value);
+      if (event.detail.type === "profileImage")
+        setProfileImage(event.detail.value);
     };
 
     const handleFocus = () => {
       const currentPhone = localStorage.getItem("phone_number");
       const currentImage = localStorage.getItem("profileImage");
-      if (currentPhone && currentPhone !== phoneNumberRef.current) setPhoneNumber(currentPhone);
-      if (currentImage && currentImage !== profileImageRef.current) setProfileImage(currentImage);
+      if (currentPhone && currentPhone !== phoneNumberRef.current)
+        setPhoneNumber(currentPhone);
+      if (currentImage && currentImage !== profileImageRef.current)
+        setProfileImage(currentImage);
     };
 
     window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("profileUpdate", handleCustomUpdate as EventListener);
+    window.addEventListener(
+      "profileUpdate",
+      handleCustomUpdate as EventListener,
+    );
     window.addEventListener("focus", handleFocus);
     return () => {
       window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("profileUpdate", handleCustomUpdate as EventListener);
+      window.removeEventListener(
+        "profileUpdate",
+        handleCustomUpdate as EventListener,
+      );
       window.removeEventListener("focus", handleFocus);
     };
+  }, []);
+
+  // notification pages
+
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/api/notifications/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        
+        setAllNotification(res.data);
+      });
   }, []);
 
   return (
@@ -188,34 +238,79 @@ const Header = () => {
         <div className="flex items-center gap-5">
           {/* Language selector */}
           <div className="relative flex">
-            <button onClick={() => setIsOpen(!isOpen)} className="flex items-center gap-1 cursor-pointer">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="flex items-center gap-1 cursor-pointer"
+            >
               {lang === "uz" ? <UzbFlagIcon /> : <RusFlagIcon />}
-              <svg className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <svg
+                className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
             {isOpen && (
               <div className="absolute right-0 top-10 bg-white rounded-2xl shadow-lg overflow-hidden z-50 min-w-40 py-1">
                 {(["uz", "ru"] as Language[]).map((l) => (
-                  <button key={l} onClick={() => { setLang(l); localStorage.setItem("lang", l); i18n.changeLanguage(l); setIsOpen(false); }}
-                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer">
+                  <button
+                    key={l}
+                    onClick={() => {
+                      setLang(l);
+                      localStorage.setItem("lang", l);
+                      i18n.changeLanguage(l);
+                      setIsOpen(false);
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer"
+                  >
                     {l === "uz" ? <UzbFlagIcon /> : <RusFlagIcon />}
-                    <span className="text-sm text-gray-800">{l === "uz" ? "O'zbekcha" : "Русский"}</span>
+                    <span className="text-sm text-gray-800">
+                      {l === "uz" ? "O'zbekcha" : "Русский"}
+                    </span>
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-          <button className="cursor-pointer"><NotificationIcon /></button>
+          <button
+            onClick={() => setNotificationModal(true)}
+            className="cursor-pointer"
+          >
+            <NotificationIcon />
+          </button>
 
-          <div onClick={() => setProfileModal(true)} className="w-11 h-11 rounded-full bg-gray-400 cursor-pointer overflow-hidden">
+          <div
+            onClick={() => setProfileModal(true)}
+            className="w-11 h-11 rounded-full bg-gray-400 cursor-pointer overflow-hidden"
+          >
             {profileImage ? (
-              <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+              <img
+                src={profileImage}
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
             ) : (
               <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center">
-                <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <svg
+                  className="w-6 h-6 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
                 </svg>
               </div>
             )}
@@ -226,9 +321,18 @@ const Header = () => {
       {/* Profile Modal */}
       {profileModal && (
         <>
-          <div className="fixed inset-0 z-50 backdrop-blur-sm bg-black/40" onClick={() => setProfileModal(false)} />
-          <div onClick={(e) => e.stopPropagation()} className="w-93.75 h-130 p-4 rounded-[20px] bg-white fixed inset-0 z-50 right-30 top-20.5 ml-auto">
-            <div onClick={() => setProfileModal(false)} className="flex items-center gap-3 cursor-pointer">
+          <div
+            className="fixed inset-0 z-50 backdrop-blur-sm bg-black/40"
+            onClick={() => setProfileModal(false)}
+          />
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-93.75 h-130 p-4 rounded-[20px] bg-white fixed inset-0 z-50 right-30 top-20.5 ml-auto"
+          >
+            <div
+              onClick={() => setProfileModal(false)}
+              className="flex items-center gap-3 cursor-pointer"
+            >
               <div className="w-5.5 h-5.5 rounded-full bg-[#F5F6F9] flex items-center justify-center">
                 <LeftOutlined className="w-2 h-1" />
               </div>
@@ -237,22 +341,49 @@ const Header = () => {
 
             {/* Avatar */}
             <div className="relative">
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" id="profile-image-upload" />
-              <div className="w-20 h-20 mx-auto rounded-full mt-5.5 mb-10 cursor-pointer border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden"
-                onClick={() => document.getElementById("profile-image-upload")?.click()}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+                id="profile-image-upload"
+              />
+              <div
+                className="w-20 h-20 mx-auto rounded-full mt-5.5 mb-10 cursor-pointer border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden"
+                onClick={() =>
+                  document.getElementById("profile-image-upload")?.click()
+                }
+              >
                 {profileImage ? (
-                  <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+                  <img
+                    src={profileImage}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <div className="flex flex-col items-center justify-center text-gray-400">
-                    <svg className="w-8 h-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    <svg
+                      className="w-8 h-8 mb-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
                     </svg>
-                    <span className="text-xs text-center">Profilga rasm yuklash</span>
                   </div>
                 )}
               </div>
-              <div className="w-5.5 h-5.5 bg-white rounded-full flex items-center justify-center absolute bottom-0 right-33 border p-1 cursor-pointer shadow-md"
-                onClick={() => document.getElementById("profile-image-upload")?.click()}>
+              <div
+                className="w-5.5 h-5.5 bg-white rounded-full flex items-center justify-center absolute bottom-0 right-33 border p-1 cursor-pointer shadow-md"
+                onClick={() =>
+                  document.getElementById("profile-image-upload")?.click()
+                }
+              >
                 <PensilIcon />
               </div>
             </div>
@@ -270,18 +401,32 @@ const Header = () => {
                 className={`py-2.5 pl-4 rounded-[70px] outline-none w-full mt-2 transition-all ${isEditingName ? "bg-white border border-[#007AFF]" : "bg-[#F5F6F9] border-transparent"}`}
               />
               {isEditingName && (
-                <button onMouseDown={() => { isMouseDownOnSave.current = true; }} onClick={updateProfile} disabled={isUpdating}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 disabled:opacity-50">
+                <button
+                  onMouseDown={() => {
+                    isMouseDownOnSave.current = true;
+                  }}
+                  onClick={updateProfile}
+                  disabled={isUpdating}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 disabled:opacity-50"
+                >
                   <CheckIcon />
                 </button>
               )}
             </div>
 
             {/* Settings */}
-            <strong className="block mt-5.5 mb-2 text-[20px] text-[#2D2D2D]">{t("settings")}</strong>
+            <strong className="block mt-5.5 mb-2 text-[20px] text-[#2D2D2D]">
+              {t("settings")}
+            </strong>
             <ul className="bg-[#F5F6F9] rounded-[20px] p-4 flex flex-col gap-2 cursor-pointer">
-              <li onClick={(e) => { e.stopPropagation(); setProfileModal(false); navigate("/phone-number-edit"); }}
-                className="flex items-center justify-between border-b border-white pb-2">
+              <li
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setProfileModal(false);
+                  navigate("/phone-number-edit");
+                }}
+                className="flex items-center justify-between border-b border-white pb-2"
+              >
                 <p>{t("phone_number_short")}</p>
                 <div className="flex items-center gap-1.5">
                   <p>{formatPhoneNumber(phoneNumber)}</p>
@@ -310,19 +455,84 @@ const Header = () => {
           </div>
         </>
       )}
+      {/* Notification modal  */}
+      {notificationModal && (
+        <>
+          <div className="fixed inset-0 z-50 backdrop-blur bg-black/40" />
+          <div className="w-93.75 h-screen p-4 rounded-tl-[20px] rounded-bl-[20px] bg-white fixed inset-0 z-50 right-0  ml-auto pt-8 pb-10 px-7">
+            <div className="flex items-center justify-between">
+              <h2 className="text-[#2D2D2D] text-[24px] font-medium">
+                Bildirishnomalar
+              </h2>
+              <button
+                onClick={() => setNotificationModal(false)}
+                className="cursor-pointer"
+              >
+                <ExitIcon />
+              </button>
+            </div>
+            {allNotification?.map((item, index) => (
+              <div
+                key={index}
+                className="w-full py-3 px-3 bg-[#F5F6F9] rounded-2xl"
+              >
+                <ul className="flex items-center justify-between">
+                  <li className="flex items-center gap-2">
+                    {item.workshop?.image ? (
+                      <img
+                        className="w-11 h-11 rounded-lg object-cover shrink-0"
+                        src={item.workshop.image}
+                        alt="rasm"
+                        width={44}
+                        height={44}
+                      />
+                    ) : (
+                      <div className="w-11 h-11 rounded-lg bg-linear-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-lg font-bold uppercase">
+                          {item.workshop?.title?.charAt(0) || "?"}
+                        </span>
+                      </div>
+                    )}
+
+                    <div>
+                      <strong>{item.workshop?.title || "Brend nomi"}</strong>
+                      <p className="text-[#7B7B7B] text-[13px]">
+                       Moy almashtirildi
+                      </p>
+                    </div>
+                  </li>
+                  <li>
+                    <RightOutlined className="w-2 h-2" />
+                  </li>
+                </ul>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       {/* Logout Modal */}
       {logoutModal && (
         <>
           <div className="fixed inset-0 backdrop-blur-md bg-black/40 z-40" />
           <div className="w-96 h-70 rounded-[20px] p-6 bg-white fixed inset-0 z-50 m-auto flex flex-col items-center justify-center">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">Profildan chiqishni tasdiqlaysizmi?</h2>
-            <p className="text-gray-600 text-center mb-6">Chiqib ketgach qayta login qilishingiz kerak bo'ladi.</p>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+              Profildan chiqishni tasdiqlaysizmi?
+            </h2>
+            <p className="text-gray-600 text-center mb-6">
+              Chiqib ketgach qayta login qilishingiz kerak bo'ladi.
+            </p>
             <div className="flex gap-4">
-              <button onClick={() => setLogoutModal(false)} className="px-6 py-2.5 cursor-pointer rounded-4xl text-[#2D2D2D] font-medium bg-[#F5F6F9]">
+              <button
+                onClick={() => setLogoutModal(false)}
+                className="px-6 py-2.5 cursor-pointer rounded-4xl text-[#2D2D2D] font-medium bg-[#F5F6F9]"
+              >
                 Bekor qilish
               </button>
-              <button onClick={handleLogout} className="px-6 py-2.5 cursor-pointer rounded-4xl bg-[#D423231A] font-medium text-[#D42323]">
+              <button
+                onClick={handleLogout}
+                className="px-6 py-2.5 cursor-pointer rounded-4xl bg-[#D423231A] font-medium text-[#D42323]"
+              >
                 Ha, chiqish
               </button>
             </div>
