@@ -43,9 +43,12 @@ const AddCarsPages = () => {
   const [carNumber, setCarNumber] = useState<string>("");
   const [carProbeg, setCarProbeg] = useState<string>("");
   const [cars, setCars] = useState<Car[]>([]);
-const [,setDeleteId] = useState<number>(0)
+  const [deleteId,setDeleteId] = useState<number>(0)
   const [errors, setErrors] = useState<Errors>({});
   const [activeCar, setActiveCar] = useState<Car | null>(null);
+
+  
+  
 
 
   const token = Cookies.get("access_token");
@@ -175,18 +178,23 @@ const [,setDeleteId] = useState<number>(0)
   };
 
   const handleDeleteCar = () => {
+    console.log(deleteId);
+    
+    
     if (carToDelete === null) return;
     setLoading(true);
 
     axios
-      .delete(`${BASE_URL}/api/vehicles/${carToDelete}/`, {
+      .delete(`${BASE_URL}/api/vehicles/${deleteId}/`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then(() => {
+      .then((res) => {
+        console.log(res.data,"Ochiriligan");
+        console.log(deleteId,"o'chirilgan id");
+        
         setLoading(false);
-        const updatedCars = cars.filter((car) => car.id !== carToDelete);
+        const updatedCars = cars.filter((car) => car.id !== deleteId);
         setCars(updatedCars);
-        localStorage.setItem("cars", JSON.stringify(updatedCars));
         setDeleteModal(false);
         setCarToDelete(null);
         toast.success("Mashina o'chirildi!");
@@ -313,6 +321,8 @@ const [,setDeleteId] = useState<number>(0)
     setEditModal(true);
   };
   const openDeleteModal = (carId: number) => {
+    console.log(carId);
+    
     setCarToDelete(carId);
     setDeleteModal(true);
   };

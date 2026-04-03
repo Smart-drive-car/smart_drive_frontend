@@ -25,8 +25,6 @@ const CarManagement = ({ cars = [], onCarSelect }: CarManagementProps) => {
   const [selectedCar, setSelectedCar] = useState<Car | null>(
     cars.length > 0 ? cars[0] : null,
   );
-  console.log("update bo'lgandan keyin",cars);
-  
 
   useEffect(() => {
     if (cars.length > 0 && !selectedCar) {
@@ -229,7 +227,9 @@ const CarManagement = ({ cars = [], onCarSelect }: CarManagementProps) => {
         )}
 
         {/* No Cars State */}
-        {cars.length === 0 && <div></div>}
+        {cars.length === 0 && <div className="flex items-center justify-center">
+             
+          </div>}
       </section>
     </>
   );
