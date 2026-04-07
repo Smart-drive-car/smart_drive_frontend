@@ -1,6 +1,5 @@
-import { useEffect, useState, useRef, } from "react";
+import { useEffect, useState, useRef, useContext, } from "react";
 import {
-  NotificationIcon,
   PensilIcon,
   RusFlagIcon,
   UzbFlagIcon,
@@ -16,6 +15,7 @@ import type { AllCarsType, ProfileWorkshopType } from "../@types";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "../components";
+import { AuthContext } from "../context/UseContext";
 
 type Language = "uz" | "ru";
 
@@ -46,6 +46,10 @@ const WorkshopHeader = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const phoneNumberRef = useRef(phoneNumber);
   const profileImageRef = useRef(profileImage);
+   const {setServisId,servisId} = useContext(AuthContext)!
+
+   
+ 
 
   
 
@@ -320,7 +324,10 @@ const handleAddClient = (id: number) => {
       setLoading(false)
 
       console.log("Success:", res.data);
-      toast.success("Xizmat muvaffaqiyatli qo'shildi!");
+      toast.success(t("xizmat_muvaffaqiyatli_qo'shildi"));
+      setServisId(servisId + 1)
+      
+
       setModal(false)
     } catch (err: any) {
       console.error("Xatolik:", err.response?.data || err);
@@ -397,7 +404,7 @@ const handleAddClient = (id: number) => {
               onClick={() => setSearchModal(true)}
               className="flex items-center gap-2 p-2.5 rounded-4xl bg-[#1E5DE5] text-white cursor-pointer"
             >
-              <span>Servis qo’shish</span>
+              <span>{t("servis_qo'shish")}</span>
               <PlusOutlined />
             </button>
             <button
@@ -441,10 +448,10 @@ const handleAddClient = (id: number) => {
               </div>
             )}
           </div>
-
+{/*            keyingi bosqichda
           <button className="cursor-pointer">
             <NotificationIcon />
-          </button>
+          </button> */}
 
           {/* Profile avatar */}
           <div
@@ -594,11 +601,11 @@ const handleAddClient = (id: number) => {
                   <RightOutlined className="w-2 h-1" />
                 </div>
               </li>
-              <li className="flex justify-between border-b border-white pb-2">
+              <li onClick={() => toast.info("Keyingi versiyada")} className="flex justify-between border-b border-white pb-2">
                 <p>{t("support")}</p>
                 <RightOutlined className="w-2 h-1" />
               </li>
-              <li className="flex justify-between">
+              <li onClick={() => toast.info("Keyingi versiyada")} className="flex justify-between">
                 <p>{t("about_us")}</p>
                 <RightOutlined className="w-2 h-1" />
               </li>
@@ -611,7 +618,7 @@ const handleAddClient = (id: number) => {
               }}
               className="w-full bg-[#D423231A] text-[#D42323] rounded-[50px] py-2.5 mt-6 cursor-pointer"
             >
-              Profildan chiqish
+              {t("profildan_chiqish")}
             </button>
           </div>
         </>
@@ -624,23 +631,23 @@ const handleAddClient = (id: number) => {
           <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="w-96 bg-white rounded-[20px] p-6 text-center">
               <h2 className="text-xl font-semibold mb-4">
-                Profildan chiqishni tasdiqlaysizmi?
+               {t("profildan_chiqishni_istaysizmi")}
               </h2>
               <p className="text-gray-600 mb-6">
-                Chiqib ketgach qayta login qilishingiz kerak bo'ladi.
+                {t("qayta_login_qilishingiz_kerak_bo'ladi")}
               </p>
               <div className="flex gap-4">
                 <button
                   onClick={() => setLogoutModal(false)}
                   className="flex-1 py-2.5 bg-[#F5F6F9] rounded-3xl"
                 >
-                  Bekor qilish
+                 {t("bekor_qilish")}
                 </button>
                 <button
                   onClick={handleLogout}
                   className="flex-1 py-2.5 bg-[#D423231A] text-[#D42323] rounded-3xl"
                 >
-                  Ha, chiqish
+                 {t("chiqish")}
                 </button>
               </div>
             </div>
@@ -663,14 +670,14 @@ const handleAddClient = (id: number) => {
                   <LeftOutlined />
                 </li>
                 <li >
-                  <strong className="text-[20px] font-medium">Qo’shish</strong>
+                  <strong className="text-[20px] font-medium">{t("qo'shish")}</strong>
                   <p className="text-[#7B7B7B]">
-                    Xizmat ko’rsatgan mijozni qo’shing
+                   {t("xizmat_korsatgan_mijozni_qoshing")}
                   </p>
                 </li>
               </ul>
                <label className="relative ">
-                <input onChange={(e) => setSearchInput(e.target.value)} type="text" placeholder="Qidirish" className="py-3 pl-3 rounded-[40px] bg-[#F5F6F9] outline-none w-full mb-3"/>
+                <input onChange={(e) => setSearchInput(e.target.value)} type="text" placeholder={t("qidirish")} className="py-3 pl-3 rounded-[40px] bg-[#F5F6F9] outline-none w-full mb-3"/>
                  <button  className="absolute right-4 top-px">
                     <SearchIcon/>
                  </button>
@@ -688,7 +695,7 @@ const handleAddClient = (id: number) => {
                         <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-200 shrink-0">
                           {item.driver.image ? (
                             <img
-                              src={item.driver.image}
+                              src={`${BASE_URL}${item.driver.image}`}
                               alt={item.driver.full_name || "Driver"}
                               className="w-full h-full object-cover"
                               width={36}
@@ -709,13 +716,13 @@ const handleAddClient = (id: number) => {
                             {item.driver.full_name || "Noma'lum haydovchi"}
                           </p>
                           <p className="text-sm text-gray-500">
-                            {item.driver.phone_number}
+                            *********
                           </p>
                         </div>
                       </div>
 
                       <button onClick={() => handleAddClient(item.id)} className="py-0.5 px-2.5 text-[#1E5DE5] bg-[#E4ECFE] rounded-[40px] cursor-pointer hover:bg-[#D8E6FF] transition-colors">
-                        Qo'shish
+                       {t("qo'shish")}
                       </button>
                     </div>
                       <div className="flex items-center justify-between pt-3 border-t border-[#E3E3E3]">
@@ -745,10 +752,10 @@ const handleAddClient = (id: number) => {
                 >
                   <LeftOutlined />
                 </li>
-                <li className="">
-                  <strong className="text-[20px] font-medium">Qo’shish</strong>
+                <li>
+                  <strong className="text-[20px] font-medium">{t("qo'shish")}</strong>
                   <p className="text-[#7B7B7B]">
-                    Tegishli ma’lumotlarni kiriting
+                    {t("tegishli_malumotlarni_kiriting")}
                   </p>
                 </li>
               </ul>
@@ -756,16 +763,8 @@ const handleAddClient = (id: number) => {
                 onSubmit={(e) => handleAddService(e)}
                 className="flex flex-col gap-4"
               >
-                {/* <label>
-                  <span className="pl-4">Servis turini tanlang*</span>
-                  <input
-                    type="text"
-                    placeholder="Moy almashtirish"
-                    className="py-2.5 pl-4 rounded-4xl bg-[#F5F6F9] outline-none w-full"
-                  />
-                </label> */}
                 <label>
-                  <span className="pl-4">Moy turini yozing*</span>
+                  <span className="pl-4">{t("moy_turini_yozing")}</span>
                   <input
                     onChange={(e) => setLiquidType(e.target.value)}
                     required
@@ -775,7 +774,7 @@ const handleAddClient = (id: number) => {
                   />
                 </label>
                 <label>
-                  <span className="pl-4">Moy necha km ga mo’ljallangan?*</span>
+                  <span className="pl-4">{t("moy_necha_km_ga_moljallangan")}</span>
                   <input
                     onChange={(e) => setProbeg(Number(e.target.value))}
                     required
@@ -786,7 +785,7 @@ const handleAddClient = (id: number) => {
                 </label>
                 <CustomButton
                   type="submit"
-                  text={ loading ? "Tasdiqlash..." : "Tasdiqlash"}
+                  text={ loading ? t("tasdiqlash_loading") : t("tasdiqlash")}
                   className={loading ? "bg-blue-400 rounded-4xl!" :"bg-[#1E5DE5]! rounded-4xl!"}
                 />
               </form>

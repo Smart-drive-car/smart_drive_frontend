@@ -1,5 +1,5 @@
 import { LeftOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomButton, CarManagement } from "../../components";
 import type { FormEvent } from "react";
@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { DeleteIcon, EditIcon } from "../../assets/icons";
 import type { Car, ProfileType } from "../../@types";
+import { AuthContext } from "../../context/UseContext";
 
 interface Brand {
   id: number;
@@ -46,12 +47,11 @@ const AddCarsPages = () => {
   const [deleteId,setDeleteId] = useState<number>(0)
   const [errors, setErrors] = useState<Errors>({});
   const [activeCar, setActiveCar] = useState<Car | null>(null);
-
-  
-  
-
-
   const token = Cookies.get("access_token");
+   const {setCarId} = useContext(AuthContext)!;
+  const {setDeleteCarId} = useContext(AuthContext)!;
+
+  
 
   // all cars
   useEffect(() => {
@@ -60,7 +60,6 @@ const AddCarsPages = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        console.log(res.data, "get");
 
         const profile: ProfileType = res.data;
         const formattedCars = profile.profile.cars.map((car: any) => ({
@@ -75,7 +74,6 @@ const AddCarsPages = () => {
               : `${BASE_URL}${car.vehicle_model.image}`,
           }, // qisqa bo'lsa — BASE_URL qo'shiladi
         }));
-        console.log(formattedCars, "cars");
 
         setCars(formattedCars);
       });
@@ -149,16 +147,14 @@ const AddCarsPages = () => {
       vehicle_model_id: selectedModelId,
     };
 
-    console.log(data, "qo'shishdan oldingi");
 
     axios
       .post(`${BASE_URL}/api/vehicles/create/`, data, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        console.log(data, "keyingi");
+        
         const newCars = [...cars, res.data];
-        console.log("Backenddan qaytgan javob:", res.data);
         setCars(newCars);
         setModal(false);
         setLoading(false);
@@ -178,8 +174,6 @@ const AddCarsPages = () => {
   };
 
   const handleDeleteCar = () => {
-    console.log(deleteId);
-    
     
     if (carToDelete === null) return;
     setLoading(true);
@@ -188,15 +182,15 @@ const AddCarsPages = () => {
       .delete(`${BASE_URL}/api/vehicles/${deleteId}/`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => {
-        console.log(res.data,"Ochiriligan");
-        console.log(deleteId,"o'chirilgan id");
-        
+      .then(() => {
+       console.log(deleteId,"Button bosilganda");
+       
         setLoading(false);
         const updatedCars = cars.filter((car) => car.id !== deleteId);
         setCars(updatedCars);
         setDeleteModal(false);
         setCarToDelete(null);
+        setDeleteCarId(deleteId + 1);
         toast.success("Mashina o'chirildi!");
       })
       .catch(() => {
@@ -246,7 +240,6 @@ const AddCarsPages = () => {
       current_mileage: Number(carProbeg.replace(/\s/g, "")),
       vehicle_model_id: selectedModelId,
     };
-    console.log(data, "Update");
 
     axios
       .patch(`${BASE_URL}/api/vehicles/${carToEdit.id}/`, data, {
@@ -258,6 +251,7 @@ const AddCarsPages = () => {
           car.id === updatedCar.id ? { ...updatedCar } : car,
         );
         setCars([...updatedCarsList]);
+        
         setEditModal(false);
         setCarToEdit(null);
         setLoading(false);
@@ -278,7 +272,6 @@ const AddCarsPages = () => {
 
   // ================== EDIT MODAL OCHISH ==================
   const openEditModal = (car: Car) => {
-    console.log("Backenddan kelgan ob'ekt:", car);
     if (!car) return;
 
     setCarToEdit(car);
@@ -321,21 +314,22 @@ const AddCarsPages = () => {
     setEditModal(true);
   };
   const openDeleteModal = (carId: number) => {
-    console.log(carId);
-    
+    window.dispatchEvent(new Event("storage"));
     setCarToDelete(carId);
     setDeleteModal(true);
   };
 
   return (
     <>
-      <section className="px-4 pt-4 rounded-[20px] bg-[#F5F6F9] overflow-y-auto h-[30%] custom-scrollbar">
-        <div className="flex items-start justify-between">
+      <section className="px-4 pt-4 rounded-[20px] bg-[#F5F6F9] overflow-y-auto h-[25%] custom-scrollbar containers">
+        <div className="flex items-start justify-between ">
           <CarManagement
             cars={cars}
             onCarSelect={(car) => {
               setActiveCar(car); 
               setDeleteId( car.id); 
+              setCarId(car.id)
+              setDeleteCarId(car.id)
             }}
           />
           <div className="flex flex-col justify-end items-end">
@@ -367,7 +361,7 @@ const AddCarsPages = () => {
       {modal && (
         <>
           <div className="fixed inset-0 backdrop-blur-md bg-black/40 z-40" />
-          <div className="w-110 max-h-[90vh] overflow-y-auto mx-auto mt-15 rounded-[20px] p-4 bg-[#FFFFFF] fixed inset-0 z-50 custom-scrollbar">
+          <div className="w-110 max-h-[80vh] overflow-y-auto mx-auto mt-15 rounded-[20px] p-4 bg-[#FFFFFF] fixed inset-0 z-50 custom-scrollbar">
             <div className="flex items-center gap-3">
               <div
                 onClick={() => setModal(false)}
@@ -547,7 +541,7 @@ const AddCarsPages = () => {
       {editModal && (
         <>
           <div className="fixed inset-0 backdrop-blur-md bg-black/40 z-40" />
-          <div className="w-110 h-auto max-h-[90vh] overflow-y-auto mx-auto mt-15 rounded-[20px] p-4 bg-[#FFFFFF] fixed inset-0 z-50 custom-scrollbar">
+          <div className="w-110 h-auto max-h-[80vh] overflow-y-auto mx-auto mt-15 rounded-[20px] p-4 bg-[#FFFFFF] fixed inset-0 z-50 custom-scrollbar">
             <div className="flex items-center gap-3">
               <div
                 onClick={() => setEditModal(false)}

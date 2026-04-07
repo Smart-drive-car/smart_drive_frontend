@@ -106,5 +106,25 @@
     "workshop_image_alt":"Ustaxona rasmi",
     "location_image_alt":"Joylashuv rasmi",
     "add":"Qo‘shish",
-    "set":"Belgilash"
+    "set":"Belgilash",
+    "profildan_chiqish":"Profildan chiqish",
+    "servis_qo'shish":"Servis qo'shish",
+     "xizmat_ko’rsatilgan_mashinalar":"Xzmat ko’rsatilgan Mashinalar",
+     "xizmat_ko’rsatilgan_mijozlar":"Xizmat ko’rsatilgan mijozlar",
+     "mijozlar":"Mijozlar",
+     "qidirish":"Qidirish",
+      "qo'shish":"Qo'shish",
+    "xizmat_korsatgan_mijozni_qoshing":"Xizmat ko’rsatgan mijozni qo’shing.",
+    "profildan_chiqishni_istaysizmi":"Profildan chiqishni istaysizmi",
+    "qayta_login_qilishingiz_kerak_bo'ladi":"Chiqib ketgach qayta login qilishingiz kerak bo'ladi.",
+    "bekor_qilish":"Bekor qilish",
+    "chiqish":"Ha Chiqish",
+
+    "moy_turini_yozing":"Moy turuni yozing*",
+    "moy_necha_km_ga_moljallangan":"Moy necha km ga mo'ljallangan?*",
+    "tegishli_malumotlarni_kiriting":"Tegishli ma’lumotlarni kiriting.",
+
+    "tasdiqlash":"Tasdiqlash",
+     "tasdiqlash_loading":"Tasdiqlash...",
+     "xizmat_muvaffaqiyatli_qo'shildi":"Xizmat muvaffaqiyatli qo'shildi!"
 }

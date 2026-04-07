@@ -6,11 +6,14 @@ import BASE_URL from "../hooks/Env";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
+import { useTranslation } from "react-i18next";
 
 const Cliend = () => {
   const token = Cookies.get("access_token");
   const [searchInput, setSearchInput] = useState<string>("");
   const [cars, setAllCars] = useState<AllCarsType[]>([]);
+
+  const {t} = useTranslation()
 
   
   
@@ -86,14 +89,14 @@ const Cliend = () => {
   };
 
   return (
-    <section className="p-4 bg-[#F5F6F9] rounded-[20px] h-screen flex flex-col">
+    <section className="p-4 bg-[#F5F6F9] rounded-[20px] h-screen flex flex-col ">
       {/* HEADER - qimirlamaydi */}
       <div className="flex items-center justify-between shrink-0">
-        <h2 className="text-[20px] font-medium text-[#2D2D2D]">Mijozlar</h2>
+        <h2 className="text-[20px] font-medium text-[#2D2D2D]">{t("mijozlar")}</h2>
         <label className="relative w-[30%]">
           <input onChange={(e) => setSearchInput(e.target.value)}
             type="text"
-            placeholder="Qidirish"
+            placeholder={t("qidirish")}
             className="py-3 pl-3 bg-white rounded-[40px] outline-none w-full"
           />
           <button className="absolute right-2.5 top-2.5">
@@ -103,10 +106,11 @@ const Cliend = () => {
       </div>
 
       {/* KONTENT - scroll bo'ladi */}
-      <div className="flex-1 overflow-y-auto mt-3 py-4 custom-scrollbar pb-100">
-        <div className="grid grid-cols-3 gap-2">
+      <div className="flex-1 overflow-y-auto mt-3 py-4 custom-scrollbar pb-70">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+          
           {cars.map((item) => (
-            <div key={item.id} className="bg-[#FFFFFF] p-3 rounded-[20px] mb-2">
+            <div key={item.id} className="bg-[#FFFFFF] p-3 rounded-[20px] mb-0">
               <div className="flex items-center justify-between pb-3">
                 <div className="flex items-center gap-3">
                   {/* Avatar */}
@@ -134,7 +138,8 @@ const Cliend = () => {
                       {item.driver.full_name || "Noma'lum haydovchi"}
                     </p>
                     <p className="text-sm text-gray-500">
-                      {item.driver.phone_number}
+                      {/* {item.driver.phone_number} */}
+                      *********
                     </p>
                   </div>
                 </div>

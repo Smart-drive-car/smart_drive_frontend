@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import {
   NotificationIcon,
   PensilIcon,
@@ -6,15 +6,24 @@ import {
   UzbFlagIcon,
   CheckIcon,
   ExitIcon,
+  CopyIcon,
+  ShareIcon,
+  DowlandIcon,
+  XIcon,
 } from "../assets/icons";
 import axios from "axios";
 import BASE_URL from "../hooks/Env";
 import Cookies from "js-cookie";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
-import type { NotificatonType, ProfileType } from "../@types";
+import {
+  type LastServiceType,
+  type NotificatonType,
+  type ProfileType,
+} from "../@types";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { AuthContext } from "../context/UseContext";
 
 type Language = "uz" | "ru";
 
@@ -25,29 +34,26 @@ const Header = () => {
   const [fullName, setFullName] = useState("");
   const [profileModal, setProfileModal] = useState(false);
   const [logoutModal, setLogoutModal] = useState(false);
-  const [profileImage, setProfileImage] = useState<string | null>(
-    () => localStorage.getItem("profileImage") || null,
-  );
+  const [profileImage, setProfileImage] = useState<string>("");
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isEditingName, setIsEditingName] = useState(false);
   const [tempFullName, setTempFullName] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
   const [notificationModal, setNotificationModal] = useState<boolean>(false);
   const [allNotification, setAllNotification] = useState<NotificatonType[]>([]);
-
   const token = Cookies.get("access_token");
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isMouseDownOnSave = useRef(false);
   const phoneNumberRef = useRef(phoneNumber);
   const profileImageRef = useRef(profileImage);
+  const { carId } = useContext(AuthContext)!;
+  const [servis, setServis] = useState<LastServiceType | null>(null);
 
   useEffect(() => {
     phoneNumberRef.current = phoneNumber;
   }, [phoneNumber]);
-  useEffect(() => {
-    profileImageRef.current = profileImage;
-  }, [profileImage]);
 
   const formatPhoneNumber = (phone: string) => {
     if (!phone) return "";
@@ -65,14 +71,25 @@ const Header = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const localUrl = URL.createObjectURL(file);
+    setProfileImage(localUrl);
+
     setSelectedFile(file);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const result = reader.result as string;
-      setProfileImage(result);
-      localStorage.setItem("profileImage", result);
-    };
-    reader.readAsDataURL(file);
+    const formData = new FormData();
+    formData.append("image", file);
+
+    axios
+      .patch(`${BASE_URL}/api/auth/profile/driver/update/`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setProfileImage(res.data.data.image);
+      })
+      .catch((err) => {
+        console.error("Rasm yuklashda xatolik:", err);
+      });
   };
 
   const updateProfile = async () => {
@@ -139,7 +156,7 @@ const Header = () => {
   const handleLogout = () => {
     Cookies.remove("access_token");
     Cookies.remove("refresh_token");
-    // localStorage.clear();
+    localStorage.clear();
     toast.success("Profildan chiqdingiz!");
     window.location.href = "/log-in";
   };
@@ -154,24 +171,20 @@ const Header = () => {
       })
       .then((res) => {
         const profile: ProfileType = res.data;
-        
+        console.log(profile, "profile");
+
         setPhoneNumber(profile.phone_number);
         setFullName(profile.profile?.full_name || "");
-        if (profile.profile?.image?.length > 0) {
-          setProfileImage(profile.profile.image[0]);
-          localStorage.setItem("profileImage", profile.profile.image[0]);
-        } else {
-          const local = localStorage.getItem("profileImage");
-          if (local) setProfileImage(local);
-        }
+        const profilImg = `${BASE_URL}${profile.profile.image}`;
+
+        setProfileImage(profilImg);
       })
       .catch((err) => {
         if (err.response?.status === 401) {
+          toast.error(err.response?.data?.message || t("error_generic"));
           Cookies.remove("access_token");
           Cookies.remove("refresh_token");
           window.location.href = "/log-in";
-        } else {
-          toast.error(err.response?.data?.message || t("error_generic"));
         }
       });
 
@@ -216,16 +229,45 @@ const Header = () => {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/api/notifications/`, {
+      .get(`${BASE_URL}/api/notifications/?car_id=${carId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {
-        
+        console.log("notifications", res.data);
+
         setAllNotification(res.data);
       });
-  }, []);
+  }, [carId]);
+
+  const openMap = (lat: number, lng: number) => {
+    console.log(lat);
+    console.log(lng);
+
+    // Agar lat yoki lng kelmasa, funksiyani to'xtatamiz
+    if (!lat || !lng) {
+      console.error("Koordinatalar yetishmayapti:", { lat, lng });
+      return;
+    }
+
+    // To'g'ri URL formati (Template literal bilan)
+    const url = `https://www.google.com/maps?q=${lat},${lng}`;
+
+    window.open(url, "_blank");
+  };
+
+  const handleShowServis = (id: number) => {
+    axios
+      .get(`${BASE_URL}/api/services/services/${id}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setServis(res.data);
+      });
+  };
 
   return (
     <header className="w-full p-7 bg-[#F5F6F9] rounded-[20px] mb-4 relative">
@@ -437,7 +479,7 @@ const Header = () => {
                 <p>{t("support")}</p>
                 <RightOutlined className="w-2 h-1" />
               </li>
-              <li className="flex items-center justify-between border-b border-white pb-2">
+              <li onClick={() => toast.info("Keyingi versiyada")} className="flex items-center justify-between border-b border-white pb-2">
                 <p>{t("about_us")}</p>
                 <RightOutlined className="w-2 h-1" />
               </li>
@@ -449,8 +491,9 @@ const Header = () => {
                 setLogoutModal(true); // logout modalni ochamiz
               }}
               className="w-full bg-[#D423231A] text-[#D42323] rounded-[50px] py-2.5 mt-6 cursor-pointer"
-            >
-              Profildan chiqish
+            > 
+            {t("profildan_chiqish")}
+             
             </button>
           </div>
         </>
@@ -459,54 +502,187 @@ const Header = () => {
       {notificationModal && (
         <>
           <div className="fixed inset-0 z-50 backdrop-blur bg-black/40" />
-          <div className="w-93.75 h-screen p-4 rounded-tl-[20px] rounded-bl-[20px] bg-white fixed inset-0 z-50 right-0  ml-auto pt-8 pb-10 px-7">
-            <div className="flex items-center justify-between">
+          <div className="w-130 h-screen p-4 rounded-tl-[20px] rounded-bl-[20px] bg-white fixed inset-0 z-50 right-0 ml-auto pt-8 pb-10 px-7 overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
               <h2 className="text-[#2D2D2D] text-[24px] font-medium">
                 Bildirishnomalar
               </h2>
               <button
-                onClick={() => setNotificationModal(false)}
+                onClick={() => {
+                  setNotificationModal(false);
+                  setServis(null);
+                }}
                 className="cursor-pointer"
               >
                 <ExitIcon />
               </button>
             </div>
-            {allNotification?.map((item, index) => (
-              <div
-                key={index}
-                className="w-full py-3 px-3 bg-[#F5F6F9] rounded-2xl"
-              >
-                <ul className="flex items-center justify-between">
-                  <li className="flex items-center gap-2">
-                    {item.workshop?.image ? (
-                      <img
-                        className="w-11 h-11 rounded-lg object-cover shrink-0"
-                        src={item.workshop.image}
-                        alt="rasm"
-                        width={44}
-                        height={44}
-                      />
-                    ) : (
-                      <div className="w-11 h-11 rounded-lg bg-linear-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0">
-                        <span className="text-white text-lg font-bold uppercase">
-                          {item.workshop?.title?.charAt(0) || "?"}
-                        </span>
-                      </div>
-                    )}
 
-                    <div>
-                      <strong>{item.workshop?.title || "Brend nomi"}</strong>
-                      <p className="text-[#7B7B7B] text-[13px]">
-                       Moy almashtirildi
+            {/* Bildirishnomalar ro'yxati */}
+            <div className="flex flex-col gap-2">
+              {allNotification?.map((item, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleShowServis(Number(item.data.service_id))}
+                  className={`w-full py-3 px-3 rounded-2xl cursor-pointer transition-colors ${
+                    servis?.id === Number(item.data.service_id)
+                      ? "bg-[#E4ECFE]"
+                      : "bg-[#F5F6F9]"
+                  }`}
+                >
+                  <ul className="flex items-center justify-between pointer-events-none">
+                    <li className="flex items-center gap-2">
+                      {item.data.image ? (
+                        <img
+                          className="w-11 h-11 rounded-lg object-cover shrink-0"
+                          src={item.data.image}
+                          alt="rasm"
+                          width={44}
+                          height={44}
+                        />
+                      ) : (
+                        <div className="w-11 h-11 rounded-lg bg-linear-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0">
+                          <span className="text-white text-lg font-bold uppercase">
+                            {"?"}
+                          </span>
+                        </div>
+                      )}
+                      <div>
+                        <strong className="text-[#2D2D2D]">{item.title}</strong>
+                        <p className="text-[#7B7B7B] text-[13px]">
+                          Moy almashtirildi
+                        </p>
+                      </div>
+                    </li>
+                    <li>
+                      <RightOutlined
+                        className={`w-2 h-2 ${
+                          servis?.id === Number(item.data.service_id)
+                            ? "text-blue-600"
+                            : "text-gray-400"
+                        }`}
+                      />
+                    </li>
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            {/* Pastdan chiqadigan servis modal - modal ichida, ro'yxat ustida */}
+            {servis && (
+              <div className="fixed inset-x-0 bottom-0 z-60 w-130 right-0 ml-auto animate-slide-up custom-scrollbar">
+                <div className="bg-white rounded-t-3xl shadow-2xl border-t border-gray-100">
+                  <div className="relative p-5 max-h-[70vh] overflow-y-auto">
+                    {/* Tepaga tortish uchun indikator */}
+                    <div className="flex justify-center mb-4">
+                      <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+                    </div>
+
+                    <div className="text-center">
+                      <div className="relative">
+                        <img
+                          className="w-20 h-20 mx-auto rounded-full object-cover border-2 border-white shadow-sm"
+                          src={servis.workshop.image || ""}
+                          alt="logo"
+                        />
+                        <button
+                          onClick={() => setServis(null)}
+                          className="absolute -right-2 -top-2 cursor-pointer"
+                        >
+                          <XIcon />
+                        </button>
+                      </div>
+
+                      <strong className="block mt-2 text-lg text-[#2D2D2D]">
+                        {servis.service_type.name}
+                      </strong>
+                      <p className="text-[#7B7B7B] text-[14px]">
+                        {servis.description}
                       </p>
                     </div>
-                  </li>
-                  <li>
-                    <RightOutlined className="w-2 h-2" />
-                  </li>
-                </ul>
+
+                    <div className="bg-[#F5F6F9] p-3 rounded-[20px] mt-6">
+                      <ul className="p-4 rounded-2xl flex flex-col gap-3 my-5">
+                        <li className="flex items-center justify-between border-b border-gray-50 pb-2">
+                          <p className="text-[#7B7B7B] text-sm">
+                            {t("oil_brand")}
+                          </p>
+                          <p className="text-[#2D2D2D] font-medium text-sm">
+                            {servis.description}
+                          </p>
+                        </li>
+                        <li className="flex items-center justify-between border-b border-gray-50 pb-2">
+                          <p className="text-[#7B7B7B] text-sm">
+                            {t("oil_type")}
+                          </p>
+                          <p className="text-[#2D2D2D] font-medium text-sm">
+                            {servis.service_type.name}
+                          </p>
+                        </li>
+                        <li className="flex items-center justify-between border-b border-gray-50 pb-2">
+                          <p className="text-[#7B7B7B] text-sm">
+                            {t("kilometers")}
+                          </p>
+                          <p className="text-[#2D2D2D] font-medium text-sm">
+                            {servis.probeg.toLocaleString()} km
+                          </p>
+                        </li>
+                        <li className="flex items-center justify-between border-b border-gray-50 pb-2">
+                          <p className="text-[#7B7B7B] text-sm">
+                            {t("auto_service")}
+                          </p>
+                          <p className="text-[#2D2D2D] font-medium text-sm">
+                            {servis.workshop.title}
+                          </p>
+                        </li>
+                        <li className="flex items-center justify-between border-b border-gray-50 pb-2">
+                          <p className="text-[#7B7B7B] text-sm">
+                            {t("manzil")}
+                          </p>
+                          <button
+                            onClick={() =>
+                              openMap(servis.workshop.lat, servis.workshop.lng)
+                            }
+                            className="text-[#2D2D2D] font-medium text-sm text-right truncate ml-4"
+                          >
+                            {servis.workshop.address}
+                          </button>
+                        </li>
+                        <li className="flex items-center justify-between">
+                          <p className="text-[#7B7B7B] text-sm">
+                            {t("telefon_raqami")}
+                          </p>
+                          <p className="text-[#2D2D2D] font-medium text-sm">
+                            {servis.workshop.phone_number}
+                          </p>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="flex justify-end gap-2 mt-3 pb-4">
+                      <button
+                        className="bg-[#FFFFFF] p-3 rounded-full hover:bg-gray-100 transition-colors shadow-sm"
+                        title="Nusxa olish"
+                      >
+                        <CopyIcon />
+                      </button>
+                      <button
+                        className="bg-[#FFFFFF] p-3 rounded-full hover:bg-gray-100 transition-colors shadow-sm"
+                        title="Ulashish"
+                      >
+                        <ShareIcon />
+                      </button>
+                      <button
+                        className="bg-[#FFFFFF] w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors shadow-sm"
+                        title="Yuklab olish"
+                      >
+                        <DowlandIcon />
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
-            ))}
+            )}
           </div>
         </>
       )}

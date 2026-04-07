@@ -11,7 +11,7 @@ export interface ProfileType {
     role: string,
     profile: {
         full_name:string
-        image:string[],
+        image:string,
         cars:Car[]
 }
 }
@@ -138,6 +138,11 @@ export interface NotificatonType {
         id:number ,
         name:string
     },
-    workshop:Workshop
+    data:{
+    event: string,
+    image:string
+    car_id:string
+  service_id: string
+}
 }
 

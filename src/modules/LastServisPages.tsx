@@ -2,11 +2,12 @@ import { RightOutlined } from "@ant-design/icons";
 import { CopyIcon, DowlandIcon, SearchIcon, ShareIcon } from "../assets/icons";
 import { LocationImg } from "../assets/images";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 import BASE_URL from "../hooks/Env";
 import type { LastServiceType } from "../@types";
+import { AuthContext } from "../context/UseContext";
 
 const LastServisPages = () => {
   const { t } = useTranslation();
@@ -14,38 +15,55 @@ const LastServisPages = () => {
   const [allService, setAllService] = useState<LastServiceType[]>([]);
   const [servisType, setServisType] = useState<LastServiceType | null>(null);
   const [searchInput, setSearchInput] = useState<string>("");
-
+  const { carId } = useContext(AuthContext)!;
+  const { deleteCarId } = useContext(AuthContext)!;
+  
   // Ma'lumotlarni yuklash
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/api/services/services/`, {
+      .get(`${BASE_URL}/api/services/services/?car_id=${carId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {
         setAllService(res.data);
-        console.log(res.data);
+        console.log(res.data, "servis");
 
         // Agar ma'lumot bo'lsa, birinchisini default qilib o'rnatamiz
         if (res.data.length > 0) {
           setServisType(res.data[0]);
         }
+        else{
+          setServisType(null)
+        }
+      })
+      .catch((err) => {
+        console.error("Status:", err.response?.status);
+        console.error("Xato:", err.response?.data); // ← eng muhimi shu!
+        console.error("URL:", err.config?.url); // ← qaysi URL da
+        console.error("Method:", err.config?.method); // ← GET/POST/DELETE
       });
-  }, [token]);
+  }, [token, deleteCarId]);
 
   // Har bir element bosilganda ID orqali ma'lumot olish
   const handleServisId = async (id: number) => {
+     
+    
     try {
-      const res = await axios.get(`${BASE_URL}/api/services/services/${id}/`, {
+      const res =  await axios.get(`${BASE_URL}/api/services/services/${id}/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        
+        
       });
-      setServisType(res.data);
-      console.log(res.data);
-    } catch (err) {
-      console.log(err);
+     setServisType(res.data)
+    } catch (err:any) {
+      console.error("Status:", err.response?.status);
+      console.error("Xato:", err.response?.data); // ← eng muhimi shu!
+      console.error("URL:", err.config?.url); // ← qaysi URL da
+      console.error("Method:", err.config?.method); // ← GET/POST/DELETE
     }
   };
 
@@ -73,10 +91,11 @@ const LastServisPages = () => {
       console.error("Token mavjud emas!");
       return;
     }
+    if (!carId) return;
 
     const delayDebounceFn = setTimeout(() => {
       axios
-        .get(`${BASE_URL}/api/services/services`, {
+        .get(`${BASE_URL}/api/services/services?car_id=${carId}`, {
           params: { search: searchInput },
           headers: {
             // 'Bearer'dan keyin bitta bo'sh joy borligiga e'tibor bering
@@ -84,15 +103,18 @@ const LastServisPages = () => {
           },
         })
         .then((res) => {
+          console.log(res.data, "last sevis");
+
           setAllService(res.data);
         })
         .catch((err) => {
+          alert("Xato");
           console.error("Xato detali:", err.response?.data);
         });
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchInput, token]);
+  }, [searchInput, token, carId]);
 
   // 1. Nusxa olish funksiyasi (Link yoki matnni nusxalash)
   const handleCopy = async () => {

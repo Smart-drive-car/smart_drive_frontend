@@ -106,5 +106,26 @@
     "workshop_image_alt":"Фото сервиса",
     "location_image_alt":"Фото локации",
     "add":"Добавить",
-    "set":"Указать"
+    "set":"Указать",
+    "profildan_chiqish":"Выйти из профиля",
+    "servis_qo'shish":"Добавить услугу",
+    "xizmat_ko’rsatilgan_mashinalar":"Представленные машины",
+    "xizmat_ko’rsatilgan_mijozlar":"Обслуживаемых клиентов",
+    "mijozlar":"Клиенты",
+    "qidirish":"Поиск",
+    "qo'shish":"Добавлять",
+    "xizmat_korsatgan_mijozni_qoshing":"Добавить клиента, которого уже обслужили.",
+    "profildan_chiqishni_istaysizmi":"Вы хотите выйти из системы?",
+    "qayta_login_qilishingiz_kerak_bo'ladi":"После выхода из системы вам потребуется снова войти в систему.",
+    "bekor_qilish":"Отмена",
+    "chiqish":"Да Выход",
+
+    "moy_turini_yozing":"Укажите тип масла*",
+    "moy_necha_km_ga_moljallangan":"На какой километр рассчитано это масло?*",
+    "tegishli_malumotlarni_kiriting":"Введите необходимую информацию.",
+
+    "tasdiqlash":"Подтверждение",
+    "tasdiqlash_loading":"Подтверждение...",
+    "xizmat_muvaffaqiyatli_qo'shildi":"Услуга успешно добавлена!"
+    
 }

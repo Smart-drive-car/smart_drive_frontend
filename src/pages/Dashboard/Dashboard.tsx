@@ -27,7 +27,7 @@ const Dashboard = () => {
         </div>
         </div>
         ):(
-          <div className="p-7.5">
+          <div className="p-7.5 ">
            <WorkshopHeader/>
            <Service/>
             <Cliend/>

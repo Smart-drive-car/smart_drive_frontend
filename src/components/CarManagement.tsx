@@ -91,10 +91,10 @@ const CarManagement = ({ cars = [], onCarSelect }: CarManagementProps) => {
                   setSelectedCar(car);
                   onCarSelect?.(car);
                 }}
-                className={`py-2.5 px-4 rounded-[20px] flex items-center gap-2 whitespace-nowrap transition-colors ${
+                className={`py-2.5 px-4 rounded-[20px] flex items-center gap-2 whitespace-nowrap cursor-pointer transition-colors ${
                   selectedCar?.id === car.id
-                    ? "bg-[#1E5DE5] text-white"
-                    : "bg-[#E4ECFE] text-[#1E5DE5]"
+                    ? "bg-[#E4ECFE] text-[#1E5DE5]"
+                    : " text-[#7B7B7B]"
                 }`}
               >
                 <span className="font-medium">
@@ -110,8 +110,8 @@ const CarManagement = ({ cars = [], onCarSelect }: CarManagementProps) => {
 
         {/* Selected Car Details */}
         {selectedCar && (
-          <div className=" rounded-[20px] p-6 w-full">
-            <div className="flex items-center justify-between w-full">
+          <div className=" rounded-[20px] p-6 ">
+            <div className="flex items-center justify-between ">
               {/* Car Image */}
               <div className="">
                 <img
@@ -162,7 +162,7 @@ const CarManagement = ({ cars = [], onCarSelect }: CarManagementProps) => {
               </div>
 
               {/* Car Info */}
-              <div className="flex-1">
+              <div className="flex-1 relative left-40">
                 {/* Stats */}
                 {/* Stats */}
                 <div className="flex flex-col items-center gap-4">

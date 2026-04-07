@@ -1,5 +1,5 @@
 import { createContext,  useState, useEffect, } from 'react'
-import type { ReactNode } from 'react'
+import type { Dispatch, ReactNode, SetStateAction } from 'react'
 
 interface User {
   id: number
@@ -21,6 +21,12 @@ export interface AuthContextType {
   password:string
   resetToken:string
   isForgotPassword:boolean
+  setCarId:Dispatch<SetStateAction<number>>
+  carId:number
+  deleteCarId:number,
+  setDeleteCarId:Dispatch<SetStateAction<number>>
+  setServisId:Dispatch<SetStateAction<number>>
+  servisId:number
   // Workshop registration fields
   workshopTitle?: string
   workshopAddress?: string
@@ -77,6 +83,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   if (!item || item === 'undefined' || item === 'null') return false;
   return JSON.parse(item);
 });
+
     // Workshop registration fields
     const [workshopTitle, setWorkshopTitle] = useState(() => getStoredValue('workshop_title', ''));
     const [workshopAddress, setWorkshopAddress] = useState(() => getStoredValue('workshop_address', ''));
@@ -94,6 +101,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       const item = sessionStorage.getItem('workshop_images');
       return item ? JSON.parse(item) : [];
     });
+
+    const [carId,setCarId] = useState(0)
+    const [deleteCarId,setDeleteCarId] = useState(0)
+    const [servisId,setServisId] = useState(0)
 
     // Ma'lumotlarni sessionStorage ga saqlash
     useEffect(() => {
@@ -175,7 +186,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
   return (
-    <AuthContext.Provider value={{phoneNumber,setPhoneNumber,code,setCode,selectRole,setSelectRole,names,setNames,password,setPassword,resetToken,setResetToken,isForgotPassword,setIsForgotPassword, workshopTitle, setWorkshopTitle, workshopAddress, setWorkshopAddress, workshopDescription, setWorkshopDescription, workshopWorkingTime, setWorkshopWorkingTime, workshopPassword, setWorkshopPassword, workshopPasswordConfirm, setWorkshopPasswordConfirm, workshopLocation, setWorkshopLocation, workshopImages, setWorkshopImages, clearDriverData, clearWorkshopData, clearAllRegistrationData}}>
+    <AuthContext.Provider value={{phoneNumber,setPhoneNumber,code,setCode,selectRole,setSelectRole,names,setNames,password,setPassword,resetToken,setResetToken,isForgotPassword,setIsForgotPassword, workshopTitle, setWorkshopTitle, workshopAddress, setWorkshopAddress, workshopDescription, setWorkshopDescription, workshopWorkingTime, setWorkshopWorkingTime, workshopPassword, setWorkshopPassword, workshopPasswordConfirm, setWorkshopPasswordConfirm, workshopLocation, setWorkshopLocation, workshopImages, setWorkshopImages, clearDriverData, clearWorkshopData, clearAllRegistrationData,setCarId,carId,setDeleteCarId,deleteCarId,setServisId,servisId}}>
       {children}
     </AuthContext.Provider>
   )
