@@ -288,7 +288,7 @@ const Header = () => {
       headers:{
         Authorization:`Bearer ${token}`
       }
-    }).then((res) =>{
+    }).then(() =>{
       
       setServisId(servisId+1)
       setLoading(false)
@@ -609,7 +609,7 @@ const Header = () => {
                                   alt="rasm"
                                 />
                               ) : (
-                                <div className="w-11 h-11 rounded-lg bg-linear-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0">
+                                <div className="w-11 h-11 rounded-lg bg-linear-to-br from-blue-400 to-blue-600 flex items-center justify-center shrink-0">
                                   <span className="text-white text-lg font-bold uppercase">
                                     {"?"}
                                   </span>
