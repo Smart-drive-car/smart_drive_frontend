@@ -59,7 +59,6 @@ const AddCarsPages = () => {
         Authorization:`Bearer ${token}`
       }
     }).then(res =>{
-      console.log(res.data,"km");
       
         setCars(res.data);
     })
@@ -169,7 +168,6 @@ const AddCarsPages = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(() => {
-       console.log(deleteId,"Button bosilganda");
        
         setLoading(false);
         const updatedCars = cars.filter((car) => car.id !== deleteId);

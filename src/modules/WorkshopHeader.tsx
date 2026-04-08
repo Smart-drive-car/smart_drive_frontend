@@ -304,7 +304,7 @@ const [isOpen, setIsOpen] = useState(false);
     };
 
     try {
-      const res = await axios.post(
+       await axios.post(
         `${BASE_URL}/api/services/services/`,
         data, // ← Bu yerda to'g'ridan-to'g'ri ma'lumot
         {
@@ -314,8 +314,6 @@ const [isOpen, setIsOpen] = useState(false);
         },
       );
       setLoading(false);
-
-      console.log("Success:", res.data);
       toast.success(t("xizmat_muvaffaqiyatli_qo'shildi"));
       setServisId(servisId + 1);
 

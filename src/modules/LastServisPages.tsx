@@ -28,7 +28,7 @@ const LastServisPages = () => {
       })
       .then((res) => {
         setAllService(res.data);
-        console.log(res.data, "servis");
+      
         // Agar ma'lumot bo'lsa, birinchisini default qilib o'rnatamiz
         if (res.data.length > 0) {
           setServisType(res.data[0]);
@@ -67,8 +67,6 @@ const LastServisPages = () => {
   };
 
   const openMap = (lat: number, lng: number) => {
-    console.log(lat);
-    console.log(lng);
 
     // Agar lat yoki lng kelmasa, funksiyani to'xtatamiz
     if (!lat || !lng) {
@@ -102,7 +100,7 @@ const LastServisPages = () => {
           },
         })
         .then((res) => {
-          console.log(res.data, "last sevis");
+         
 
           setAllService(res.data);
         })
@@ -135,7 +133,6 @@ const LastServisPages = () => {
           url: window.location.href,
         });
       } catch (err) {
-        console.log("Ulashish bekor qilindi");
       }
     } else {
       // Agar brauzer "Share" ni qo'llab-quvvatlamasa (masalan Desktop Chrome)

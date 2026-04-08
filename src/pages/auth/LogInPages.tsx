@@ -73,8 +73,8 @@ const handleSubmit   = async (e:React.FormEvent<HTMLFormElement>) =>{
   }
 }
   return (
-    <section className=' flex items-center h-screen justify-center'>
-      <div className='text-center w-80 px-3  md:px-0 md:w-100'>
+    <section className='flex items-center h-screen justify-center'>
+      <div className=' hidden md:block text-center w-80 px-3  md:px-0 md:w-100'>
         <h2 className='font-medium text-[24px] '>{t("kirish")}</h2>
         <div className='my-6 md:my-9'>
           <h3 className='text-[24px] font-medium'>{t("telefon_raqamingizni_kiriting")}</h3>
@@ -109,6 +109,11 @@ const handleSubmit   = async (e:React.FormEvent<HTMLFormElement>) =>{
             <CustomButton type='submit' text={ loading ?  t("davom__etish") : t("davom_etish")} className={`  ${loading ? "bg-blue-400! rounded-4xl":"bg-[#1E5DE5]! rounded-4xl"}  bg-[#1E5DE5]! rounded-4xl `}/>
            </div>
         </form>
+      </div>
+      <div className='md:hidden'>
+        <p className='text-center'>
+        Bizning asosiy funksiyalarimiz maksimal darajada qulay bo'lishi uchun desktop qurilmalarga mo'ljallangan. Yo'lda (mobileda) ishlash uchun esa ilovamizdan foydalaning.
+        </p>
       </div>
     </section>
   );

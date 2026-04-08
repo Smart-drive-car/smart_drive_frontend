@@ -180,7 +180,7 @@ const Header = () => {
       })
       .then((res) => {
         const profile: ProfileType = res.data;
-        console.log(profile, "profile");
+
 
         setPhoneNumber(profile.phone_number);
         setFullName(profile.profile?.full_name || "");
@@ -244,15 +244,12 @@ const Header = () => {
         },
       })
       .then((res) => {
-        console.log("notifications", res.data);
         setNotificationCount(res.data.length);
         setAllNotification(res.data);
       });
   }, [carId]);
 
   const openMap = (lat: number, lng: number) => {
-    console.log(lat);
-    console.log(lng);
 
     // Agar lat yoki lng kelmasa, funksiyani to'xtatamiz
     if (!lat || !lng) {
@@ -292,7 +289,6 @@ const Header = () => {
         Authorization:`Bearer ${token}`
       }
     }).then((res) =>{
-      console.log(res.data);
       
       setServisId(servisId+1)
       setLoading(false)

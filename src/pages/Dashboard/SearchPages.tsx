@@ -200,7 +200,6 @@ const SearchPages: React.FC = () => {
 
   const { t } = useTranslation();
   const token = Cookies.get("access_token");
-  console.log(workshops);
 
   // ✅ Workshoplarni yuklash
   useEffect(() => {
@@ -268,10 +267,10 @@ const SearchPages: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res.data);
+     
       setWorkshopData(res.data);
     } catch (err) {
-      console.log(err);
+      
     }
   };
 
@@ -362,7 +361,7 @@ const SearchPages: React.FC = () => {
                     className="p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-none transition-colors"
                     onClick={() => {
                      handleShowWorkshop(item.id)
-                      console.log("Tanlandi:", item);
+                     
                       setSearchinput(item.title);
                       setWorkshops([]);
                     }}
