@@ -101,3 +101,8 @@ body.search-pages-active {
 .leaflet-control-zoom {
   touch-action: none !important;
 }
+
+/* Custom width class */
+.w-157 {
+  width: 157px;
+}

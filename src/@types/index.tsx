@@ -29,6 +29,15 @@ export interface Car {
         model_name: string
         image:string
     }
+    last_service:{
+    interval:number,
+    performed_at_mileage: number
+}
+service_status:{
+    distance_traveled: number,
+    next_service_at: number,
+    remaining_distance:number
+}
 }
 
 export interface ProfileWorkshopType {
@@ -133,6 +142,7 @@ export interface WorkshopType {
 export interface NotificatonType {
     id: number,
     description:string
+    title:string
     probeg:number,
     service_type: {
         id:number ,
@@ -143,6 +153,10 @@ export interface NotificatonType {
     image:string
     car_id:string
   service_id: string
+}
+  body:{
+    uz:string
+    ru:string
 }
 }
 

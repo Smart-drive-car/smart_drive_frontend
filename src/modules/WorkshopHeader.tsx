@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useContext, } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import {
   PensilIcon,
   RusFlagIcon,
@@ -20,8 +20,10 @@ import { AuthContext } from "../context/UseContext";
 type Language = "uz" | "ru";
 
 const WorkshopHeader = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [lang, setLang] = useState<Language>("uz");
+  const [lang, setLang] = useState<Language>(
+  (localStorage.getItem("lang") as Language) || "uz"
+);
+const [isOpen, setIsOpen] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [title, setTitle] = useState("");
   const [profileModal, setProfileModal] = useState(false);
@@ -33,7 +35,7 @@ const WorkshopHeader = () => {
   const [_, setIsImageUploading] = useState(false);
   const [searchmodal, setSearchModal] = useState(false);
   const [modal, setModal] = useState(false);
-  const [loading,setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
@@ -41,17 +43,13 @@ const WorkshopHeader = () => {
   const [liquidType, setLiquidType] = useState("");
   const [probeg, setProbeg] = useState(0);
   const [cars, setAllCars] = useState<AllCarsType[]>([]);
-  const [searchInput,setSearchInput] = useState<string>('')
+  const [searchInput, setSearchInput] = useState<string>("");
   const isMouseDownOnSave = useRef(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const phoneNumberRef = useRef(phoneNumber);
   const profileImageRef = useRef(profileImage);
-   const {setServisId,servisId} = useContext(AuthContext)!
+  const { setServisId, servisId } = useContext(AuthContext)!;
 
-   
- 
-
-  
 
   useEffect(() => {
     phoneNumberRef.current = phoneNumber;
@@ -229,8 +227,6 @@ const WorkshopHeader = () => {
         });
 
         setAllCars(res.data);
-
-       
       } catch (err: any) {
         console.error("Xatolik:", err.response?.data || err);
 
@@ -248,53 +244,49 @@ const WorkshopHeader = () => {
     fetchVehicles();
   }, []);
 
+  // Debounce — har harf bosganda emas, 500ms kutib so'rov yuboradi
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      fetchVehicles(searchInput);
+    }, 500);
 
-// Debounce — har harf bosganda emas, 500ms kutib so'rov yuboradi
-useEffect(() => {
-  const delay = setTimeout(() => {
-    fetchVehicles(searchInput);
-  }, 500);
+    return () => clearTimeout(delay);
+  }, [searchInput]);
 
-  return () => clearTimeout(delay);
-}, [searchInput]);
+  const fetchVehicles = async (query: string) => {
+    if (!token) return;
 
-const fetchVehicles = async (query: string) => {
-  if (!token) return;
-
-  try {
-    const res = await axios.get(`${BASE_URL}/api/vehicles/search/`, {
-      headers: { Authorization: `Bearer ${token}` },
-      params: { q: query },
-    });
-    setAllCars(res.data);
-  } catch (err: any) {
-    if (err.response?.status === 401) {
-      toast.error("Sessiya tugadi. Qayta login qiling.");
-      Cookies.remove("access_token");
-      Cookies.remove("refresh_token");
-      window.location.href = "/log-in";
-    } else {
-      toast.error("Xatolik yuz berdi.");
+    try {
+      const res = await axios.get(`${BASE_URL}/api/vehicles/search/`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { q: query },
+      });
+      setAllCars(res.data);
+    } catch (err: any) {
+      if (err.response?.status === 401) {
+        toast.error("Sessiya tugadi. Qayta login qiling.");
+        Cookies.remove("access_token");
+        Cookies.remove("refresh_token");
+        window.location.href = "/log-in";
+      } else {
+        toast.error("Xatolik yuz berdi.");
+      }
     }
-  }
-};
+  };
 
-
-const handleAddClient = (id: number) => {
-   localStorage.setItem("id",JSON.stringify(id))
-   setSearchModal(false)
-   setModal(true)
-  
-}
-
-
+  const handleAddClient = (id: number) => {
+    localStorage.setItem("id", JSON.stringify(id));
+    setSearchModal(false);
+    setModal(true);
+  };
 
   // add service
 
   const handleAddService = async (e: React.FormEvent<HTMLFormElement>) => {
-    setLoading(true)
-    const carId = Number(localStorage.getItem("id"));
     
+    setLoading(true);
+    const carId = Number(localStorage.getItem("id"));
+
     e.preventDefault();
 
     const token = Cookies.get("access_token"); // tokenni shu yerda olish yaxshiroq
@@ -321,14 +313,13 @@ const handleAddClient = (id: number) => {
           },
         },
       );
-      setLoading(false)
+      setLoading(false);
 
       console.log("Success:", res.data);
       toast.success(t("xizmat_muvaffaqiyatli_qo'shildi"));
-      setServisId(servisId + 1)
-      
+      setServisId(servisId + 1);
 
-      setModal(false)
+      setModal(false);
     } catch (err: any) {
       console.error("Xatolik:", err.response?.data || err);
       toast.error(
@@ -448,7 +439,7 @@ const handleAddClient = (id: number) => {
               </div>
             )}
           </div>
-{/*            keyingi bosqichda
+          {/*            keyingi bosqichda
           <button className="cursor-pointer">
             <NotificationIcon />
           </button> */}
@@ -601,11 +592,17 @@ const handleAddClient = (id: number) => {
                   <RightOutlined className="w-2 h-1" />
                 </div>
               </li>
-              <li onClick={() => toast.info("Keyingi versiyada")} className="flex justify-between border-b border-white pb-2">
+              <li
+                onClick={() => toast.info(t("keyingi_versiyada"))}
+                className="flex justify-between border-b border-white pb-2"
+              >
                 <p>{t("support")}</p>
                 <RightOutlined className="w-2 h-1" />
               </li>
-              <li onClick={() => toast.info("Keyingi versiyada")} className="flex justify-between">
+              <li
+                onClick={() => toast.info(t("keyingi_versiyada"))}
+                className="flex justify-between"
+              >
                 <p>{t("about_us")}</p>
                 <RightOutlined className="w-2 h-1" />
               </li>
@@ -631,7 +628,7 @@ const handleAddClient = (id: number) => {
           <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="w-96 bg-white rounded-[20px] p-6 text-center">
               <h2 className="text-xl font-semibold mb-4">
-               {t("profildan_chiqishni_istaysizmi")}
+                {t("profildan_chiqishni_istaysizmi")}
               </h2>
               <p className="text-gray-600 mb-6">
                 {t("qayta_login_qilishingiz_kerak_bo'ladi")}
@@ -641,13 +638,13 @@ const handleAddClient = (id: number) => {
                   onClick={() => setLogoutModal(false)}
                   className="flex-1 py-2.5 bg-[#F5F6F9] rounded-3xl"
                 >
-                 {t("bekor_qilish")}
+                  {t("bekor_qilish")}
                 </button>
                 <button
                   onClick={handleLogout}
                   className="flex-1 py-2.5 bg-[#D423231A] text-[#D42323] rounded-3xl"
                 >
-                 {t("chiqish")}
+                  {t("chiqish")}
                 </button>
               </div>
             </div>
@@ -661,82 +658,123 @@ const handleAddClient = (id: number) => {
         <>
           <div className="fixed inset-0 backdrop-blur-md bg-black/40 z-40" />
           <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="w-120 bg-white rounded-[20px] p-6  overflow-auto h-150 custom-scrollbar">
-              <ul className="flex items-center gap-3 mb-5">
-                <li
-                  onClick={() => setSearchModal(false)}
-                  className=" cursor-pointer w-9 h-9 rounded-full bg-[#F5F6F9] flex items-center justify-center"
-                >
-                  <LeftOutlined />
-                </li>
-                <li >
-                  <strong className="text-[20px] font-medium">{t("qo'shish")}</strong>
-                  <p className="text-[#7B7B7B]">
-                   {t("xizmat_korsatgan_mijozni_qoshing")}
-                  </p>
-                </li>
-              </ul>
-               <label className="relative ">
-                <input onChange={(e) => setSearchInput(e.target.value)} type="text" placeholder={t("qidirish")} className="py-3 pl-3 rounded-[40px] bg-[#F5F6F9] outline-none w-full mb-3"/>
-                 <button  className="absolute right-4 top-px">
-                    <SearchIcon/>
-                 </button>
-               </label>
+            {/* Asosiy Modal Konteyneri */}
+            <div className="w-120 bg-white rounded-[20px] flex flex-col h-150 overflow-hidden shadow-2xl">
+              {/* 1. FIKSIRLANGAN QISM (Header va Search) */}
+              <div className="p-6 pb-2 shrink-0 border-b border-gray-50">
+                <ul className="flex items-center gap-3 mb-5">
+                  <li
+                    onClick={() => setSearchModal(false)}
+                    className="cursor-pointer w-9 h-9 rounded-full bg-[#F5F6F9] flex items-center justify-center hover:bg-gray-200 transition-colors"
+                  >
+                    <LeftOutlined />
+                  </li>
+                  <li>
+                    <strong className="text-[20px] font-medium">
+                      {t("qo'shish")}
+                    </strong>
+                    <p className="text-[#7B7B7B] text-sm">
+                      {t("xizmat_korsatgan_mijozni_qoshing")}
+                    </p>
+                  </li>
+                </ul>
 
-              {cars.map((item) => (
-               
-                  <div className="bg-[#F5F6F9] p-3 rounded-[20px] mb-2">
+                <label className="relative block">
+                  <input
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    type="text"
+                    placeholder={t("qidirish")}
+                    className="py-3 pl-3 pr-10 rounded-[40px] bg-[#F5F6F9] outline-none w-full mb-3 "
+                  />
+                  <button className="absolute right-4 top-3.5">
+                    <SearchIcon />
+                  </button>
+                </label>
+              </div>
+
+              {/* 2. SCROLL BO'LADIGAN QISM (Data va Skeleton) */}
+              <div className="flex-1 overflow-y-auto px-6 pb-6 custom-scrollbar">
+                {loading ? (
+                  /* SKELETON HOLATI */
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="bg-[#F5F6F9] p-3 rounded-[20px] mb-2 animate-pulse"
+                    >
+                      <div className="flex items-center justify-between pb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-gray-200" />
+                          <div className="space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-24" />
+                            <div className="h-3 bg-gray-200 rounded w-16" />
+                          </div>
+                        </div>
+                        <div className="h-7 w-16 bg-gray-200 rounded-[40px]" />
+                      </div>
+                      <div className="pt-3 border-t border-gray-200 flex justify-between">
+                        <div className="h-4 bg-gray-200 rounded w-32" />
+                        <div className="h-4 bg-gray-200 rounded w-20" />
+                      </div>
+                    </div>
+                  ))
+                ) : cars.length > 0 ? (
+                  /* MA'LUMOTLAR HOLATI */
+                  cars.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center justify-between pb-3"
+                      className="bg-[#F5F6F9] p-3 rounded-[20px] mb-2  transition-colors"
                     >
-                      <div className="flex items-center gap-3">
-                        {/* Avatar */}
-                        <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-200 shrink-0">
-                          {item.driver.image ? (
-                            <img
-                              src={`${BASE_URL}${item.driver.image}`}
-                              alt={item.driver.full_name || "Driver"}
-                              className="w-full h-full object-cover"
-                              width={36}
-                              height={36}
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-[#1E5DE5] flex items-center justify-center text-white font-semibold text-xl leading-none">
-                              {item.driver.full_name
-                                ? item.driver.full_name.charAt(0).toUpperCase()
-                                : "?"}
-                            </div>
-                          )}
+                      <div className="flex items-center justify-between pb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-200 shrink-0">
+                            {item.driver.image ? (
+                              <img
+                                src={`${BASE_URL}${item.driver.image}`}
+                                alt={item.driver.full_name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-[#1E5DE5] flex items-center justify-center text-white font-semibold">
+                                {item.driver.full_name
+                                  ?.charAt(0)
+                                  .toUpperCase() || "?"}
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-800">
+                              {item.driver.full_name || "Noma'lum"}
+                            </p>
+                            <p className="text-sm text-gray-500">*********</p>
+                          </div>
                         </div>
-
-                        {/* Name va Phone */}
-                        <div>
-                          <p className="font-medium text-gray-800">
-                            {item.driver.full_name || "Noma'lum haydovchi"}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            *********
-                          </p>
-                        </div>
+                        <button
+                          onClick={() => handleAddClient(item.id)}
+                          className="py-1 px-4 text-[#1E5DE5] bg-[#E4ECFE] rounded-[40px]  cursor-pointer hover:bg-[#D8E6FF] transition-colors"
+                        >
+                          {t("qo'shish")}
+                        </button>
                       </div>
-
-                      <button onClick={() => handleAddClient(item.id)} className="py-0.5 px-2.5 text-[#1E5DE5] bg-[#E4ECFE] rounded-[40px] cursor-pointer hover:bg-[#D8E6FF] transition-colors">
-                       {t("qo'shish")}
-                      </button>
-                    </div>
-                      <div className="flex items-center justify-between pt-3 border-t border-[#E3E3E3]">
-                        <p>
+                      <div className="flex items-center justify-between pt-3 border-t border-[#E3E3E3] text-sm">
+                        <p className="text-gray-600">
                           {item.vehicle.brand} {item.vehicle.model}
                         </p>
-                        <p>{item.car_plate_number}</p>
+                        <p className="font-medium text-gray-700">
+                          {item.car_plate_number}
+                        </p>
                       </div>
+                    </div>
+                  ))
+                ) : (
+                  /* BO'SH HOLAT */
+                  <div className="text-center py-10 text-gray-400">
+                    {t("hech_nima_topilmadi")}
                   </div>
-              ))}
+                )}
+              </div>
             </div>
           </div>
         </>
-
       )}
 
       {/* addServis modal  */}
@@ -747,13 +785,19 @@ const handleAddClient = (id: number) => {
             <div className="w-120 bg-white rounded-[20px] p-6 ">
               <ul className="flex items-center gap-3 mb-5">
                 <li
-                  onClick={() => setModal(false)}
+                  onClick={() => {
+                    setModal(false)
+                    
+
+                  }}
                   className=" cursor-pointer w-9 h-9 rounded-full bg-[#F5F6F9] flex items-center justify-center"
                 >
                   <LeftOutlined />
                 </li>
                 <li>
-                  <strong className="text-[20px] font-medium">{t("qo'shish")}</strong>
+                  <strong className="text-[20px] font-medium">
+                    {t("qo'shish")}
+                  </strong>
                   <p className="text-[#7B7B7B]">
                     {t("tegishli_malumotlarni_kiriting")}
                   </p>
@@ -774,7 +818,9 @@ const handleAddClient = (id: number) => {
                   />
                 </label>
                 <label>
-                  <span className="pl-4">{t("moy_necha_km_ga_moljallangan")}</span>
+                  <span className="pl-4">
+                    {t("moy_necha_km_ga_moljallangan")}
+                  </span>
                   <input
                     onChange={(e) => setProbeg(Number(e.target.value))}
                     required
@@ -785,8 +831,12 @@ const handleAddClient = (id: number) => {
                 </label>
                 <CustomButton
                   type="submit"
-                  text={ loading ? t("tasdiqlash_loading") : t("tasdiqlash")}
-                  className={loading ? "bg-blue-400 rounded-4xl!" :"bg-[#1E5DE5]! rounded-4xl!"}
+                  text={loading ? t("tasdiqlash_loading") : t("tasdiqlash")}
+                  className={
+                    loading
+                      ? "bg-blue-400 rounded-4xl!"
+                      : "bg-[#1E5DE5]! rounded-4xl!"
+                  }
                 />
               </form>
             </div>

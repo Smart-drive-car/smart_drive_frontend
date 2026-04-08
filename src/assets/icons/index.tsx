@@ -287,5 +287,13 @@ const XIcon = () =>{
 
   )
 }
+const WarningIcon = () =>{
+  return(
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M14 9.85856V14.5252M14 24.5C8.20101 24.5 3.5 19.799 3.5 14C3.5 8.20101 8.20101 3.5 14 3.5C19.799 3.5 24.5 8.20101 24.5 14C24.5 19.799 19.799 24.5 14 24.5ZM14.0581 18.0252V18.1419L13.9419 18.1414V18.0252H14.0581Z" stroke="#D42323" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+</svg>
 
-export { UzbFlagIcon, RusFlagIcon, MechanicIcon,DriverIcon, ResetPasswordIcon,HomePagesIcon,SearchIcon,NotificationIcon,PensilIcon,CheckIcon,CopyIcon,ShareIcon,DowlandIcon,EditIcon,DeleteIcon,ExitIcon,XIcon};
+  )
+}
+
+export { UzbFlagIcon, RusFlagIcon, MechanicIcon,DriverIcon, ResetPasswordIcon,HomePagesIcon,SearchIcon,NotificationIcon,PensilIcon,CheckIcon,CopyIcon,ShareIcon,DowlandIcon,EditIcon,DeleteIcon,ExitIcon,XIcon,WarningIcon};

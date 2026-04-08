@@ -29,7 +29,6 @@ const LastServisPages = () => {
       .then((res) => {
         setAllService(res.data);
         console.log(res.data, "servis");
-
         // Agar ma'lumot bo'lsa, birinchisini default qilib o'rnatamiz
         if (res.data.length > 0) {
           setServisType(res.data[0]);
@@ -156,9 +155,9 @@ const LastServisPages = () => {
   };
 
   return (
-    <section className="flex gap-3 h-[calc(100vh-100px)]">
+    <section className="flex gap-3 h-screen overflow-hidden">
       {/* CHAP - scroll */}
-      <div className="w-[60%] bg-[#F5F6F9] rounded-[20px] mt-3 flex flex-col overflow-y-auto h-[50%]  custom-scrollbar">
+      <div className="w-[60%] bg-[#F5F6F9] rounded-[20px] mt-3 flex flex-col  h-[50%]  custom-scrollbar">
         {/* HEADER */}
         <div className="flex items-center justify-between p-4 shrink-0">
           <strong className="text-[#2D2D2D] font-medium text-[20px]">
@@ -178,7 +177,7 @@ const LastServisPages = () => {
         </div>
 
         {/* LIST */}
-        <ul className="flex flex-col gap-2 overflow-y-auto flex-1 px-4 pb-4 ">
+        <ul className="flex flex-col gap-2 overflow-y-auto flex-1 px-4 pb-50 ">
           {allService.map((item) => (
             <li
               key={item.id}
@@ -211,7 +210,7 @@ const LastServisPages = () => {
       </div>
 
       {/* O'NG - Tanlangan xizmat ma'lumotlari */}
-      <div className="w-[40%] bg-[#F5F6F9] rounded-[20px] p-6  mt-3 overflow-y-auto h-[50%] flex flex-col custom-scrollbar">
+      <div className="w-[40%] bg-[#F5F6F9] rounded-[20px] pt-5 px-4 pb-40 mt-3 overflow-y-auto h-[50%] flex flex-col custom-scrollbar">
         {servisType ? (
           <>
             <div className="text-center">
@@ -221,7 +220,7 @@ const LastServisPages = () => {
                 alt="logo"
               />
               <strong className="block mt-2 text-lg text-[#2D2D2D]">
-                {servisType.service_type.name}
+                {t("moy_almashtirish")}
               </strong>
               <p className="text-[#7B7B7B] text-[14px]">
                 {servisType.description}
@@ -272,7 +271,7 @@ const LastServisPages = () => {
               </li>
             </ul>
 
-            <div className="flex justify-end gap-2 mt-3">
+            <div className="flex justify-end gap-2 mt-3 pb-10">
               {/* Nusxa olish */}
               <button
                 onClick={handleCopy}

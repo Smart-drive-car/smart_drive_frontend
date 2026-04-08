@@ -31,7 +31,7 @@ const WorkshopRegister = () => {
   return (
     <div className="flex items-center h-screen">
       <div className="w-80 md:w-100 mx-auto">
-        <button className="flex items-center justify-center gap-2 w-35 py-1 rounded-4xl bg-[#E4ECFE] text-[#1E5DE5]">
+        <button onClick={() => navigate(-1)} className="flex items-center justify-center gap-2 w-35 py-1 rounded-4xl bg-[#E4ECFE] text-[#1E5DE5]">
           <ArrowLeftOutlined className="w-2.5 h-2" />
           <span>{t("mexanik")}</span>
         </button>

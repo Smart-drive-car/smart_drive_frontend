@@ -27,6 +27,9 @@ export interface AuthContextType {
   setDeleteCarId:Dispatch<SetStateAction<number>>
   setServisId:Dispatch<SetStateAction<number>>
   servisId:number
+  setProbeg:Dispatch<SetStateAction<number>>
+  probeg:number
+  
   // Workshop registration fields
   workshopTitle?: string
   workshopAddress?: string
@@ -78,6 +81,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     // ❗ Security: parolni storage'ga yozmaymiz (faqat memory'da saqlanadi)
     const [password, setPassword] = useState<string>('');
     const [resetToken, setResetToken] = useState(() => getStoredValue('auth_resetToken', ''));
+    const [probeg, setProbeg] = useState(0);
     const [isForgotPassword, setIsForgotPassword] = useState(() => {
   const item = sessionStorage.getItem('auth_isForgotPassword');
   if (!item || item === 'undefined' || item === 'null') return false;
@@ -186,7 +190,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
   return (
-    <AuthContext.Provider value={{phoneNumber,setPhoneNumber,code,setCode,selectRole,setSelectRole,names,setNames,password,setPassword,resetToken,setResetToken,isForgotPassword,setIsForgotPassword, workshopTitle, setWorkshopTitle, workshopAddress, setWorkshopAddress, workshopDescription, setWorkshopDescription, workshopWorkingTime, setWorkshopWorkingTime, workshopPassword, setWorkshopPassword, workshopPasswordConfirm, setWorkshopPasswordConfirm, workshopLocation, setWorkshopLocation, workshopImages, setWorkshopImages, clearDriverData, clearWorkshopData, clearAllRegistrationData,setCarId,carId,setDeleteCarId,deleteCarId,setServisId,servisId}}>
+    <AuthContext.Provider value={{phoneNumber,setPhoneNumber,code,setCode,selectRole,setSelectRole,names,setNames,password,setPassword,resetToken,setResetToken,isForgotPassword,setIsForgotPassword, workshopTitle, setWorkshopTitle, workshopAddress, setWorkshopAddress, workshopDescription, setWorkshopDescription, workshopWorkingTime, setWorkshopWorkingTime, workshopPassword, setWorkshopPassword, workshopPasswordConfirm, setWorkshopPasswordConfirm, workshopLocation, setWorkshopLocation, workshopImages, setWorkshopImages, clearDriverData, clearWorkshopData, clearAllRegistrationData,setCarId,carId,setDeleteCarId,deleteCarId,setServisId,servisId,setProbeg,probeg}}>
       {children}
     </AuthContext.Provider>
   )

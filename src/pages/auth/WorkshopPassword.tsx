@@ -11,9 +11,11 @@ const WorkshopPassword: React.FC = () => {
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [error, setError] = React.useState("");
-  const navigate = useNavigate()
-  const {t} = useTranslation()
-  const {  setWorkshopPassword, setWorkshopPasswordConfirm } = useContext(AuthContext) as AuthContextType;
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { setWorkshopPassword, setWorkshopPasswordConfirm } = useContext(
+    AuthContext,
+  ) as AuthContextType;
 
   const handleContinue = () => {
     if (!password) {
@@ -24,8 +26,8 @@ const WorkshopPassword: React.FC = () => {
       setError(t("parollar_mos_kelmaydi"));
       return;
     }
-    if (password.length < 6) {
-      setError(t("parol_kamida_6_belgi"));
+    if (password.length < 9) {
+      setError(t("parol_kamida_8_belgi"));
       return;
     }
     setWorkshopPassword(password);
@@ -36,10 +38,14 @@ const WorkshopPassword: React.FC = () => {
   return (
     <section className="flex items-center h-screen">
       <div className="w-80 md:w-100 mx-auto">
-        <p>
-          {t("fill_profile")}
-        </p>
-        <form className="mt-6 flex flex-col gap-3" onSubmit={(e) => { e.preventDefault(); handleContinue(); }}>
+        <p>{t("fill_profile")}</p>
+        <form
+          className="mt-6 flex flex-col gap-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleContinue();
+          }}
+        >
           <span className="text-[12px] text-[#7B7B7B] pl-3">
             {t("parolni_kiriting")}
           </span>
@@ -50,7 +56,10 @@ const WorkshopPassword: React.FC = () => {
     focus:border-none! focus:shadow-none! focus:outline-none!
     focus-within:border-none! focus-within:shadow-none! focus-within:outline-none!"
             value={password}
-            onChange={(e) => { setPassword(e.target.value); setError(""); }}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setError("");
+            }}
             visibilityToggle={{
               visible: passwordVisible,
               onVisibleChange: setPasswordVisible,
@@ -67,17 +76,21 @@ const WorkshopPassword: React.FC = () => {
     focus:border-none! focus:shadow-none! focus:outline-none!
     focus-within:border-none! focus-within:shadow-none! focus-within:outline-none!"
             value={confirmPassword}
-            onChange={(e) => { setConfirmPassword(e.target.value); setError(""); }}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              setError("");
+            }}
             visibilityToggle={{
               visible: passwordVisible,
               onVisibleChange: setPasswordVisible,
             }}
           />
           {error && <span className="text-red-500 text-sm pl-3">{error}</span>}
-           <CustomButton onClick={handleContinue}
-             text={t("tayyor")}
-             className="w-full! py-2.5 bg-[#1E5DE5]! rounded-4xl! mt-6 md:mt-9"
-           />
+          <CustomButton
+            onClick={handleContinue}
+            text={t("tayyor")}
+            className="w-full! py-2.5 bg-[#1E5DE5]! rounded-4xl! mt-6 md:mt-9"
+          />
         </form>
       </div>
     </section>

@@ -10,6 +10,7 @@ import {
   ShareIcon,
   DowlandIcon,
   XIcon,
+  WarningIcon,
 } from "../assets/icons";
 import axios from "axios";
 import BASE_URL from "../hooks/Env";
@@ -29,7 +30,9 @@ type Language = "uz" | "ru";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [lang, setLang] = useState<Language>("uz");
+  const [lang, setLang] = useState<Language>(
+    (localStorage.getItem("lang") as Language) || "uz",
+  );
   const [phoneNumber, setPhoneNumber] = useState("");
   const [fullName, setFullName] = useState("");
   const [profileModal, setProfileModal] = useState(false);
@@ -48,8 +51,12 @@ const Header = () => {
   const isMouseDownOnSave = useRef(false);
   const phoneNumberRef = useRef(phoneNumber);
   const profileImageRef = useRef(profileImage);
-  const { carId } = useContext(AuthContext)!;
+  const { carId,setServisId,servisId } = useContext(AuthContext)!;
   const [servis, setServis] = useState<LastServiceType | null>(null);
+  const [notificationCount, setNotificationCount] = useState<number>(0);
+  const [inputProbegModal,setInputProbegModal] = useState(false)
+  const [inputProbeg,setInputProbeg] = useState<string>('')
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
     phoneNumberRef.current = phoneNumber;
@@ -161,6 +168,8 @@ const Header = () => {
     window.location.href = "/log-in";
   };
 
+
+
   //  profile
   useEffect(() => {
     if (!token) return;
@@ -236,7 +245,7 @@ const Header = () => {
       })
       .then((res) => {
         console.log("notifications", res.data);
-
+        setNotificationCount(res.data.length);
         setAllNotification(res.data);
       });
   }, [carId]);
@@ -268,6 +277,33 @@ const Header = () => {
         setServis(res.data);
       });
   };
+
+  // input probeg 
+
+  const handleInputProbeg = (e:React.FormEvent<HTMLFormElement>) =>{
+    setLoading(true)
+    const data = {
+      current_mileage:Number(inputProbeg)
+
+    }
+    e.preventDefault()
+    axios.patch(`${BASE_URL}//api/vehicles/${carId}/`,data,{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    }).then((res) =>{
+      console.log(res.data);
+      
+      setServisId(servisId+1)
+      setLoading(false)
+      toast.success(t("probeg_ozgartirildi"))
+      setInputProbegModal(false)
+      
+    }).catch(() =>{
+      toast.error(t("xatolik_yuz_berdi"))
+    })
+
+  }
 
   return (
     <header className="w-full p-7 bg-[#F5F6F9] rounded-[20px] mb-4 relative">
@@ -321,14 +357,26 @@ const Header = () => {
               </div>
             )}
           </div>
-
           <button
-            onClick={() => setNotificationModal(true)}
-            className="cursor-pointer"
+            onClick={() => {
+              setNotificationModal(true);
+              if (notificationCount > 0) setNotificationCount(0);
+            }}
+            className="group relative p-2 rounded-full hover:bg-gray-100 transition-all duration-200 cursor-pointer"
           >
+            {/* Bildirishnomalar belgisi (Icon) */}
             <NotificationIcon />
-          </button>
 
+            {/* Raqamli Badge (Faqat count > 0 bo'lganda chiqadi) */}
+            {notificationCount > 0 && (
+              <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
+                {notificationCount > 99 ? "99+" : notificationCount}
+
+                {/* Animatsiya (pulsatsiya) - Diqqatni tortish uchun */}
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+              </span>
+            )}
+          </button>
           <div
             onClick={() => setProfileModal(true)}
             className="w-11 h-11 rounded-full bg-gray-400 cursor-pointer overflow-hidden"
@@ -475,11 +523,17 @@ const Header = () => {
                   <RightOutlined className="w-2 h-1" />
                 </div>
               </li>
-              <li className="flex items-center justify-between border-b border-white pb-2">
+              <li
+                onClick={() => toast.info(t("keyingi_versiyada"))}
+                className="flex items-center justify-between border-b border-white pb-2"
+              >
                 <p>{t("support")}</p>
                 <RightOutlined className="w-2 h-1" />
               </li>
-              <li onClick={() => toast.info("Keyingi versiyada")} className="flex items-center justify-between border-b border-white pb-2">
+              <li
+                onClick={() => toast.info(t("keyingi_versiyada"))}
+                className="flex items-center justify-between border-b border-white pb-2"
+              >
                 <p>{t("about_us")}</p>
                 <RightOutlined className="w-2 h-1" />
               </li>
@@ -491,9 +545,8 @@ const Header = () => {
                 setLogoutModal(true); // logout modalni ochamiz
               }}
               className="w-full bg-[#D423231A] text-[#D42323] rounded-[50px] py-2.5 mt-6 cursor-pointer"
-            > 
-            {t("profildan_chiqish")}
-             
+            >
+              {t("profildan_chiqish")}
             </button>
           </div>
         </>
@@ -505,7 +558,7 @@ const Header = () => {
           <div className="w-130 h-screen p-4 rounded-tl-[20px] rounded-bl-[20px] bg-white fixed inset-0 z-50 right-0 ml-auto pt-8 pb-10 px-7 overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-[#2D2D2D] text-[24px] font-medium">
-                Bildirishnomalar
+                {t("bildirishnomalar")}
               </h2>
               <button
                 onClick={() => {
@@ -520,64 +573,120 @@ const Header = () => {
 
             {/* Bildirishnomalar ro'yxati */}
             <div className="flex flex-col gap-2">
-              {allNotification?.map((item, index) => (
-                <div
-                  key={index}
-                  onClick={() => handleShowServis(Number(item.data.service_id))}
-                  className={`w-full py-3 px-3 rounded-2xl cursor-pointer transition-colors ${
-                    servis?.id === Number(item.data.service_id)
-                      ? "bg-[#E4ECFE]"
-                      : "bg-[#F5F6F9]"
-                  }`}
-                >
-                  <ul className="flex items-center justify-between pointer-events-none">
-                    <li className="flex items-center gap-2">
-                      {item.data.image ? (
-                        <img
-                          className="w-11 h-11 rounded-lg object-cover shrink-0"
-                          src={item.data.image}
-                          alt="rasm"
-                          width={44}
-                          height={44}
-                        />
-                      ) : (
-                        <div className="w-11 h-11 rounded-lg bg-linear-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-lg font-bold uppercase">
-                            {"?"}
-                          </span>
+              {allNotification && allNotification.length > 0 ? (
+                allNotification
+                  .slice() // Original massivni o'zgartirmaslik uchun nusxa olamiz
+                  .sort((a, b) => {
+                    // warning_overdue bo'lsa uni oxiriga suramiz
+                    if (
+                      a.data.event === "warning_overdue" &&
+                      b.data.event !== "warning_overdue"
+                    )
+                      return 1;
+                    if (
+                      a.data.event !== "warning_overdue" &&
+                      b.data.event === "warning_overdue"
+                    )
+                      return -1;
+                    return 0;
+                  })
+                  .map((item, index) => {
+                    if (item.data.event == "service_created") {
+                      return (
+                        <div
+                          key={index}
+                          onClick={() =>
+                            handleShowServis(Number(item.data.service_id))
+                          }
+                          className={`w-full py-3 px-3 rounded-2xl cursor-pointer transition-colors ${
+                            servis?.id === Number(item.data.service_id)
+                              ? "bg-[#E4ECFE]"
+                              : "bg-[#F5F6F9]"
+                          }`}
+                        >
+                          <ul className="flex items-center justify-between pointer-events-none">
+                            <li className="flex items-center gap-2">
+                              {item.data.image ? (
+                                <img
+                                  className="w-11 h-11 rounded-lg object-cover shrink-0"
+                                  src={item.data.image}
+                                  alt="rasm"
+                                />
+                              ) : (
+                                <div className="w-11 h-11 rounded-lg bg-linear-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0">
+                                  <span className="text-white text-lg font-bold uppercase">
+                                    {"?"}
+                                  </span>
+                                </div>
+                              )}
+                              <div>
+                                <strong className="text-[#2D2D2D] block">
+                                  {item.title}
+                                </strong>
+                              </div>
+                            </li>
+                            <li>
+                              <RightOutlined
+                                className={`w-2 h-2 ${
+                                  servis?.id === Number(item.data.service_id)
+                                    ? "text-blue-600"
+                                    : "text-gray-400"
+                                }`}
+                              />
+                            </li>
+                          </ul>
                         </div>
-                      )}
-                      <div>
-                        <strong className="text-[#2D2D2D]">{item.title}</strong>
-                        <p className="text-[#7B7B7B] text-[13px]">
-                          Moy almashtirildi
-                        </p>
-                      </div>
-                    </li>
-                    <li>
-                      <RightOutlined
-                        className={`w-2 h-2 ${
-                          servis?.id === Number(item.data.service_id)
-                            ? "text-blue-600"
-                            : "text-gray-400"
-                        }`}
-                      />
-                    </li>
-                  </ul>
+                      );
+                    } else if (item.data.event == "warning_overdue") {
+                      return (
+                        <div key={index} className="p-3 rounded-2xl bg-[#F5F6F9]">
+                          <ul className="flex items-start gap-3">
+                            <li className=" bg-white rounded-full">
+                             <span className="block p-2.75!">
+                               <WarningIcon/>
+                             </span>
+                            </li>
+                            <li>
+                              <strong className="text-[#D42323]">{item.title}</strong>
+                              <p className="text-[#7B7B7B] text-[14px]">{item.body?.[lang] || item.body?.uz}</p>
+
+                            </li>
+                          </ul>
+                          <div className="flex items-center mt-3">
+                            <button onClick={() =>setNotificationModal(false)} className="py-2 w-[50%] text-[#2D2D2D] rounded-4xl bg-white cursor-pointer">
+                                {t("tasdiqlash")}
+                            </button>
+                            <button onClick={() => {
+                              setInputProbegModal(true)
+                              setNotificationModal(false)
+                            }
+                          } className="py-2 w-[50%] text-white bg-[#1E5DE5] rounded-4xl  cursor-pointer">
+                                {t("qolda_kiritish")}
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null; // Boshqa eventlar bo'lsa
+                  })
+              ) : (
+                // Bildirishnomalar yo'q bo'lsa chiqadigan qism
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                  <div className="w-20 h-20 bg-[#F5F6F9] rounded-full flex items-center justify-center mb-4">
+                    <NotificationIcon />
+                  </div>
+                  <p className="text-[#7B7B7B] font-medium">
+                    Hozircha bildirishnomalar yo'q
+                  </p>
                 </div>
-              ))}
+              )}
             </div>
 
             {/* Pastdan chiqadigan servis modal - modal ichida, ro'yxat ustida */}
             {servis && (
-              <div className="fixed inset-x-0 bottom-0 z-60 w-130 right-0 ml-auto animate-slide-up custom-scrollbar">
-                <div className="bg-white rounded-t-3xl shadow-2xl border-t border-gray-100">
-                  <div className="relative p-5 max-h-[70vh] overflow-y-auto">
-                    {/* Tepaga tortish uchun indikator */}
-                    <div className="flex justify-center mb-4">
-                      <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
-                    </div>
-
+              <div className="fixed inset-x-0 bottom-0 z-60 w-130 right-0 ml-auto animate-slide-up ">
+                <div className="bg-white rounded-tl-3xl shadow-2xl border-t border-gray-100">
+                  <div className="relative p-5 h-133!">
                     <div className="text-center">
                       <div className="relative">
                         <img
@@ -594,14 +703,14 @@ const Header = () => {
                       </div>
 
                       <strong className="block mt-2 text-lg text-[#2D2D2D]">
-                        {servis.service_type.name}
+                        {t("moy_almashtirish")}
                       </strong>
                       <p className="text-[#7B7B7B] text-[14px]">
                         {servis.description}
                       </p>
                     </div>
 
-                    <div className="bg-[#F5F6F9] p-3 rounded-[20px] mt-6">
+                    <div className="bg-[#F5F6F9]  rounded-[20px] mt-6">
                       <ul className="p-4 rounded-2xl flex flex-col gap-3 my-5">
                         <li className="flex items-center justify-between border-b border-gray-50 pb-2">
                           <p className="text-[#7B7B7B] text-sm">
@@ -659,7 +768,7 @@ const Header = () => {
                       </ul>
                     </div>
 
-                    <div className="flex justify-end gap-2 mt-3 pb-4">
+                    <div className="flex justify-end gap-2 mt-3 ">
                       <button
                         className="bg-[#FFFFFF] p-3 rounded-full hover:bg-gray-100 transition-colors shadow-sm"
                         title="Nusxa olish"
@@ -687,29 +796,54 @@ const Header = () => {
         </>
       )}
 
+      {/* input probeg  */}
+      {
+        inputProbegModal && (
+          <>
+          <div  className="fixed inset-0 backdrop-blur-md bg-black/40 z-40">
+
+          </div>
+          <div className="w-110 h-55 rounded-2xl p-4  bg-white fixed inset-0 z-50 m-auto ">
+            <p className="text-[#2D2D2D] text-[20px] block mb-6">{t("umumiy_probeg")}</p>
+            <form onSubmit={(e) => handleInputProbeg(e)}>
+                <label className="flex flex-col w-full">
+                  <span className="text-[12px] pl-3">{t("probeg")}</span>
+                  <input onChange={(e) => setInputProbeg(e.target.value)} type="text" placeholder="50 000km" required className="py-2.5 pl-4 bg-[#F5F6F9] text-[#2D2D2D] rounded-[70px] outline-none" />
+                </label>
+                <div className="mt-6">
+                  <button onClick={() => setInputProbegModal(false)} className="w-49! cursor-pointer py-2.5 rounded-4xl bg-[#F5F6F9] ">{t("bekor_qilish")}</button>
+                  <button type="submit" className={ `${loading ? "w-49! cursor-pointer py-2.5 rounded-4xl bg-blue-400 text-white":"w-49! cursor-pointer py-2.5 rounded-4xl bg-[#1E5DE5] text-white"} `}>{loading ? t("tayyor__"): t("tayyor")}</button>
+                </div>
+            </form>
+       
+          </div>
+          </>
+        )
+      }
+
       {/* Logout Modal */}
       {logoutModal && (
         <>
           <div className="fixed inset-0 backdrop-blur-md bg-black/40 z-40" />
           <div className="w-96 h-70 rounded-[20px] p-6 bg-white fixed inset-0 z-50 m-auto flex flex-col items-center justify-center">
             <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-              Profildan chiqishni tasdiqlaysizmi?
+              {t("profildan_chiqishni_istaysizmi")}
             </h2>
             <p className="text-gray-600 text-center mb-6">
-              Chiqib ketgach qayta login qilishingiz kerak bo'ladi.
+              {t("qayta_login_qilishingiz_kerak_bo'ladi")}
             </p>
             <div className="flex gap-4">
               <button
                 onClick={() => setLogoutModal(false)}
                 className="px-6 py-2.5 cursor-pointer rounded-4xl text-[#2D2D2D] font-medium bg-[#F5F6F9]"
               >
-                Bekor qilish
+                {t("bekor_qilish")}
               </button>
               <button
                 onClick={handleLogout}
                 className="px-6 py-2.5 cursor-pointer rounded-4xl bg-[#D423231A] font-medium text-[#D42323]"
               >
-                Ha, chiqish
+                {t("chiqish")}
               </button>
             </div>
           </div>

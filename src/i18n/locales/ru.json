@@ -51,7 +51,7 @@
     "telefon_raqami":"Номер телефона*",
     "telefon_raqami_notogri":"Номер телефона в неправильном формате",
     "telefon_raqami_9_raqam":"Номер телефона должен содержать 9 цифр",
-    "parol_kamida_6_belgi":"Пароль должен содержать не менее 6 символов",
+    "parol_kamida_8_belgi":"Пароль должен содержать не менее 8 символов",
     "parollar_mos_kelmaydi":"Пароли не совпадают",
     "ustaxona_nomi_kiritilmagan":"Название автосервиса не введено",
     "manzil_kiritilmagan":"Адрес не введен",
@@ -126,6 +126,26 @@
 
     "tasdiqlash":"Подтверждение",
     "tasdiqlash_loading":"Подтверждение...",
-    "xizmat_muvaffaqiyatli_qo'shildi":"Услуга успешно добавлена!"
-    
+    "xizmat_muvaffaqiyatli_qo'shildi":"Услуга успешно добавлена!",
+    "rasm_tanlanmagan":"Фото не выбрано",
+    "joylashuv_tanlanmagan":"Локация не указана",
+    "images_added":"Фото добавлены",
+    "location_set":"Локация указана",
+    "edit_images":"Редактировать фото",
+    "edit_location":"Редактировать локацию",
+    "selected_location":"Выбранная локация",
+    "ozgartirish":"Изменять",
+    "keyingi_versiyada":"В следующей версии",
+    "hech_nima_topilmadi":"Ничего не найдено",
+    "malumotlar_yoq":"Данные доступны",
+    "moy_almashtirish":"Замена масла",
+    "bildirishnomalar":"Уведомления",
+    "bosh_sahifa":"Домашняя страница",
+     "qolda_kiritish":"Ручной ввод",
+     "umumiy_probeg":"Введите ваш общий пробег.",
+     "probeg":"Пробег*",
+     "probeg_ozgartirildi":"Пробег изменен",
+     "qoldi":"Левый:",
+     "keyingi_servis":"Следующая услуга",
+     "yurildi":"гулял:"
 }

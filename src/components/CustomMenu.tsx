@@ -3,15 +3,17 @@ import type { MenuProps } from 'antd';
 import {  Menu, Space } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { HomePagesIcon, SearchIcon } from '../assets/icons';
+import { useTranslation } from 'react-i18next';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const items: MenuItem[] = [
-  { key: '/',   icon: <HomePagesIcon/>,  label: 'Bosh sahifa' },
-  { key: '/search-pages',  icon: <SearchIcon/>,   label: 'Qidirish' },
-];
 
 const CustomMenu: React.FC = () => {
+  const {t} = useTranslation()
+  const items: MenuItem[] = [
+    { key: '/',   icon: <HomePagesIcon/>,  label: t("bosh_sahifa") },
+    { key: '/search-pages',  icon: <SearchIcon/>,   label: t("qidirish") },
+  ];
   const [collapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();

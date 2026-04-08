@@ -8,7 +8,7 @@ import BASE_URL from "../../hooks/Env";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { DeleteIcon, EditIcon } from "../../assets/icons";
-import type { Car, ProfileType } from "../../@types";
+import type { Car } from "../../@types";
 import { AuthContext } from "../../context/UseContext";
 
 interface Brand {
@@ -48,36 +48,22 @@ const AddCarsPages = () => {
   const [errors, setErrors] = useState<Errors>({});
   const [activeCar, setActiveCar] = useState<Car | null>(null);
   const token = Cookies.get("access_token");
-   const {setCarId} = useContext(AuthContext)!;
-  const {setDeleteCarId} = useContext(AuthContext)!;
+   const {setCarId,carId,setDeleteCarId,servisId} = useContext(AuthContext)!;
 
   
 
   // all cars
-  useEffect(() => {
-    axios
-      .get(`${BASE_URL}/api/auth/profile/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => {
-
-        const profile: ProfileType = res.data;
-        const formattedCars = profile.profile.cars.map((car: any) => ({
-          id: car.id,
-          car_plate_number: car.plate ?? car.car_plate_number,
-          current_mileage: car.mileage ?? car.current_mileage,
-          released_year: car.released_year,
-          vehicle_model: {
-            ...car.vehicle_model,
-            image: car.vehicle_model.image.startsWith("http")
-              ? car.vehicle_model.image // to'liq URL bo'lsa — o'zgartirilmaydi
-              : `${BASE_URL}${car.vehicle_model.image}`,
-          }, // qisqa bo'lsa — BASE_URL qo'shiladi
-        }));
-
-        setCars(formattedCars);
-      });
-  }, []);
+  useEffect(() =>{
+    axios.get(`${BASE_URL}/api/vehicles/`,{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    }).then(res =>{
+      console.log(res.data,"km");
+      
+        setCars(res.data);
+    })
+  },[carId,servisId])
 
   // Barcha modellarni yuklash
   useEffect(() => {
@@ -321,7 +307,7 @@ const AddCarsPages = () => {
 
   return (
     <>
-      <section className="px-4 pt-4 rounded-[20px] bg-[#F5F6F9] overflow-y-auto h-[25%] custom-scrollbar containers">
+      <section className="px-4 py-4 rounded-[20px] bg-[#F5F6F9] overflow-y-auto h-94.75 custom-scrollbar ">
         <div className="flex items-start justify-between ">
           <CarManagement
             cars={cars}
