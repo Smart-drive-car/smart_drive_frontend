@@ -21,9 +21,9 @@ type Language = "uz" | "ru";
 
 const WorkshopHeader = () => {
   const [lang, setLang] = useState<Language>(
-  (localStorage.getItem("lang") as Language) || "uz"
-);
-const [isOpen, setIsOpen] = useState(false);
+    (localStorage.getItem("lang") as Language) || "uz",
+  );
+  const [isOpen, setIsOpen] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [title, setTitle] = useState("");
   const [profileModal, setProfileModal] = useState(false);
@@ -41,15 +41,13 @@ const [isOpen, setIsOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const token = Cookies.get("access_token");
   const [liquidType, setLiquidType] = useState("");
-  const [probeg, setProbeg] = useState(0);
   const [cars, setAllCars] = useState<AllCarsType[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const isMouseDownOnSave = useRef(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const phoneNumberRef = useRef(phoneNumber);
   const profileImageRef = useRef(profileImage);
-  const { setServisId, servisId } = useContext(AuthContext)!;
-
+  const { setServisId, servisId, setProbeg, probeg } = useContext(AuthContext)!;
 
   useEffect(() => {
     phoneNumberRef.current = phoneNumber;
@@ -283,7 +281,8 @@ const [isOpen, setIsOpen] = useState(false);
   // add service
 
   const handleAddService = async (e: React.FormEvent<HTMLFormElement>) => {
-    
+    console.log("probeg", probeg);
+
     setLoading(true);
     const carId = Number(localStorage.getItem("id"));
 
@@ -304,7 +303,7 @@ const [isOpen, setIsOpen] = useState(false);
     };
 
     try {
-       await axios.post(
+      await axios.post(
         `${BASE_URL}/api/services/services/`,
         data, // ← Bu yerda to'g'ridan-to'g'ri ma'lumot
         {
@@ -330,7 +329,7 @@ const [isOpen, setIsOpen] = useState(false);
   const handleLogout = () => {
     Cookies.remove("access_token");
     Cookies.remove("refresh_token");
-    localStorage.clear(); // clear all cached data
+    localStorage.clear();
     toast.success("Profildan chiqdingiz!");
     window.location.href = "/log-in";
   };
@@ -784,9 +783,7 @@ const [isOpen, setIsOpen] = useState(false);
               <ul className="flex items-center gap-3 mb-5">
                 <li
                   onClick={() => {
-                    setModal(false)
-                    
-
+                    setModal(false);
                   }}
                   className=" cursor-pointer w-9 h-9 rounded-full bg-[#F5F6F9] flex items-center justify-center"
                 >
@@ -820,7 +817,15 @@ const [isOpen, setIsOpen] = useState(false);
                     {t("moy_necha_km_ga_moljallangan")}
                   </span>
                   <input
-                    onChange={(e) => setProbeg(Number(e.target.value))}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Faqat bo'sh bo'lmasa Context-ga yozamiz
+                      if (value !== "") {
+                        setProbeg(Number(value));
+                      } else {
+                        setProbeg(0);
+                      }
+                    }}
                     required
                     type="text"
                     placeholder="55 000km"

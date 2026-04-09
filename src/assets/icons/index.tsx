@@ -287,7 +287,7 @@ const XIcon = () =>{
 
   )
 }
-const WarningIcon = () =>{
+const RedIcon = () =>{
   return(
     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14 9.85856V14.5252M14 24.5C8.20101 24.5 3.5 19.799 3.5 14C3.5 8.20101 8.20101 3.5 14 3.5C19.799 3.5 24.5 8.20101 24.5 14C24.5 19.799 19.799 24.5 14 24.5ZM14.0581 18.0252V18.1419L13.9419 18.1414V18.0252H14.0581Z" stroke="#D42323" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -295,5 +295,13 @@ const WarningIcon = () =>{
 
   )
 }
+const WarningIcon = () =>{
+  return(
+    <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.5 7.35856V12.0252M11.5 22C5.70101 22 1 17.299 1 11.5C1 5.70101 5.70101 1 11.5 1C17.299 1 22 5.70101 22 11.5C22 17.299 17.299 22 11.5 22ZM11.5581 15.5252V15.6419L11.4419 15.6414V15.5252H11.5581Z" stroke="#F47F09" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+</svg>
 
-export { UzbFlagIcon, RusFlagIcon, MechanicIcon,DriverIcon, ResetPasswordIcon,HomePagesIcon,SearchIcon,NotificationIcon,PensilIcon,CheckIcon,CopyIcon,ShareIcon,DowlandIcon,EditIcon,DeleteIcon,ExitIcon,XIcon,WarningIcon};
+  )
+}
+
+export { UzbFlagIcon, RusFlagIcon, MechanicIcon,DriverIcon, ResetPasswordIcon,HomePagesIcon,SearchIcon,NotificationIcon,PensilIcon,CheckIcon,CopyIcon,ShareIcon,DowlandIcon,EditIcon,DeleteIcon,ExitIcon,XIcon,RedIcon,WarningIcon};

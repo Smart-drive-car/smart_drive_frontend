@@ -143,6 +143,7 @@ export interface NotificatonType {
     id: number,
     description:string
     title:string
+    is_read:boolean
     probeg:number,
     service_type: {
         id:number ,

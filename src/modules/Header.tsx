@@ -10,6 +10,7 @@ import {
   ShareIcon,
   DowlandIcon,
   XIcon,
+  RedIcon,
   WarningIcon,
 } from "../assets/icons";
 import axios from "axios";
@@ -51,12 +52,17 @@ const Header = () => {
   const isMouseDownOnSave = useRef(false);
   const phoneNumberRef = useRef(phoneNumber);
   const profileImageRef = useRef(profileImage);
-  const { carId,setServisId,servisId } = useContext(AuthContext)!;
+  const { carId, setServisId, servisId } =
+    useContext(AuthContext)!;
   const [servis, setServis] = useState<LastServiceType | null>(null);
   const [notificationCount, setNotificationCount] = useState<number>(0);
-  const [inputProbegModal,setInputProbegModal] = useState(false)
-  const [inputProbeg,setInputProbeg] = useState<string>('')
-  const [loading,setLoading] = useState(false)
+  const [inputProbegModal, setInputProbegModal] = useState(false);
+  const [inputProbeg, setInputProbeg] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+
+  console.log(notificationCount);
+
+  console.log("not", allNotification);
 
   useEffect(() => {
     phoneNumberRef.current = phoneNumber;
@@ -168,8 +174,6 @@ const Header = () => {
     window.location.href = "/log-in";
   };
 
-
-
   //  profile
   useEffect(() => {
     if (!token) return;
@@ -180,7 +184,6 @@ const Header = () => {
       })
       .then((res) => {
         const profile: ProfileType = res.data;
-
 
         setPhoneNumber(profile.phone_number);
         setFullName(profile.profile?.full_name || "");
@@ -235,8 +238,8 @@ const Header = () => {
   }, []);
 
   // notification pages
-
   useEffect(() => {
+ 
     axios
       .get(`${BASE_URL}/api/notifications/?car_id=${carId}`, {
         headers: {
@@ -244,13 +247,16 @@ const Header = () => {
         },
       })
       .then((res) => {
-        setNotificationCount(res.data.length);
         setAllNotification(res.data);
+          const unreadCount = res.data.filter((n: NotificatonType) => !n.is_read).length;
+      setNotificationCount(unreadCount);
       });
-  }, [carId]);
+  }, [carId,servisId]);
+
+  console.log(servisId,"servisId");
+  
 
   const openMap = (lat: number, lng: number) => {
-
     // Agar lat yoki lng kelmasa, funksiyani to'xtatamiz
     if (!lat || !lng) {
       console.error("Koordinatalar yetishmayapti:", { lat, lng });
@@ -275,31 +281,45 @@ const Header = () => {
       });
   };
 
-  // input probeg 
+  // input probeg
 
-  const handleInputProbeg = (e:React.FormEvent<HTMLFormElement>) =>{
-    setLoading(true)
+  const handleInputProbeg = (e: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     const data = {
-      current_mileage:Number(inputProbeg)
+      current_mileage: Number(inputProbeg),
+    };
+    e.preventDefault();
+    axios
+      .patch(`${BASE_URL}//api/vehicles/${carId}/`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        setServisId(servisId + 1);
+        setLoading(false);
+        toast.success(t("probeg_ozgartirildi"));
+        setInputProbegModal(false);
+      })
+      .catch(() => {
+        toast.error(t("xatolik_yuz_berdi"));
+      });
+  };
 
-    }
-    e.preventDefault()
-    axios.patch(`${BASE_URL}//api/vehicles/${carId}/`,data,{
-      headers:{
-        Authorization:`Bearer ${token}`
-      }
-    }).then(() =>{
-      
-      setServisId(servisId+1)
-      setLoading(false)
-      toast.success(t("probeg_ozgartirildi"))
-      setInputProbegModal(false)
-      
-    }).catch(() =>{
-      toast.error(t("xatolik_yuz_berdi"))
-    })
-
-  }
+  const markAsRead = (notifId: number) => {
+    axios
+      .post(
+        `${BASE_URL}/api/notifications/${notifId}/mark-read/`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+      .then(() => {
+        setAllNotification((prev) =>
+          prev.map((n) => (n.id === notifId ? { ...n, is_read: true } : n)),
+        );
+        setNotificationCount((prev) => Math.max(0, prev - 1));
+      });
+  };
 
   return (
     <header className="w-full p-7 bg-[#F5F6F9] rounded-[20px] mb-4 relative">
@@ -356,19 +376,22 @@ const Header = () => {
           <button
             onClick={() => {
               setNotificationModal(true);
-              if (notificationCount > 0) setNotificationCount(0);
+              // Barcha o'qilmaganlarni mark-read qilish
+              allNotification
+                .filter((n) => !n.is_read)
+                .forEach((n) => markAsRead(n.id));
             }}
             className="group relative p-2 rounded-full hover:bg-gray-100 transition-all duration-200 cursor-pointer"
           >
-            {/* Bildirishnomalar belgisi (Icon) */}
+            {/* Bildirishnomalar belgisi */}
             <NotificationIcon />
 
-            {/* Raqamli Badge (Faqat count > 0 bo'lganda chiqadi) */}
+            {/* Raqamli Badge */}
             {notificationCount > 0 && (
               <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
                 {notificationCount > 99 ? "99+" : notificationCount}
 
-                {/* Animatsiya (pulsatsiya) - Diqqatni tortish uchun */}
+                {/* Animatsiya */}
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
               </span>
             )}
@@ -570,30 +593,40 @@ const Header = () => {
             {/* Bildirishnomalar ro'yxati */}
             <div className="flex flex-col gap-2">
               {allNotification && allNotification.length > 0 ? (
-                allNotification
-                  .slice() // Original massivni o'zgartirmaslik uchun nusxa olamiz
-                  .sort((a, b) => {
-                    // warning_overdue bo'lsa uni oxiriga suramiz
-                    if (
-                      a.data.event === "warning_overdue" &&
-                      b.data.event !== "warning_overdue"
-                    )
-                      return 1;
-                    if (
-                      a.data.event !== "warning_overdue" &&
-                      b.data.event === "warning_overdue"
-                    )
-                      return -1;
-                    return 0;
-                  })
-                  .map((item, index) => {
-                    if (item.data.event == "service_created") {
+                (() => {
+                  // 1. Oddiy xabarlar (service_created)
+                  const serviceCreated = allNotification.filter(
+                    (n) => n.data.event === "service_created",
+                  );
+
+                  // 2. Sariq ogohlantirishlar (warning - qolgan barcha eventlar warning_overdue'dan tashqari)
+                  const warnings = allNotification.filter(
+                    (n) =>
+                      n.data.event !== "service_created" &&
+                      n.data.event !== "warning_overdue",
+                  );
+
+                  // 3. Qizil ogohlantirish (warning_overdue - qo'lda kiritish)
+                  const overdue = allNotification.filter(
+                    (n) => n.data.event === "warning_overdue",
+                  );
+
+                  // Massivlarni siz aytgan tartibda birlashtiramiz
+                  const sortedNotifications = [
+                    ...serviceCreated,
+                    ...warnings,
+                    ...overdue,
+                  ];
+
+                  return sortedNotifications.map((item, index) => {
+                    if (item.data.event === "service_created") {
                       return (
                         <div
                           key={index}
-                          onClick={() =>
-                            handleShowServis(Number(item.data.service_id))
-                          }
+                          onClick={() => {
+                            handleShowServis(Number(item.data.service_id));
+                            if (!item.is_read) markAsRead(item.id);
+                          }}
                           className={`w-full py-3 px-3 rounded-2xl cursor-pointer transition-colors ${
                             servis?.id === Number(item.data.service_id)
                               ? "bg-[#E4ECFE]"
@@ -633,40 +666,80 @@ const Header = () => {
                           </ul>
                         </div>
                       );
-                    } else if (item.data.event == "warning_overdue") {
+                    } else if (item.data.event === "warning_overdue") {
                       return (
-                        <div key={index} className="p-3 rounded-2xl bg-[#F5F6F9]">
+                        <div
+                          onClick={() => {
+                            if (!item.is_read) markAsRead(item.id);
+                          }}
+                          key={index}
+                          className="p-3 rounded-2xl bg-[#F5F6F9]"
+                        >
                           <ul className="flex items-start gap-3">
-                            <li className=" bg-white rounded-full">
-                             <span className="block p-2.75!">
-                               <WarningIcon/>
-                             </span>
+                            <li className="bg-white rounded-full">
+                              <span className="block p-2.75!">
+                                <RedIcon />
+                              </span>
                             </li>
                             <li>
-                              <strong className="text-[#D42323]">{item.title}</strong>
-                              <p className="text-[#7B7B7B] text-[14px]">{item.body?.[lang] || item.body?.uz}</p>
-
+                              <strong className="text-[#D42323]">
+                                {item.title}
+                              </strong>
+                              <p className="text-[#7B7B7B] text-[14px]">
+                                {item.body?.[lang] || item.body?.uz}
+                              </p>
                             </li>
                           </ul>
-                          <div className="flex items-center mt-3">
-                            <button onClick={() =>setNotificationModal(false)} className="py-2 w-[50%] text-[#2D2D2D] rounded-4xl bg-white cursor-pointer">
-                                {t("tasdiqlash")}
+                          <div className="flex items-center mt-3 gap-2">
+                            <button
+                              onClick={() => setNotificationModal(false)}
+                              className="py-2 w-[50%] text-[#2D2D2D] rounded-4xl bg-white cursor-pointer"
+                            >
+                              {t("tasdiqlash")}
                             </button>
-                            <button onClick={() => {
-                              setInputProbegModal(true)
-                              setNotificationModal(false)
-                            }
-                          } className="py-2 w-[50%] text-white bg-[#1E5DE5] rounded-4xl  cursor-pointer">
-                                {t("qolda_kiritish")}
+                            <button
+                              onClick={() => {
+                                setInputProbegModal(true);
+                                setNotificationModal(false);
+                              }}
+                              className="py-2 w-[50%] text-white bg-[#1E5DE5] rounded-4xl cursor-pointer"
+                            >
+                              {t("qolda_kiritish")}
                             </button>
                           </div>
                         </div>
                       );
+                    } else {
+                      // Sariq ogohlantirish (WarningIcon)
+                      return (
+                        <div
+                          onClick={() => {
+                            if (!item.is_read) markAsRead(item.id);
+                          }}
+                          key={index}
+                          className="p-3 rounded-2xl bg-[#F5F6F9]"
+                        >
+                          <ul className="flex items-start gap-3">
+                            <li className="bg-white rounded-full">
+                              <span className="block p-2.75!">
+                                <WarningIcon />
+                              </span>
+                            </li>
+                            <li>
+                              <strong className="text-[#F47F09]">
+                                {item.title}
+                              </strong>
+                              <p className="text-[#7B7B7B] text-[14px]">
+                                {item.body?.[lang] || item.body?.uz}
+                              </p>
+                            </li>
+                          </ul>
+                        </div>
+                      );
                     }
-                    return null; // Boshqa eventlar bo'lsa
-                  })
+                  });
+                })()
               ) : (
-                // Bildirishnomalar yo'q bo'lsa chiqadigan qism
                 <div className="flex flex-col items-center justify-center py-20 text-center">
                   <div className="w-20 h-20 bg-[#F5F6F9] rounded-full flex items-center justify-center mb-4">
                     <NotificationIcon />
@@ -793,29 +866,42 @@ const Header = () => {
       )}
 
       {/* input probeg  */}
-      {
-        inputProbegModal && (
-          <>
-          <div  className="fixed inset-0 backdrop-blur-md bg-black/40 z-40">
-
-          </div>
+      {inputProbegModal && (
+        <>
+          <div className="fixed inset-0 backdrop-blur-md bg-black/40 z-40"></div>
           <div className="w-110 h-55 rounded-2xl p-4  bg-white fixed inset-0 z-50 m-auto ">
-            <p className="text-[#2D2D2D] text-[20px] block mb-6">{t("umumiy_probeg")}</p>
+            <p className="text-[#2D2D2D] text-[20px] block mb-6">
+              {t("umumiy_probeg")}
+            </p>
             <form onSubmit={(e) => handleInputProbeg(e)}>
-                <label className="flex flex-col w-full">
-                  <span className="text-[12px] pl-3">{t("probeg")}</span>
-                  <input onChange={(e) => setInputProbeg(e.target.value)} type="text" placeholder="50 000km" required className="py-2.5 pl-4 bg-[#F5F6F9] text-[#2D2D2D] rounded-[70px] outline-none" />
-                </label>
-                <div className="mt-6">
-                  <button onClick={() => setInputProbegModal(false)} className="w-49! cursor-pointer py-2.5 rounded-4xl bg-[#F5F6F9] ">{t("bekor_qilish")}</button>
-                  <button type="submit" className={ `${loading ? "w-49! cursor-pointer py-2.5 rounded-4xl bg-blue-400 text-white":"w-49! cursor-pointer py-2.5 rounded-4xl bg-[#1E5DE5] text-white"} `}>{loading ? t("tayyor__"): t("tayyor")}</button>
-                </div>
+              <label className="flex flex-col w-full">
+                <span className="text-[12px] pl-3">{t("probeg")}</span>
+                <input
+                  onChange={(e) => setInputProbeg(e.target.value)}
+                  type="text"
+                  placeholder="50 000km"
+                  required
+                  className="py-2.5 pl-4 bg-[#F5F6F9] text-[#2D2D2D] rounded-[70px] outline-none"
+                />
+              </label>
+              <div className="mt-6">
+                <button
+                  onClick={() => setInputProbegModal(false)}
+                  className="w-49! cursor-pointer py-2.5 rounded-4xl bg-[#F5F6F9] "
+                >
+                  {t("bekor_qilish")}
+                </button>
+                <button
+                  type="submit"
+                  className={`${loading ? "w-49! cursor-pointer py-2.5 rounded-4xl bg-blue-400 text-white" : "w-49! cursor-pointer py-2.5 rounded-4xl bg-[#1E5DE5] text-white"} `}
+                >
+                  {loading ? t("tayyor__") : t("tayyor")}
+                </button>
+              </div>
             </form>
-       
           </div>
-          </>
-        )
-      }
+        </>
+      )}
 
       {/* Logout Modal */}
       {logoutModal && (

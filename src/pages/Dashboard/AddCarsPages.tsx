@@ -44,25 +44,25 @@ const AddCarsPages = () => {
   const [carNumber, setCarNumber] = useState<string>("");
   const [carProbeg, setCarProbeg] = useState<string>("");
   const [cars, setCars] = useState<Car[]>([]);
-  const [deleteId,setDeleteId] = useState<number>(0)
+  const [deleteId, setDeleteId] = useState<number>(0);
   const [errors, setErrors] = useState<Errors>({});
   const [activeCar, setActiveCar] = useState<Car | null>(null);
   const token = Cookies.get("access_token");
-   const {setCarId,carId,setDeleteCarId,servisId} = useContext(AuthContext)!;
-
-  
+  const { setCarId, carId, setDeleteCarId, servisId, setProbeg, setServisId } =
+    useContext(AuthContext)!;
 
   // all cars
-  useEffect(() =>{
-    axios.get(`${BASE_URL}/api/vehicles/`,{
-      headers:{
-        Authorization:`Bearer ${token}`
-      }
-    }).then(res =>{
-      
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/api/vehicles/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
         setCars(res.data);
-    })
-  },[carId,servisId])
+      });
+  }, [carId, servisId]);
 
   // Barcha modellarni yuklash
   useEffect(() => {
@@ -132,14 +132,14 @@ const AddCarsPages = () => {
       vehicle_model_id: selectedModelId,
     };
 
-
     axios
       .post(`${BASE_URL}/api/vehicles/create/`, data, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        
         const newCars = [...cars, res.data];
+        setProbeg(0); // Yangi mashina qo'shilganda probegni nolga tushiramiz
+        localStorage.removeItem("service_probeg");
         setCars(newCars);
         setModal(false);
         setLoading(false);
@@ -159,7 +159,6 @@ const AddCarsPages = () => {
   };
 
   const handleDeleteCar = () => {
-    
     if (carToDelete === null) return;
     setLoading(true);
 
@@ -168,20 +167,25 @@ const AddCarsPages = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(() => {
-       
         setLoading(false);
         const updatedCars = cars.filter((car) => car.id !== deleteId);
         setCars(updatedCars);
+        // Agar o'chirilgan mashina active bo'lsa, boshqasiga o'tish
+        if (carId === deleteId && updatedCars.length > 0) {
+          setCarId(updatedCars[0].id); // ← birinchi mashinaga o'tish
+        } else if (updatedCars.length === 0) {
+          setCarId(0); // ← mashina qolmasa
+        }
         setDeleteModal(false);
         setCarToDelete(null);
         setDeleteCarId(deleteId + 1);
+        setServisId(servisId + 1);
         toast.success("Mashina o'chirildi!");
       })
       .catch(() => {
         toast.error("Xatolik yuz berdi");
       });
   };
-  
 
   const handleCarEdit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -235,7 +239,8 @@ const AddCarsPages = () => {
           car.id === updatedCar.id ? { ...updatedCar } : car,
         );
         setCars([...updatedCarsList]);
-        
+        setServisId(servisId + 1);
+
         setEditModal(false);
         setCarToEdit(null);
         setLoading(false);
@@ -301,6 +306,7 @@ const AddCarsPages = () => {
     window.dispatchEvent(new Event("storage"));
     setCarToDelete(carId);
     setDeleteModal(true);
+    setServisId(servisId + 1);
   };
 
   return (
@@ -310,10 +316,10 @@ const AddCarsPages = () => {
           <CarManagement
             cars={cars}
             onCarSelect={(car) => {
-              setActiveCar(car); 
-              setDeleteId( car.id); 
-              setCarId(car.id)
-              setDeleteCarId(car.id)
+              setActiveCar(car);
+              setDeleteId(car.id);
+              setCarId(car.id);
+              setDeleteCarId(car.id);
             }}
           />
           <div className="flex flex-col justify-end items-end">

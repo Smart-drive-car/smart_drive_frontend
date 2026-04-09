@@ -16,55 +16,63 @@ const LastServisPages = () => {
   const [servisType, setServisType] = useState<LastServiceType | null>(null);
   const [searchInput, setSearchInput] = useState<string>("");
   const { carId } = useContext(AuthContext)!;
-  const { deleteCarId } = useContext(AuthContext)!;
+  const { deleteCarId,setProbeg } = useContext(AuthContext)!;
+
+  
   
   // Ma'lumotlarni yuklash
-  useEffect(() => {
-    axios
-      .get(`${BASE_URL}/api/services/services/?car_id=${carId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        setAllService(res.data);
+useEffect(() => {
+  if (!carId || !token) return;
+
+  axios
+    .get(`${BASE_URL}/api/services/services/?car_id=${carId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((res) => {
+      setAllService(res.data);
       
-        // Agar ma'lumot bo'lsa, birinchisini default qilib o'rnatamiz
-        if (res.data.length > 0) {
-          setServisType(res.data[0]);
+      if (res.data.length > 0) {
+        setServisType(res.data[0]);
+        // Agar servis bo'lsa, oxirgi probegni o'rnatamiz
+        if (res.data[0].probeg) {
+          setProbeg(res.data[0].probeg);
         }
-        else{
-          setServisType(null)
-        }
-      })
-      .catch((err) => {
-        console.error("Status:", err.response?.status);
-        console.error("Xato:", err.response?.data); // ← eng muhimi shu!
-        console.error("URL:", err.config?.url); // ← qaysi URL da
-        console.error("Method:", err.config?.method); // ← GET/POST/DELETE
-      });
-  }, [token, deleteCarId]);
+      } else {
+        // MUHIM QISM: Agar servislar topilmasa (yangi mashina bo'lsa)
+        // Probegni nolga tushiramiz!
+        setServisType(null);
+        setProbeg(0); 
+        localStorage.removeItem("service_probeg");
+      }
+    })
+    .catch((err) => {
+      console.error("Xizmatlarni yuklashda xato:", err);
+      // Xato bo'lganda ham xavfsizlik uchun nolga tushirish mumkin
+      setProbeg(0);
+    });
+}, [token, carId, deleteCarId, setProbeg]);
 
   // Har bir element bosilganda ID orqali ma'lumot olish
-  const handleServisId = async (id: number) => {
-     
+ const handleServisId = async (id: number) => {
+  try {
+    const res = await axios.get(`${BASE_URL}/api/services/services/${id}/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     
-    try {
-      const res =  await axios.get(`${BASE_URL}/api/services/services/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        
-        
-      });
-     setServisType(res.data)
-    } catch (err:any) {
-      console.error("Status:", err.response?.status);
-      console.error("Xato:", err.response?.data); // ← eng muhimi shu!
-      console.error("URL:", err.config?.url); // ← qaysi URL da
-      console.error("Method:", err.config?.method); // ← GET/POST/DELETE
+    // 1. Tanlangan servisni state-ga saqlash
+    setServisType(res.data);
+    
+    // 2. Probegni Context-ga (va xotiraga) yozish ✅
+    if (res.data.probeg) {
+      setProbeg(res.data.probeg);
     }
-  };
+     
+  } catch (err: any) {
+    console.error("Xato:", err.response?.data);
+  }
+};
 
   const openMap = (lat: number, lng: number) => {
 
