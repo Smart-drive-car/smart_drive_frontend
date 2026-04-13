@@ -109,8 +109,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         </form>
       </div>
       <div className='md:hidden'>
-        <p className='text-center'>
-        Bizning asosiy funksiyalarimiz maksimal darajada qulay bo'lishi uchun desktop qurilmalarga mo'ljallangan. Yo'lda (mobileda) ishlash uchun esa ilovamizdan foydalaning.
+        <p className='text-center px-3'>
+          {t("responsive")}
         </p>
       </div>
     </section>
