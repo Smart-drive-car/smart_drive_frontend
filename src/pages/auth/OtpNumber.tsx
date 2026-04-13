@@ -39,20 +39,19 @@ const OtpNumber = () => {
     return phone.replace(/\D/g, "").substring(3);
   };
 
-// Register pages 
+  // Register pages
 
   const ForRegister = async () => {
     const rawNumber = getRawNumber();
     try {
-      const IsConfirm = window.confirm(
-        t("royxatdan_otilmagan"),
-      );
+      const IsConfirm = window.confirm(t("royxatdan_otilmagan"));
       if (IsConfirm) {
         setIsForgotPassword(false);
         const res = await axios.post(`${BASE_URL}/api/auth/send-otp/`, {
           phone_number: rawNumber,
         });
         setCode(res.data.otp_code);
+        
         navigate("/send-otp");
       } else {
         setLoading(false);
@@ -66,24 +65,31 @@ const OtpNumber = () => {
     }
   };
 
-// Forgot password pages 
+  // Forgot password pages
   const ForgetPassword = async () => {
     const rawNumber = getRawNumber();
 
-  try{
-    setIsForgotPassword(true);
-    const res = await axios.post(`${BASE_URL}/api/auth/forgot-password/`, {phone_number: rawNumber,})
-    setCode(res.data.otp_code);
-    setLoading(false);
-    navigate("/send-otp");
-  } 
-  catch(err:any) {
-     const msg = err.response?.data?.message || t("telefon_raqam_notogri");
-        toast.error(msg);
-  }
-  finally{
-    setLoading(false);
-  }
+    try {
+      setIsForgotPassword(true);
+      const IsConfirm = window.confirm(t("Bu telefon raqam bilan foydalanuvchi ro'yhatdan o'tgan parolni tiklash sahifasiga yo'naltiriladi"));
+      if(IsConfirm){
+        const res = await axios.post(`${BASE_URL}/api/auth/forgot-password/`, {
+          phone_number: rawNumber,
+        });
+        setCode(res.data.otp_code);
+        setLoading(false);
+        navigate("/send-otp");
+      }
+      else{
+        setLoading(false);
+      }
+
+    } catch (err: any) {
+      const msg = err.response?.data?.message || t("telefon_raqam_notogri");
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // send otp
@@ -93,28 +99,28 @@ const OtpNumber = () => {
     const rawNumber = getRawNumber();
     setPhoneNumber(rawNumber);
     if (rawNumber.length !== 9) {
-        toast.info(t("maydonni_toldiring"))
-        setLoading(false)
-        return
+      toast.info(t("maydonni_toldiring"));
+      setLoading(false);
+      return;
     }
 
     try {
-        await axios.post(`${BASE_URL}/api/auth/forgot-password/`, {
-            phone_number: rawNumber
-        })
-        ForgetPassword()
-    } catch(err:any){
-      const status = err.response?.status
-      
+      await axios.post(`${BASE_URL}/api/auth/forgot-password/`, {
+        phone_number: rawNumber,
+      });
+      ForgetPassword();
+    } catch (err: any) {
+      const status = err.response?.status;
+
       if (status === 404) {
-        ForRegister()
+        ForRegister();
       } else {
         const msg = err.response?.data?.message || t("xatolik_yuz_berdi");
         toast.error(msg);
         setLoading(false);
       }
     }
-}
+  };
   return (
     <section className="containers flex items-center justify-between h-screen">
       <div className="max-w-80 md:min-w-100 px-3 mx-auto">

@@ -57,6 +57,9 @@ const Cliend = () => {
     return () => clearTimeout(delay);
   }, [searchInput, fetchVehicles]);
 
+
+console.log(cars,"cars");
+
   return (
     <section className="p-4 bg-[#F5F6F9] rounded-[20px] h-screen flex flex-col">
       <div className="flex items-center justify-between shrink-0">
@@ -127,7 +130,7 @@ const Cliend = () => {
                 </div>
                 <div className="flex items-center justify-between pt-3 border-t border-[#E3E3E3]">
                   <p>
-                    {item.vehicle.brand} {item.vehicle.model}
+                    {item.vehicle?.brand} {item.vehicle?.model}
                   </p>
                   <p>{item.car_plate_number}</p>
                 </div>

@@ -60,9 +60,8 @@ const Header = () => {
   const [inputProbeg, setInputProbeg] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
-  console.log(notificationCount);
-
-  console.log("not", allNotification);
+  console.log(profileImage,"img");
+  
 
   useEffect(() => {
     phoneNumberRef.current = phoneNumber;
@@ -83,8 +82,12 @@ const Header = () => {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    console.log(file,"file");
+    
     if (!file) return;
     const localUrl = URL.createObjectURL(file);
+    console.log(localUrl,"local");
+    
     setProfileImage(localUrl);
 
     setSelectedFile(file);
@@ -184,10 +187,12 @@ const Header = () => {
       })
       .then((res) => {
         const profile: ProfileType = res.data;
+        console.log(profile,profile);
+        
 
         setPhoneNumber(profile.phone_number);
         setFullName(profile.profile?.full_name || "");
-        const profilImg = `${BASE_URL}${profile.profile.image}`;
+        const profilImg = `${profile.profile.image}`;
 
         setProfileImage(profilImg);
       })
@@ -253,7 +258,6 @@ const Header = () => {
       });
   }, [carId,servisId]);
 
-  console.log(servisId,"servisId");
   
 
   const openMap = (lat: number, lng: number) => {
@@ -283,26 +287,40 @@ const Header = () => {
 
   // input probeg
 
+  const formatMileage = (value: string) => {
+    const digits = value.replace(/\D/g, "");
+    if (!digits) return "";
+    return digits.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+
+  const handleMileageInputChange = (value: string) => {
+    setInputProbeg(formatMileage(value));
+  };
+
   const handleInputProbeg = (e: React.FormEvent<HTMLFormElement>) => {
-    setLoading(true);
-    const data = {
-      current_mileage: Number(inputProbeg),
-    };
     e.preventDefault();
+    setLoading(true);
+
+    const data = {
+      current_mileage: Number(inputProbeg.replace(/\s/g, "")),
+    };
+
     axios
-      .patch(`${BASE_URL}//api/vehicles/${carId}/`, data, {
+      .patch(`${BASE_URL}/api/vehicles/${carId}/`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then(() => {
         setServisId(servisId + 1);
+        clearOverdueNotifications();
         setLoading(false);
         toast.success(t("probeg_ozgartirildi"));
         setInputProbegModal(false);
       })
       .catch(() => {
         toast.error(t("xatolik_yuz_berdi"));
+        setLoading(false);
       });
   };
 
@@ -320,6 +338,55 @@ const Header = () => {
         setNotificationCount((prev) => Math.max(0, prev - 1));
       });
   };
+
+  const markOverdueNotificationAsRead = (notifId: number) => {
+    axios
+      .post(
+        `${BASE_URL}/api/notifications/${notifId}/mark-read/`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+      .then(() => {
+        setAllNotification((prev) => prev.filter((n) => n.id !== notifId));
+        setNotificationCount((prev) => Math.max(0, prev - 1));
+      })
+      .catch(() => {
+        setAllNotification((prev) => prev.filter((n) => n.id !== notifId));
+      });
+  };
+
+  const clearOverdueNotifications = async () => {
+    const overdueNotifications = allNotification.filter(
+      (n) => n.data.event === "warning_overdue" && !n.is_read,
+    );
+
+    if (overdueNotifications.length > 0) {
+      try {
+        await Promise.all(
+          overdueNotifications.map((item) =>
+            axios.post(
+              `${BASE_URL}/api/notifications/${item.id}/mark-read/`,
+              {},
+              { headers: { Authorization: `Bearer ${token}` } },
+            ),
+          ),
+        );
+      } catch (error) {
+        console.warn("warning_overdue mark-read xatosi:", error);
+      }
+    }
+
+    const remainingUnreadCount = allNotification.filter(
+      (n) => n.data.event !== "warning_overdue" && !n.is_read,
+    ).length;
+
+    setAllNotification((prev) => prev.filter((n) => n.data.event !== "warning_overdue"));
+    setNotificationCount(remainingUnreadCount);
+  };
+
+
+  console.log(profileImage,"img");
+  
 
   return (
     <header className="w-full p-7 bg-[#F5F6F9] rounded-[20px] mb-4 relative">
@@ -400,9 +467,9 @@ const Header = () => {
             onClick={() => setProfileModal(true)}
             className="w-11 h-11 rounded-full bg-gray-400 cursor-pointer overflow-hidden"
           >
-            {profileImage ? (
+            {profileImage && profileImage !== "null" && profileImage !== "undefined" ? (
               <img
-                src={profileImage}
+                src={profileImage.includes("blob:") ? profileImage : `${BASE_URL}${profileImage}`}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
@@ -463,9 +530,9 @@ const Header = () => {
                   document.getElementById("profile-image-upload")?.click()
                 }
               >
-                {profileImage ? (
+                {profileImage && profileImage !== "null" && profileImage !== "undefined" ? (
                   <img
-                    src={profileImage}
+                    src={profileImage.includes("blob:") ? profileImage : `${BASE_URL}${profileImage}`}
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />
@@ -669,9 +736,6 @@ const Header = () => {
                     } else if (item.data.event === "warning_overdue") {
                       return (
                         <div
-                          onClick={() => {
-                            if (!item.is_read) markAsRead(item.id);
-                          }}
                           key={index}
                           className="p-3 rounded-2xl bg-[#F5F6F9]"
                         >
@@ -692,7 +756,10 @@ const Header = () => {
                           </ul>
                           <div className="flex items-center mt-3 gap-2">
                             <button
-                              onClick={() => setNotificationModal(false)}
+                              onClick={() => {
+                                markOverdueNotificationAsRead(item.id);
+                                setNotificationModal(false);
+                              }}
                               className="py-2 w-[50%] text-[#2D2D2D] rounded-4xl bg-white cursor-pointer"
                             >
                               {t("tasdiqlash")}
@@ -877,15 +944,18 @@ const Header = () => {
               <label className="flex flex-col w-full">
                 <span className="text-[12px] pl-3">{t("probeg")}</span>
                 <input
-                  onChange={(e) => setInputProbeg(e.target.value)}
+                  value={inputProbeg}
+                  onChange={(e) => handleMileageInputChange(e.target.value)}
                   type="text"
-                  placeholder="50 000km"
+                  inputMode="numeric"
+                  placeholder="50 000"
                   required
                   className="py-2.5 pl-4 bg-[#F5F6F9] text-[#2D2D2D] rounded-[70px] outline-none"
                 />
               </label>
               <div className="mt-6">
                 <button
+                  type="button"
                   onClick={() => setInputProbegModal(false)}
                   className="w-49! cursor-pointer py-2.5 rounded-4xl bg-[#F5F6F9] "
                 >

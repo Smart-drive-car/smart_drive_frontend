@@ -54,14 +54,23 @@ useEffect(() => {
 
   // Har bir element bosilganda ID orqali ma'lumot olish
  const handleServisId = async (id: number) => {
+  
+  console.log(token);
+  
+  if(!token) {
+    console.error("Token mavjud emas!");
+    return;
+  }
   try {
     const res = await axios.get(`${BASE_URL}/api/services/services/${id}/`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization:`Bearer ${token}`,
       },
     });
     
     // 1. Tanlangan servisni state-ga saqlash
+    console.log(res.data);
+    
     setServisType(res.data);
     
     // 2. Probegni Context-ga (va xotiraga) yozish ✅
@@ -70,7 +79,11 @@ useEffect(() => {
     }
      
   } catch (err: any) {
-    console.error("Xato:", err.response?.data);
+     console.error("Status:", err.response?.status);
+  console.error("Data:", err.response?.data);
+  console.error("Message:", err.message);
+  console.error("Full error:", err);
+  console.log("URL:", `${BASE_URL}/api/services/services/${id}/`);
   }
 };
 
@@ -113,7 +126,6 @@ useEffect(() => {
           setAllService(res.data);
         })
         .catch((err) => {
-          alert("Xato");
           console.error("Xato detali:", err.response?.data);
         });
     }, 500);

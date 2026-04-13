@@ -16,14 +16,7 @@ const ChooseRole = () => {
     setSelectRole(""); 
   }, []);
 
-  const handleDriverClick = (e: React.MouseEvent) => {
-    // Radio tugmasi bosilganda toast 2 marta chiqib ketmasligi uchun
-    e.preventDefault(); 
-    toast.info(t("Haydovchi bo'limidan foydalanish uchun ilovani yuklab oling!"), {
-      toastId: "driver-toast", // Bir xil ID bilan toast ko'payib ketishini oldini olamiz
-      autoClose: 3000,
-    });
-  };
+  
 
   return (
     <section className="flex items-center h-screen">
@@ -55,8 +48,7 @@ const ChooseRole = () => {
           </label>
 
           {/* HAYDOVCHI LABEL */}
-          <div
-            onClick={handleDriverClick}
+          <label
             className={`w-full py-4 px-4 flex justify-between items-center rounded-3xl cursor-pointer transition-all ${
               selectRole === "DRIVER" ? "bg-[#E4ECFE]" : "bg-[#F5F6F9]"
             }`}
@@ -64,20 +56,16 @@ const ChooseRole = () => {
             <div className="flex items-center gap-3">
               <DriverIcon />
               <div>
-                <p className="font-medium text-gray-500">{t("haydovchi")}</p>
-                <p className="text-[10px] text-blue-500 font-semibold">
-                  {t("keyingi versiyada!")}
-                </p>
+                <p className="font-medium ">{t("haydovchi")}</p>
               </div>
             </div>
             <input
               type="radio"
               name="role"
-              disabled
-              checked={selectRole === "DRIVER"}
+             onChange={() => setSelectRole("DRIVER")}
               className="w-5 h-5"
             />
-          </div>
+          </label>
 
           <CustomButton
             type="button"
@@ -86,8 +74,11 @@ const ChooseRole = () => {
             onClick={() => {
               if (selectRole === "WORKSHOP") {
                 navigate("/workshop-register");
-              } else if (!selectRole) {
-                toast.error("Iltimos, avval rolni tanlang!");
+              } else if (selectRole === "DRIVER") {
+                navigate("/driver-register");
+              }
+              else{
+                toast.info(t("rolni_tanlang"));
               }
             }}
           />

@@ -37,41 +37,39 @@ const LogInPages: React.FC = () => {
 
 
 // log in 
-const handleSubmit   = async (e:React.FormEvent<HTMLFormElement>) =>{
-  setLoading(true)
-  e.preventDefault()
-  const clearPhone = phone.replace(/\D/g,"").substring(3)
- 
-  const data = {
-     phone_number:clearPhone,
-     password:password
-  }
-   
-  try{
-       const res =  await  axios.post(`${BASE_URL}/api/auth/login/`,data)
-       setLoading(false)
-     setAuthTokens({ access: res.data.access, refresh: res.data.refresh })
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setLoading(true);
 
-     // Role/layout switching relies on localStorage("role") in `Dashboard.tsx`
-     // so we fetch profile once after login and store role.
-     try {
-       const profileRes = await axios.get(`${BASE_URL}/api/auth/profile/`, {
-         headers: { Authorization: `Bearer ${res.data.access}` },
-       });
-       if (profileRes.data?.role) localStorage.setItem("role", profileRes.data.role);
-     } catch {
-       // non-blocking: user can still enter, layout may fallback until refreshed
-     }
-     toast.success(t("muvaffaqqiyatli_otildi"))
-     navigate("/dashboard")
-      
-    } catch(err:any){
-     toast.error(t("berilgan_hisob_malumotlari_bilan_faol_hisob_topilmadi"))
-    
-  } finally{
-    setLoading(false)
+  const clearPhone = phone.replace(/\D/g, "").substring(3);
+  const data = { phone_number: clearPhone, password };
+
+  try {
+    const res = await axios.post(`${BASE_URL}/api/auth/login/`, data);
+    setAuthTokens({ access: res.data.access, refresh: res.data.refresh });
+
+    // Profile olish - navigate DAN OLDIN tugashi shart
+    const profileRes = await axios.get(`${BASE_URL}/api/auth/profile/`, {
+      headers: { Authorization: `Bearer ${res.data.access}` },
+    });
+
+    const role = profileRes.data?.role;
+    if (role) {
+      localStorage.setItem("role", role);
+    } else {
+      toast.error(t("role_topilmadi"));
+      return; // role yo'q bo'lsa davom etma
+    }
+
+    toast.success(t("muvaffaqqiyatli_otildi"));
+    navigate("/dashboard"); // faqat role yozilgandan KEYIN
+
+  } catch (err: any) {
+    toast.error(t("berilgan_hisob_malumotlari_bilan_faol_hisob_topilmadi"));
+  } finally {
+    setLoading(false);
   }
-}
+};
   return (
     <section className='flex items-center h-screen justify-center'>
       <div className=' hidden md:block text-center w-80 px-3  md:px-0 md:w-100'>

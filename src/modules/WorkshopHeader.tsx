@@ -41,6 +41,7 @@ const WorkshopHeader = () => {
   const { t, i18n } = useTranslation();
   const token = Cookies.get("access_token");
   const [liquidType, setLiquidType] = useState("");
+  const [inputProbegValue, setInputProbegValue] = useState<string>("");
   const [cars, setAllCars] = useState<AllCarsType[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const isMouseDownOnSave = useRef(false);
@@ -55,6 +56,12 @@ const WorkshopHeader = () => {
   useEffect(() => {
     profileImageRef.current = profileImage;
   }, [profileImage]);
+
+  useEffect(() => {
+    if (probeg) {
+      setInputProbegValue(probeg.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "));
+    }
+  }, [probeg]);
 
   const formatPhoneNumber = (phone: string) => {
     if (!phone) return "";
@@ -205,6 +212,22 @@ const WorkshopHeader = () => {
     }
   };
 
+  const formatMileage = (value: string) => {
+    const digits = value.replace(/\D/g, "");
+    if (!digits) return "";
+    return digits.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+
+  const handleProbegInputChange = (value: string) => {
+    const formatted = formatMileage(value);
+    setInputProbegValue(formatted);
+    if (formatted) {
+      setProbeg(Number(formatted.replace(/\s/g, "")));
+    } else {
+      setProbeg(0);
+    }
+  };
+
   // get all cars
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -315,7 +338,9 @@ const WorkshopHeader = () => {
       setLoading(false);
       toast.success(t("xizmat_muvaffaqiyatli_qo'shildi"));
       setServisId(servisId + 1);
-
+      setLiquidType("");
+      setInputProbegValue("");
+      setProbeg(0);
       setModal(false);
     } catch (err: any) {
       console.error("Xatolik:", err.response?.data || err);
@@ -754,7 +779,7 @@ const WorkshopHeader = () => {
                       </div>
                       <div className="flex items-center justify-between pt-3 border-t border-[#E3E3E3] text-sm">
                         <p className="text-gray-600">
-                          {item.vehicle.brand} {item.vehicle.model}
+                          {item.vehicle?.brand} {item.vehicle?.model}
                         </p>
                         <p className="font-medium text-gray-700">
                           {item.car_plate_number}
@@ -817,18 +842,12 @@ const WorkshopHeader = () => {
                     {t("moy_necha_km_ga_moljallangan")}
                   </span>
                   <input
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      // Faqat bo'sh bo'lmasa Context-ga yozamiz
-                      if (value !== "") {
-                        setProbeg(Number(value));
-                      } else {
-                        setProbeg(0);
-                      }
-                    }}
+                    value={inputProbegValue}
+                    onChange={(e) => handleProbegInputChange(e.target.value)}
                     required
                     type="text"
-                    placeholder="55 000km"
+                    inputMode="numeric"
+                    placeholder="55 000"
                     className="py-2.5 pl-4 rounded-4xl bg-[#F5F6F9] outline-none w-full"
                   />
                 </label>

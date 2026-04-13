@@ -98,24 +98,24 @@ const AddCarsPages = () => {
 
     const newErrors: Errors = {};
 
-    if (!selectedBrandId) newErrors.brand = "Brendni tanlang";
-    if (!selectedModelId) newErrors.modelId = "Mashina turini tanlang";
+    if (!selectedBrandId) newErrors.brand = t("brendni_tanlang");
+    if (!selectedModelId) newErrors.modelId = t("turini_tanlang");
 
     const yearNum = Number(year);
     if (!year) {
-      newErrors.year = "Yilni kiriting";
+      newErrors.year = t("yil_kiriting");
     } else if (yearNum < 1886 || yearNum > new Date().getFullYear()) {
-      newErrors.year = `Yil 1886 - ${new Date().getFullYear()} oralig'ida bo'lishi kerak`;
+      newErrors.year = `${t("yil_kiriting")} 1886 - ${new Date().getFullYear()}`;
     }
 
     const plateRegex = /^\d{2}[A-Z]\d{3}[A-Z]{2}$/;
     if (!carNumber) {
-      newErrors.carNumber = "Mashina raqamini kiriting";
+      newErrors.carNumber = t("raqamini_kiriting");
     } else if (!plateRegex.test(carNumber)) {
-      newErrors.carNumber = "Format noto'g'ri! To'g'ri format: 01A123BC";
+      newErrors.carNumber = t("raqam_format_xato");
     }
 
-    if (!carProbeg) newErrors.carProbeg = "Probegni kiriting";
+    if (!carProbeg) newErrors.carProbeg = t("probeg_kiriting");
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -143,7 +143,7 @@ const AddCarsPages = () => {
         setCars(newCars);
         setModal(false);
         setLoading(false);
-        toast.success("Mashina qo'shildi!");
+        toast.success(t("mashina_qoshildi"));
         // Inputlarni tozalash
         setYear("");
         setCarNumber("");
@@ -154,7 +154,7 @@ const AddCarsPages = () => {
       })
       .catch(() => {
         setLoading(false);
-        toast.error("Xatolik yuz berdi");
+        toast.error(t("xatolik_yuz_berdi"));
       });
   };
 
@@ -180,10 +180,10 @@ const AddCarsPages = () => {
         setCarToDelete(null);
         setDeleteCarId(deleteId + 1);
         setServisId(servisId + 1);
-        toast.success("Mashina o'chirildi!");
+        toast.success(t("mashina_ochirildi"));
       })
       .catch(() => {
-        toast.error("Xatolik yuz berdi");
+        toast.error(t("xatolik_yuz_berdi"));
       });
   };
 
@@ -195,24 +195,24 @@ const AddCarsPages = () => {
 
     const newErrors: Errors = {};
 
-    if (!selectedBrandId) newErrors.brand = "Brendni tanlang";
-    if (!selectedModelId) newErrors.modelId = "Mashina turini tanlang";
+    if (!selectedBrandId) newErrors.brand = t("brendni_tanlang");
+    if (!selectedModelId) newErrors.modelId = t("turini_tanlang");
 
     const yearNum = Number(year);
     if (!year) {
-      newErrors.year = "Yilni kiriting";
+      newErrors.year = t("yil_kiriting");
     } else if (yearNum < 1886 || yearNum > new Date().getFullYear()) {
-      newErrors.year = `Yil 1886 - ${new Date().getFullYear()} oralig'ida bo'lishi kerak`;
+      newErrors.year = `${t("yil_kiriting")} 1886 - ${new Date().getFullYear()}`;
     }
 
     const plateRegex = /^\d{2}[A-Z]\d{3}[A-Z]{2}$/;
     if (!carNumber) {
-      newErrors.carNumber = "Mashina raqamini kiriting";
+      newErrors.carNumber = t("raqamini_kiriting");
     } else if (!plateRegex.test(carNumber)) {
-      newErrors.carNumber = "Format noto'g'ri! To'g'ri format: 01A123BC";
+      newErrors.carNumber = t("raqam_format_xato");
     }
 
-    if (!carProbeg) newErrors.carProbeg = "Probegni kiriting";
+    if (!carProbeg) newErrors.carProbeg = t("probeg_kiriting");
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -239,12 +239,16 @@ const AddCarsPages = () => {
           car.id === updatedCar.id ? { ...updatedCar } : car,
         );
         setCars([...updatedCarsList]);
+        // Agar activeCar update qilingan bo'lsa, uni ham yangilaymiz
+        if (activeCar && activeCar.id === updatedCar.id) {
+          setActiveCar(updatedCar);
+        }
         setServisId(servisId + 1);
 
         setEditModal(false);
         setCarToEdit(null);
         setLoading(false);
-        toast.success("Mashina yangilandi!");
+        toast.success(t("mashina_yangilandi"));
         // Inputlarni tozalash
         setYear("");
         setCarNumber("");
@@ -255,12 +259,13 @@ const AddCarsPages = () => {
       })
       .catch(() => {
         setLoading(false);
-        toast.error("Xatolik yuz berdi");
+        toast.error(t("xatolik_yuz_berdi"));
       });
   };
 
   // ================== EDIT MODAL OCHISH ==================
-  const openEditModal = (car: Car) => {
+  const openEditModal = (carId: number) => {
+    const car = cars.find(c => c.id === carId);
     if (!car) return;
 
     setCarToEdit(car);
@@ -333,7 +338,7 @@ const AddCarsPages = () => {
             <div className="flex items-center gap-4 mt-5">
               <button
                 className="cursor-pointer"
-                onClick={() => activeCar && openEditModal(activeCar)}
+                onClick={() => activeCar && openEditModal(activeCar.id)}
               >
                 <EditIcon />
               </button>
@@ -360,7 +365,7 @@ const AddCarsPages = () => {
                 <LeftOutlined className="w-2" />
               </div>
               <strong className="text-[#2D2D2D] font-medium">
-                Mashina qo'shish
+                {t("mashina_qoshish")}
               </strong>
             </div>
 
@@ -373,14 +378,14 @@ const AddCarsPages = () => {
                 <span
                   className={`block mb-1.5 pl-3 text-[12px] ${errors.brand ? "text-red-500" : "text-[#2D2D2D]"}`}
                 >
-                  Mashina brendini kiriting*
+                  {t("mashina_brendini_kiriting")}
                 </span>
                 <select
                   value={selectedBrandId ?? ""}
                   onChange={(e) => handleBrandChange(Number(e.target.value))}
                   className={`w-full py-3 pl-4 rounded-4xl bg-[#F5F6F9] outline-none appearance-none cursor-pointer ${errors.brand ? "border border-red-500" : ""}`}
                 >
-                  <option value="">Tanlang</option>
+                  <option value="">{t("tanlang")}</option>
                   {/* Takrorlanmasin deb unique brendlar */}
                   {[
                     ...new Map(
@@ -405,7 +410,7 @@ const AddCarsPages = () => {
                 <span
                   className={`block mb-1.5 pl-3 text-[12px] ${errors.modelId ? "text-red-500" : "text-[#2D2D2D]"}`}
                 >
-                  Mashina turini kiriting*
+                  {t("mashina_turini_kiriting")}
                 </span>
                 <select
                   value={selectedModelId ?? ""}
@@ -416,7 +421,7 @@ const AddCarsPages = () => {
                   disabled={!selectedBrandId}
                   className={`w-full py-3 pl-4 rounded-4xl bg-[#F5F6F9] outline-none appearance-none cursor-pointer disabled:opacity-50 ${errors.modelId ? "border border-red-500" : ""}`}
                 >
-                  <option value="">Tanlang</option>
+                  <option value="">{t("tanlang")}</option>
                   {filteredModels.map((item) => (
                     <option key={item.id} value={item.id}>
                       {item.model_name}
@@ -436,7 +441,7 @@ const AddCarsPages = () => {
                 <span
                   className={`block mb-1.5 pl-3 text-[12px] ${errors.year ? "text-red-500" : "text-[#2D2D2D]"}`}
                 >
-                  Chiqgan yilini kiriting*
+                  {t("chiqgan_yilini_kiriting")}
                 </span>
                 <input
                   value={year}
@@ -447,7 +452,7 @@ const AddCarsPages = () => {
                   }}
                   type="text"
                   inputMode="numeric"
-                  placeholder="2022"
+                  placeholder={t("yil_placeholder")}
                   maxLength={4}
                   className={`w-full py-3 pl-4 rounded-4xl bg-[#F5F6F9] outline-none ${errors.year ? "border border-red-500" : ""}`}
                 />
@@ -464,8 +469,8 @@ const AddCarsPages = () => {
                 <span
                   className={`block mb-1.5 pl-3 text-[12px] ${errors.carNumber ? "text-red-500" : "text-[#2D2D2D]"}`}
                 >
-                  Mashina raqamini kiriting*
-                  <span className="text-gray-400 ml-1">(01A123BC)</span>
+                  {t("mashina_raqamini_kiriting")}
+                  <span className="text-gray-400 ml-1">{t("mashina_raqami_format")}</span>
                 </span>
                 <input
                   value={carNumber}
@@ -478,7 +483,7 @@ const AddCarsPages = () => {
                     setErrors((prev) => ({ ...prev, carNumber: undefined }));
                   }}
                   type="text"
-                  placeholder="01A123BC"
+                  placeholder={t("mashina_raqami_format")}
                   maxLength={8}
                   className={`w-full py-3 pl-4 rounded-4xl bg-[#F5F6F9] outline-none ${errors.carNumber ? "border border-red-500" : ""}`}
                 />
@@ -495,7 +500,7 @@ const AddCarsPages = () => {
                 <span
                   className={`block mb-1.5 pl-3 text-[12px] ${errors.carProbeg ? "text-red-500" : "text-[#2D2D2D]"}`}
                 >
-                  Mashinaning umumiy probegi*
+                  {t("mashina_probegi_kiriting")}
                 </span>
                 <input
                   value={carProbeg}
@@ -506,7 +511,7 @@ const AddCarsPages = () => {
                   }}
                   type="text"
                   inputMode="numeric"
-                  placeholder="100 000"
+                  placeholder={t("probeg_placeholder")}
                   className={`w-full py-3 pl-4 rounded-4xl bg-[#F5F6F9] outline-none ${errors.carProbeg ? "border border-red-500" : ""}`}
                 />
                 {errors.carProbeg && (
@@ -519,7 +524,7 @@ const AddCarsPages = () => {
 
               <CustomButton
                 type="submit"
-                text={loading ? "Saqlash..." : "Saqlash"}
+                text={loading ? t("saqlash_loading") : t("saqlash")}
                 className="rounded-4xl! bg-[#1E5DE5]!"
               />
             </form>
@@ -540,7 +545,7 @@ const AddCarsPages = () => {
                 <LeftOutlined className="w-2" />
               </div>
               <strong className="text-[#2D2D2D] font-medium">
-                Mashinani tahrirlash
+                {t("mashina_tahrirlash")}
               </strong>
             </div>
 
@@ -553,14 +558,14 @@ const AddCarsPages = () => {
                 <span
                   className={`block mb-1.5 pl-3 text-[12px] ${errors.brand ? "text-red-500" : "text-[#2D2D2D]"}`}
                 >
-                  Mashina brendini kiriting*
+                  {t("mashina_brendini_kiriting")}
                 </span>
                 <select
                   value={selectedBrandId ?? ""}
                   onChange={(e) => handleBrandChange(Number(e.target.value))}
                   className={`w-full py-3 pl-4 rounded-4xl bg-[#F5F6F9] outline-none appearance-none cursor-pointer ${errors.brand ? "border border-red-500" : ""}`}
                 >
-                  <option value="">Tanlang</option>
+                  <option value="">{t("tanlang")}</option>
                   {[
                     ...new Map(
                       brands.map((b) => [b.brand.id, b.brand]),
@@ -584,7 +589,7 @@ const AddCarsPages = () => {
                 <span
                   className={`block mb-1.5 pl-3 text-[12px] ${errors.modelId ? "text-red-500" : "text-[#2D2D2D]"}`}
                 >
-                  Mashina turini kiriting*
+                  {t("mashina_turini_kiriting")}
                 </span>
                 <select
                   value={selectedModelId ?? ""}
@@ -595,7 +600,7 @@ const AddCarsPages = () => {
                   disabled={!selectedBrandId}
                   className={`w-full py-3 pl-4 rounded-4xl bg-[#F5F6F9] outline-none appearance-none cursor-pointer disabled:opacity-50 ${errors.modelId ? "border border-red-500" : ""}`}
                 >
-                  <option value="">Tanlang</option>
+                  <option value="">{t("tanlang")}</option>
                   {filteredModels.map((item) => (
                     <option key={item.id} value={item.id}>
                       {item.model_name}
@@ -615,7 +620,7 @@ const AddCarsPages = () => {
                 <span
                   className={`block mb-1.5 pl-3 text-[12px] ${errors.year ? "text-red-500" : "text-[#2D2D2D]"}`}
                 >
-                  Chiqgan yilini kiriting*
+                  {t("chiqgan_yilini_kiriting")}
                 </span>
                 <input
                   value={year}
@@ -626,7 +631,7 @@ const AddCarsPages = () => {
                   }}
                   type="text"
                   inputMode="numeric"
-                  placeholder="2022"
+                  placeholder={t("yil_placeholder")}
                   maxLength={4}
                   className={`w-full py-3 pl-4 rounded-4xl bg-[#F5F6F9] outline-none ${errors.year ? "border border-red-500" : ""}`}
                 />
@@ -643,8 +648,8 @@ const AddCarsPages = () => {
                 <span
                   className={`block mb-1.5 pl-3 text-[12px] ${errors.carNumber ? "text-red-500" : "text-[#2D2D2D]"}`}
                 >
-                  Mashina raqamini kiriting*
-                  <span className="text-gray-400 ml-1">(01A123BC)</span>
+                  {t("mashina_raqamini_kiriting")}
+                  <span className="text-gray-400 ml-1">{t("mashina_raqami_format")}</span>
                 </span>
                 <input
                   value={carNumber}
@@ -657,7 +662,7 @@ const AddCarsPages = () => {
                     setErrors((prev) => ({ ...prev, carNumber: undefined }));
                   }}
                   type="text"
-                  placeholder="01A123BC"
+                  placeholder={t("mashina_raqami_format")}
                   maxLength={8}
                   className={`w-full py-3 pl-4 rounded-4xl bg-[#F5F6F9] outline-none ${errors.carNumber ? "border border-red-500" : ""}`}
                 />
@@ -674,7 +679,7 @@ const AddCarsPages = () => {
                 <span
                   className={`block mb-1.5 pl-3 text-[12px] ${errors.carProbeg ? "text-red-500" : "text-[#2D2D2D]"}`}
                 >
-                  Mashinaning umumiy probegi*
+                  {t("mashina_probegi_kiriting")}
                 </span>
                 <input
                   value={carProbeg}
@@ -685,7 +690,7 @@ const AddCarsPages = () => {
                   }}
                   type="text"
                   inputMode="numeric"
-                  placeholder="100 000"
+                  placeholder={t("probeg_placeholder")}
                   className={`w-full py-3 pl-4 rounded-4xl bg-[#F5F6F9] outline-none ${errors.carProbeg ? "border border-red-500" : ""}`}
                 />
                 {errors.carProbeg && (
@@ -698,7 +703,7 @@ const AddCarsPages = () => {
 
               <CustomButton
                 type="submit"
-                text={loading ? "Yangilash..." : "Yangilash"}
+                text={loading ? t("yangilash_loading") : t("yangilash")}
                 className="rounded-4xl! bg-[#1E5DE5]!"
               />
             </form>
@@ -713,10 +718,10 @@ const AddCarsPages = () => {
           <div className="flex items-center h-screen ">
             <div className="w-96 h-70 mx-auto mt-50 rounded-[20px] p-6 bg-[#FFFFFF] fixed inset-0 z-50 flex flex-col items-center justify-center ">
               <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-                Rostdan ham ushbu mashinani o'chirmoqchimisiz?
+                {t("ochirish_tasdiqlash")}
               </h2>
               <p className="text-gray-600 text-center mb-6">
-                O'chirganingizdan so'ng uni qayta tiklay olmaysiz.
+                {t("ochirish_ogohlantirish")}
               </p>
               <div className="flex gap-4">
                 <button
@@ -726,13 +731,13 @@ const AddCarsPages = () => {
                   }}
                   className="px-6 py-2.5 cursor-pointer rounded-4xl  text-[#2D2D2D] font-medium bg-[#F5F6F9] transition-colors"
                 >
-                  Bekor qilish
+                  {t("bekor_qilish")}
                 </button>
                 <button
                   onClick={handleDeleteCar}
                   className="px-6 py-2.5 cursor-pointer rounded-4xl bg-[#D423231A]  font-medium text-[#D42323] transition-colors"
                 >
-                  {loading ? "O'chirish..." : "O'chirish"}
+                  {loading ? t("ochirish_loading") : t("ha_ochirish")}
                 </button>
               </div>
             </div>

@@ -15,6 +15,9 @@ const CarManagement = ({ cars = [], onCarSelect }: CarManagementProps) => {
   const { t } = useTranslation();
   const { probeg } = useContext(AuthContext)!;
 
+  console.log(selectedCar,"selectCar");
+  
+
   useEffect(() => {
     if (cars.length > 0) {
       if (!selectedCar) {
@@ -31,6 +34,10 @@ const CarManagement = ({ cars = [], onCarSelect }: CarManagementProps) => {
     }
   }, [cars]);
 
+
+  console.log(cars,"cars");
+  
+
   const formatCarNumber = (plateNumber: string) => {
     if (plateNumber.length >= 2) {
       return `${plateNumber.slice(0, 2)} ${plateNumber.slice(2, 3)}${plateNumber.slice(3, 6)} ${plateNumber.slice(6)}`;
@@ -39,7 +46,7 @@ const CarManagement = ({ cars = [], onCarSelect }: CarManagementProps) => {
   };
 
   return (
-    <section className="rounded-[20px] bg-[#F5F6F9] p-6">
+    <section className="rounded-[20px] bg-[#F5F6F9]">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           {cars.map((car) => (
@@ -55,7 +62,7 @@ const CarManagement = ({ cars = [], onCarSelect }: CarManagementProps) => {
                   : "text-[#7B7B7B]"
               }`}
             >
-              <span className="font-medium">{car.vehicle_model.model_name}</span>
+              <span className="font-medium">{car.vehicle_model?.model_name}</span>
               <span className="opacity-75">{formatCarNumber(car.car_plate_number)}</span>
             </button>
           ))}
@@ -67,14 +74,14 @@ const CarManagement = ({ cars = [], onCarSelect }: CarManagementProps) => {
           <div className="flex items-center justify-between">
             <div>
               <img
-                src={`${selectedCar.vehicle_model.image}?t=${new Date().getTime()}`}
-                alt={selectedCar.vehicle_model.model_name}
+                src={`${selectedCar.vehicle_model?.image}?t=${new Date().getTime()}`}
+                alt={selectedCar.vehicle_model?.model_name}
                 className="w-110 object-cover rounded-lg"
               />
               <div className="flex items-center justify-between px-15 mt-5.5">
                 <div className="flex items-center gap-2">
-                  <p className="font-semibold text-gray-800 mb-1">{selectedCar.vehicle_model.brand.name}</p>
-                  <p className="font-semibold text-gray-800 mb-1 mr-10">{selectedCar.vehicle_model.model_name}</p>
+                  <p className="font-semibold text-gray-800 mb-1">{selectedCar.vehicle_model?.brand.name}</p>
+                  <p className="font-semibold text-gray-800 mb-1 mr-10">{selectedCar.vehicle_model?.model_name}</p>
                 </div>
                 <div className="inline-flex items-center border-2 border-black rounded-md overflow-hidden text-black font-bold bg-white">
                   <div className="px-2 py-1 border-r-2 border-black text-sm">{selectedCar.car_plate_number.slice(0, 2)}</div>
