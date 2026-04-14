@@ -161,6 +161,10 @@ export interface NotificatonType {
 }
 
 }
+
+
+
+
 export interface LogoutModalProps {
  isOpen: boolean;
  onClose: () => void;
