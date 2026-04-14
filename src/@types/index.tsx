@@ -159,5 +159,10 @@ export interface NotificatonType {
     uz:string
     ru:string
 }
+
+}
+export interface LogoutModalProps {
+ isOpen: boolean;
+ onClose: () => void;
 }
 

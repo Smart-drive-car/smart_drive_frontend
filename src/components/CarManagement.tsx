@@ -97,7 +97,6 @@ const CarManagement = ({ cars = [], onCarSelect }: CarManagementProps) => {
                 </div>
               </div>
             </div>
-
             <div className="flex-1 relative left-65">
               <div className="flex flex-col items-center gap-4">
                 <div className="relative w-64 h-36 overflow-hidden">

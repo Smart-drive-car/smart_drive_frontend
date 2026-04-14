@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import type { AllCarsType, ProfileWorkshopType } from "../@types";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { CustomButton } from "../components";
+import { CustomButton, LogoutModal } from "../components";
 import { AuthContext } from "../context/UseContext";
 
 type Language = "uz" | "ru";
@@ -351,13 +351,6 @@ const WorkshopHeader = () => {
       );
     }
   };
-  const handleLogout = () => {
-    Cookies.remove("access_token");
-    Cookies.remove("refresh_token");
-    localStorage.clear();
-    toast.success("Profildan chiqdingiz!");
-    window.location.href = "/log-in";
-  };
 
   // ==================== INITIAL FETCH & SYNC ====================
   useEffect(() => {
@@ -643,36 +636,11 @@ const WorkshopHeader = () => {
         </>
       )}
 
-      {/* Logout Modal */}
-      {logoutModal && (
-        <>
-          <div className="fixed inset-0 backdrop-blur-md bg-black/40 z-40" />
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="w-96 bg-white rounded-[20px] p-6 text-center">
-              <h2 className="text-xl font-semibold mb-4">
-                {t("profildan_chiqishni_istaysizmi")}
-              </h2>
-              <p className="text-gray-600 mb-6">
-                {t("qayta_login_qilishingiz_kerak_bo'ladi")}
-              </p>
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setLogoutModal(false)}
-                  className="flex-1 py-2.5 bg-[#F5F6F9] rounded-3xl"
-                >
-                  {t("bekor_qilish")}
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="flex-1 py-2.5 bg-[#D423231A] text-[#D42323] rounded-3xl"
-                >
-                  {t("chiqish")}
-                </button>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+      <LogoutModal
+        isOpen={logoutModal}
+        onClose={() => setLogoutModal(false)}
+      />
+
 
       {/* searchCliend  */}
 
