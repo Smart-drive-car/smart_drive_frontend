@@ -66,6 +66,9 @@ const PhoneNumberEdit = () => {
         <div className="flex items-center gap-3 mb-16">
           <div
             onClick={() => navigate(-1)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(-1); } }}
+            role="button"
+            tabIndex={0}
             className="bg-[#F5F6F9] w-9 h-9 rounded-full flex items-center justify-center cursor-pointer"
           >
             <LeftOutlined className="w-3 h-3" />

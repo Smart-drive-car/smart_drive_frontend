@@ -70,7 +70,7 @@ const ReEnterPassword = () => {
               className='py-2.5 pl-4  bg-[#F5F6F9] text-[#2D2D2D] rounded-4xl outline-none' 
             />
           </label>
-           <CustomButton type="submit" text={ loading ? t("tayyor__") : t("tayyor")} className={` ${loading  ? "w-full! py-2.5 bg-blue-400! rounded-4xl! mt-6 md:mt-9":"w-full! py-2.5 bg-[#1E5DE5]! rounded-4xl! mt-6 md:mt-9"} `}/>
+           <CustomButton type="submit" text={ loading ? t("tayyor__") : t("tayyor")} disabled={loading} className={` ${loading  ? "w-full! py-2.5 bg-blue-400! rounded-4xl! mt-6 md:mt-9":"w-full! py-2.5 bg-[#1E5DE5]! rounded-4xl! mt-6 md:mt-9"} `}/>
         </form>
       </div>
     </section>

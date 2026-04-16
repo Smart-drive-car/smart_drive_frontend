@@ -104,7 +104,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
            <div className='flex flex-col md:flex-row justify-between mt-6 md:mt-9'>
             <Link to={"/otp-number"} className='text-[#1E5DE5] md:hidden mb-6'>{t("akaunt_yaratish")}</Link>
             <CustomButton text={t("akaunt_yaratish")} className='bg-[#F5F6F9]! text-[#2D2D2D]! rounded-4xl hidden md:flex' onClick={() => navigate("/otp-number")}/>
-            <CustomButton type='submit' text={ loading ?  t("davom__etish") : t("davom_etish")} className={`  ${loading ? "bg-blue-400! rounded-4xl":"bg-[#1E5DE5]! rounded-4xl"}  bg-[#1E5DE5]! rounded-4xl `}/>
+            <CustomButton type='submit' text={ loading ?  t("davom__etish") : t("davom_etish")} disabled={loading} className={`  ${loading ? "bg-blue-400! rounded-4xl":"bg-[#1E5DE5]! rounded-4xl"}  bg-[#1E5DE5]! rounded-4xl `}/>
            </div>
         </form>
       </div>

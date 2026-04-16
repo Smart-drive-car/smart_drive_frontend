@@ -77,6 +77,9 @@ const WorkshopRegister = () => {
             <div
               className="flex items-center gap-2 py-2.5 px-4 rounded-4xl bg-[#F5F6F9] cursor-pointer"
               onClick={() => startRef.current?.showPicker()}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startRef.current?.showPicker(); } }}
+              role="button"
+              tabIndex={0}
             >
               {/* Clock icon */}
               <svg

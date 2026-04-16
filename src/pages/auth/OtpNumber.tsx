@@ -52,6 +52,7 @@ const OtpNumber = () => {
         });
         setCode(res.data.otp_code);
         
+        
         navigate("/send-otp");
       } else {
         setLoading(false);
@@ -146,6 +147,7 @@ const OtpNumber = () => {
           />
           <CustomButton
             text={loading ? t("davom__etish") : t("davom_etish")}
+            type="submit"
             className={` ${loading ? "w-full! py-2.5 bg-blue-400! rounded-4xl!" : "w-full! py-2.5 bg-[#1E5DE5]! rounded-4xl!"} w-full! py-2.5 bg-[#1E5DE5]! rounded-4xl!`}
           />
         </form>

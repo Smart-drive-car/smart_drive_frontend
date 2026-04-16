@@ -343,6 +343,9 @@ const SearchPages: React.FC = () => {
               {searchInput ? (
                 <span
                   onClick={() => setSearchinput("")}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSearchinput(""); } }}
+                  role="button"
+                  tabIndex={0}
                   className="cursor-pointer text-gray-400"
                 >
                   ✕
@@ -365,6 +368,9 @@ const SearchPages: React.FC = () => {
                       setSearchinput(item.title);
                       setWorkshops([]);
                     }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleShowWorkshop(item.id); setSearchinput(item.title); setWorkshops([]); } }}
+                    role="button"
+                    tabIndex={0}
                   >
                     <h4 className="text-blue-600 font-semibold text-[15px] mb-1">
                       {item.title}

@@ -195,6 +195,7 @@ const SendOtp: React.FC = () => {
 
     <CustomButton
         text={loading ? t("davom__etish") : t("davom_etish")}
+        disabled={loading}
         className={`${loading ? "bg-blue-400!" : "bg-[#1E5DE5]!"} w-full! py-2.5 rounded-4xl! mt-4!`}
     />
 </section>

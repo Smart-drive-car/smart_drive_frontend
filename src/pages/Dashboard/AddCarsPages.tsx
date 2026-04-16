@@ -360,6 +360,9 @@ const AddCarsPages = () => {
             <div className="flex items-center gap-3">
               <div
                 onClick={() => setModal(false)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setModal(false); } }}
+                role="button"
+                tabIndex={0}
                 className="w-9 h-9 flex items-center justify-center rounded-full bg-[#F5F6F9] cursor-pointer"
               >
                 <LeftOutlined className="w-2" />
@@ -540,6 +543,9 @@ const AddCarsPages = () => {
             <div className="flex items-center gap-3">
               <div
                 onClick={() => setEditModal(false)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setEditModal(false); } }}
+                role="button"
+                tabIndex={0}
                 className="w-9 h-9 flex items-center justify-center rounded-full bg-[#F5F6F9] cursor-pointer"
               >
                 <LeftOutlined className="w-2" />
