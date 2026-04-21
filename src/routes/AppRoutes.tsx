@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom"
-import { ChooseLanguage, ChooseRole, Dashboard, DriverRegister, LogInPages, 
+import { ChooseLanguage, ChooseRole, Dashboard, DriverRegister, ForgetPasswordPages, LogInPages, 
   OtpEditCode, 
   OtpNumber, PhoneNumberEdit, RegisterImagesPages, RegisterLocationPages, ResetPassword, SendOtp, WorkshopMediaLocation, WorkshopPassword, WorkshopRegister } from "../pages"
 import ReEnterPassword from "../pages/auth/ReEnterPassword"
@@ -27,6 +27,7 @@ const AppRoutes = ({token}:{token:boolean}) => {
             <Route path="/" element={<ChooseLanguage/>}/>
             <Route path="/otp-number" element={<OtpNumber/>}/>
             <Route path="/send-otp" element ={<SendOtp/>}/>
+            <Route path="/forget-password" element ={<ForgetPasswordPages/>}/>
             <Route path="/log-in" element ={<LogInPages/>}/>
             <Route path="/choose-role" element ={<ChooseRole/>}/>
             <Route path="/driver-register" element ={<DriverRegister/>}/>

@@ -396,7 +396,7 @@ const WorkshopHeader = () => {
   }, []);
 
   return (
-    <header className="w-full p-7 bg-[#F5F6F9] rounded-[20px] mb-4 relative">
+    <header className=" hidden md:block w-full p-7 bg-[#F5F6F9] rounded-[20px] mb-4 relative">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-gray-400">{t("good_day")}</p>

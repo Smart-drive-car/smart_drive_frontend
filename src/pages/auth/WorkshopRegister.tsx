@@ -7,14 +7,27 @@ import { AuthContext, type AuthContextType } from "../../context/UseContext";
 
 const WorkshopRegister = () => {
   const { t } = useTranslation();
-  const {  workshopTitle, setWorkshopTitle, workshopAddress, setWorkshopAddress, workshopDescription, setWorkshopDescription, workshopWorkingTime, setWorkshopWorkingTime } = useContext(AuthContext) as AuthContextType;
+  const {
+    workshopTitle,
+    setWorkshopTitle,
+    workshopAddress,
+    setWorkshopAddress,
+    workshopDescription,
+    setWorkshopDescription,
+    workshopWorkingTime,
+    setWorkshopWorkingTime,
+  } = useContext(AuthContext) as AuthContextType;
 
-  const [startTime, setStartTime] = useState(workshopWorkingTime?.split(" - ")[0] || "08:00");
-  const [endTime, setEndTime] = useState(workshopWorkingTime?.split(" - ")[1] || "18:00");
+  const [startTime, setStartTime] = useState(
+    workshopWorkingTime?.split(" - ")[0] || "08:00",
+  );
+  const [endTime, setEndTime] = useState(
+    workshopWorkingTime?.split(" - ")[1] || "18:00",
+  );
   const [info, setInfo] = useState(workshopDescription || "");
   const [workshopName, setWorkshopName] = useState(workshopTitle || "");
   const [address, setAddress] = useState(workshopAddress || "");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const startRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLInputElement>(null);
@@ -30,15 +43,24 @@ const WorkshopRegister = () => {
 
   return (
     <div className="flex items-center h-screen">
-      <div className="w-80 md:w-100 mx-auto">
-        <button onClick={() => navigate(-1)} className="flex items-center justify-center gap-2 w-35 py-1 rounded-4xl bg-[#E4ECFE] text-[#1E5DE5]">
+      <div className="max-w-90 md:w-100 mx-auto">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center justify-center gap-2 w-35 py-1 rounded-4xl bg-[#E4ECFE] text-[#1E5DE5]"
+        >
           <ArrowLeftOutlined className="w-2.5 h-2" />
           <span>{t("mexanik")}</span>
         </button>
-        <p className="mt-5 mb-10 text-center">
+        <p className="mt-5 mb-10  text-[14px] ">
           {t("fill_profile")}
         </p>
-        <form onSubmit={(e) => { e.preventDefault(); handleContinue(); }} className="flex flex-col gap-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleContinue();
+          }}
+          className="flex flex-col gap-4"
+        >
           {/* Ustaxona nomi */}
           <label className="flex flex-col">
             <span className="block pl-3 text-[12px] text-[#7B7B7B]">
@@ -77,7 +99,12 @@ const WorkshopRegister = () => {
             <div
               className="flex items-center gap-2 py-2.5 px-4 rounded-4xl bg-[#F5F6F9] cursor-pointer"
               onClick={() => startRef.current?.showPicker()}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startRef.current?.showPicker(); } }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  startRef.current?.showPicker();
+                }
+              }}
               role="button"
               tabIndex={0}
             >
@@ -129,20 +156,25 @@ const WorkshopRegister = () => {
             <textarea
               required
               placeholder={t("placeholder_info")}
-              rows={3}
+              rows={1}
               value={info}
               onChange={(e) => setInfo(e.target.value)}
-              className="py-2.5 pl-4 pr-3 rounded-3xl bg-[#F5F6F9] outline-none resize-none text-sm leading-relaxed overflow-hidden"
-              style={{ minHeight: "44px" }}
+              className="py-2.5 pl-4 pr-3 rounded-3xl bg-[#F5F6F9] outline-none resize-none text-sm leading-relaxed overflow-hidden
+               min-h-11 md:min-h-22"
               onInput={(e) => {
                 const el = e.currentTarget;
                 el.style.height = "auto";
-                el.style.height = el.scrollHeight + "px";
+                el.style.height =
+                  Math.max(
+                    el.scrollHeight,
+                    window.innerWidth >= 768 ? 88 : 44,
+                  ) + "px";
               }}
             />
           </label>
 
-          <CustomButton onClick={handleContinue}
+          <CustomButton
+            type="submit"
             text={t("tayyor")}
             className="w-full! py-2.5 bg-[#1E5DE5]! rounded-4xl! mt-6 md:mt-9"
           />

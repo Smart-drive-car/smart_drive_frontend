@@ -189,7 +189,7 @@ const SendOtp: React.FC = () => {
         </Flex>
     </div>
 
-    <p className="text-[#7B7B7B] text-[12px] md:text-[14px] px-2">
+    <p className="text-[#7B7B7B] text-[12px] md:text-[14px] px-2 mt-13 md:mt-0">
         {t("agar_kod_kelmasa_siz_60_soniya_ichida_yangisini_olishingiz_mumkin")}.
     </p>
 

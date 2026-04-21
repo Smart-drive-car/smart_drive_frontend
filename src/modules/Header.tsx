@@ -757,7 +757,7 @@ const Header = () => {
                           <div className="flex items-center mt-3 gap-2">
                             <button
                               onClick={() => {
-                                markOverdueNotificationAsRead(item.id);
+                                clearOverdueNotifications();
                                 setNotificationModal(false);
                               }}
                               className="py-2 w-[50%] text-[#2D2D2D] rounded-4xl bg-white cursor-pointer"
@@ -801,6 +801,26 @@ const Header = () => {
                               </p>
                             </li>
                           </ul>
+                          <div className="flex items-center mt-3 gap-2">
+                            <button
+                              onClick={() => {
+                                markOverdueNotificationAsRead(item.id);
+                                setNotificationModal(false);
+                              }}
+                              className="py-2 w-[50%] text-[#2D2D2D] rounded-4xl bg-white cursor-pointer"
+                            >
+                              {t("tasdiqlash")}
+                            </button>
+                            <button
+                              onClick={() => {
+                                setInputProbegModal(true);
+                                setNotificationModal(false);
+                              }}
+                              className="py-2 w-[50%] text-white bg-[#1E5DE5] rounded-4xl cursor-pointer"
+                            >
+                              {t("qolda_kiritish")}
+                            </button>
+                          </div>
                         </div>
                       );
                     }

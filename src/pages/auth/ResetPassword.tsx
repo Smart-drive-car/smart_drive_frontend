@@ -42,14 +42,14 @@ const ResetPassword = () => {
   
     
   return (
-    <section className="flex items-center h-screen text-center ">
-        <div className="w-80 md:w-100! mx-auto px-3 md:0">
-            <h2 className="text-[25px] font-medium text-[#2D2D2D]">{t("kirish")}</h2>
+    <section className="flex items-center h-screen text-center">
+        <div className="w-90 md:w-100! mx-auto px-3 md:0">
+            <h2 className="text-[20px] md:text-[24px] font-medium text-[#2D2D2D]">{t("kirish")}</h2>
             <div className="my-6 md:my-9">
-                <h3 className="text-[25px] font-medium text-[#2D2D2D]">{t("parolingizni_yozing")}</h3>
+                <h3 className="text-[20px] md:text-[24px] font-medium text-[#2D2D2D]">{t("parolingizni_yozing")}</h3>
                 <p className="text-[#7B7B7B] text-[14px]">{t("Bu_yerda_parolga_oid_text_yoziladi")}</p>
             </div>
-            <form onSubmit={(e) => handleSubmit(e)}>
+            <form onSubmit={(e) => handleSubmit(e)} className="mt-13 md:mt-0">
                 <span  className="block text-start text-[12px] pl-3 text-[#2D2D2D]">{t("parol")}*</span>
                  <Space vertical className="w-full!">
                         <Input.Password onChange={(e) =>setNewPassword(e.target.value) } className="py-2.5! pl-4! bg-[#F5F6F9]! rounded-4xl! text-[16px] w-full!"

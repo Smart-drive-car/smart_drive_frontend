@@ -71,14 +71,14 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   }
 };
   return (
-    <section className='flex items-center h-screen justify-center'>
-      <div className=' hidden md:block text-center w-80 px-3  md:px-0 md:w-100'>
-        <h2 className='font-medium text-[24px] '>{t("kirish")}</h2>
-        <div className='my-6 md:my-9'>
-          <h3 className='text-[24px] font-medium'>{t("telefon_raqamingizni_kiriting")}</h3>
-          <p>{t("sizga_tasdiqlash_kodini_SMS_orqali_yuboramiz")}</p>
+    <section className=' flex items-center h-screen  justify-center'>
+      <div className='hidden md:block text-center w-80 px-3  md:px-0 md:w-100'>
+        <h2 className='font-medium text-[20px] md:text-[24px]'>{t("kirish")}</h2>
+        <div className=' md:my-9'>
+          <h3 className='text-[20px] md:text-[24px] font-medium pt-9'>{t("telefon_raqamingizni_kiriting")}</h3>
+          <p className='text-[14px]'>{t("sizga_tasdiqlash_kodini_SMS_orqali_yuboramiz")}</p>
         </div>
-        <form onSubmit={(e) => handleSubmit(e) } className='flex flex-col gap-4'>
+        <form onSubmit={(e) => handleSubmit(e) } className='flex flex-col gap-4 '>
           <label className='flex flex-col gap-1'>
             <span className='text-[12px] text-[#2D2D2D] text-start pl-2'>{t("telefon_raqamingiz")}</span>
             <input 
@@ -98,17 +98,17 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               className='py-2.5 pl-4  bg-[#F5F6F9] rounded-4xl outline-none' 
             />
           </label>
-           <Link to={"/otp-number"} className='text-[#3775FF] border-b  block w-fit text-center mx-auto'>
+           <Link to={"/forget-password"} className='text-[#3775FF] border-b  block w-fit text-center mx-auto mt-7 md:mt-0'>
              {t("parolni_unutdingzmi")}
            </Link>
-           <div className='flex flex-col md:flex-row justify-between mt-6 md:mt-9'>
+           <div className='flex flex-col md:flex-row justify-between mt-20 md:mt-9'>
             <Link to={"/otp-number"} className='text-[#1E5DE5] md:hidden mb-6'>{t("akaunt_yaratish")}</Link>
             <CustomButton text={t("akaunt_yaratish")} className='bg-[#F5F6F9]! text-[#2D2D2D]! rounded-4xl hidden md:flex' onClick={() => navigate("/otp-number")}/>
             <CustomButton type='submit' text={ loading ?  t("davom__etish") : t("davom_etish")} disabled={loading} className={`  ${loading ? "bg-blue-400! rounded-4xl":"bg-[#1E5DE5]! rounded-4xl"}  bg-[#1E5DE5]! rounded-4xl `}/>
            </div>
         </form>
       </div>
-      <div className='md:hidden'>
+      <div className=' md:hidden'>
         <p className='text-center px-3'>
           {t("responsive")}
         </p>

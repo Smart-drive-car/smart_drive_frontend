@@ -106,11 +106,11 @@ const WorkshopMediaLocation = () => {
   };
 
   return (
-    <section className="flex items-center justify-center min-h-screen bg-white">
+    <section className="flex items-center justify-center min-h-screen bg-white ">
       <div className="flex flex-col gap-4">
 
         {/* RASMLAR QISMI - Sizning dizayningiz o'zgarmadi */}
-        <div className="bg-[#F5F6F9] rounded-2xl px-4 pt-5 pb-4 w-157!">
+        <div className="bg-[#F5F6F9] rounded-2xl px-4 pt-5 pb-4 w-90! md:w-157! mx-auto">
           <p className="text-[#2D2D2D] text-[13px] mb-5 w-60">
             {t("workshop_add_images_hint")}
           </p>
@@ -121,7 +121,7 @@ const WorkshopMediaLocation = () => {
                 {workshopImages.map((img: string, index: number) => (
                   <div
                     key={index}
-                    className="shrink-0 w-28! h-28.75! rounded-xl overflow-hidden"
+                    className="shrink-0 w-14! h-15! md:w-28! md:h-28.75! rounded-xl overflow-hidden"
                   >
                     <img
                       src={img}
@@ -132,7 +132,7 @@ const WorkshopMediaLocation = () => {
                 ))}
                 <button
                   onClick={() => navigate("/register-img-pages")}
-                  className="shrink-0 w-28! h-28.75! rounded-xl bg-white border border-gray-300 flex items-center justify-center text-gray-400 text-2xl cursor-pointer transition"
+                  className="shrink-0  w-14! h-15! md:w-28! md:h-28.75! rounded-xl bg-white border border-gray-300 flex items-center justify-center text-gray-400 text-2xl cursor-pointer transition"
                 >
                   +
                 </button>
@@ -152,13 +152,13 @@ const WorkshopMediaLocation = () => {
         </div>
 
         {/* LOKATSIYA QISMI - Sizning dizayningiz saqlangan */}
-        <div className="bg-[#F5F6F9] rounded-2xl px-4 pt-5 pb-4">
+        <div className="bg-[#F5F6F9] rounded-2xl px-4 pt-5 pb-4 w-90! md:w-157! mx-auto">
           <p className="text-[#2D2D2D] text-[13px] mb-4">
             {t("workshop_set_location_hint")}
           </p>
 
           {hasLocation ? (
-            <div className="w-150! h-48.25 rounded-xl overflow-hidden mb-3">
+            <div className="md:w-150! h-43 md:h-48.25 rounded-xl overflow-hidden mb-3">
               <MapContainer
                 center={[workshopLocation.lat, workshopLocation.lng]}
                 zoom={15}
@@ -203,7 +203,7 @@ const WorkshopMediaLocation = () => {
           <button
             onClick={handleContinue}
             disabled={submitting}
-            className={`w-100 py-2.5 rounded-full ml-auto transition ${
+            className={` w-85.75! md:w-100! py-2.5 rounded-full mx-auto md:mx-0  md:ml-auto! transition mt-10 md:mt-0 ${
               submitting
                 ? "bg-blue-400 text-white cursor-not-allowed"
                 : "bg-[#1E5DE5] text-white hover:bg-[#1a52cc]"

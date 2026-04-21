@@ -304,4 +304,40 @@ const WarningIcon = () =>{
   )
 }
 
-export { UzbFlagIcon, RusFlagIcon, MechanicIcon,DriverIcon, ResetPasswordIcon,HomePagesIcon,SearchIcon,NotificationIcon,PensilIcon,CheckIcon,CopyIcon,ShareIcon,DowlandIcon,EditIcon,DeleteIcon,ExitIcon,XIcon,RedIcon,WarningIcon};
+const HomeIcon = () =>{
+  return(
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16.75 14.0925V8.54451C16.75 8.01017 16.7495 7.74286 16.6846 7.49422C16.627 7.27387 16.5325 7.06535 16.4046 6.87693C16.2602 6.6643 16.0596 6.48797 15.6574 6.13611L10.8574 1.93611C10.1108 1.28283 9.73751 0.956349 9.31738 0.832107C8.94719 0.722631 8.55261 0.722631 8.18242 0.832107C7.76261 0.956255 7.38985 1.28242 6.64436 1.93472L1.84277 6.13611C1.44064 6.48798 1.24004 6.6643 1.0957 6.87693C0.967792 7.06536 0.872548 7.27387 0.814971 7.49422C0.75 7.74286 0.75 8.01017 0.75 8.54451V14.0925C0.75 15.0243 0.75 15.4901 0.902241 15.8576C1.10523 16.3477 1.49432 16.7375 1.98438 16.9405C2.35192 17.0927 2.81786 17.0927 3.74974 17.0927C4.68163 17.0927 5.14808 17.0927 5.51562 16.9405C6.00568 16.7375 6.39467 16.3478 6.59766 15.8577C6.7499 15.4902 6.75 15.0242 6.75 14.0924V13.0924C6.75 11.9878 7.64543 11.0924 8.75 11.0924C9.85457 11.0924 10.75 11.9878 10.75 13.0924V14.0924C10.75 15.0242 10.75 15.4902 10.9022 15.8577C11.1052 16.3478 11.4943 16.7375 11.9844 16.9405C12.3519 17.0927 12.8179 17.0927 13.7497 17.0927C14.6816 17.0927 15.1481 17.0927 15.5156 16.9405C16.0057 16.7375 16.3947 16.3477 16.5977 15.8576C16.7499 15.4901 16.75 15.0243 16.75 14.0925Z" stroke="#80848F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+</svg>
+
+  )
+}
+
+const AddIcon = () =>{
+  return(
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5.75 9.75H9.75M9.75 9.75H13.75M9.75 9.75V13.75M9.75 9.75V5.75M9.75 18.75C4.77944 18.75 0.75 14.7206 0.75 9.75C0.75 4.77944 4.77944 0.75 9.75 0.75C14.7206 0.75 18.75 4.77944 18.75 9.75C18.75 14.7206 14.7206 18.75 9.75 18.75Z" stroke="#80848F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+</svg>
+
+  )
+}
+
+const ProfileIcon = () =>{
+  return(
+    <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16.75 18.75C16.75 15.9886 13.1683 13.75 8.75 13.75C4.33172 13.75 0.75 15.9886 0.75 18.75M8.75 10.75C5.98858 10.75 3.75 8.51142 3.75 5.75C3.75 2.98858 5.98858 0.75 8.75 0.75C11.5114 0.75 13.75 2.98858 13.75 5.75C13.75 8.51142 11.5114 10.75 8.75 10.75Z" stroke="#80848F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+</svg>
+
+  )
+}
+
+const HourIcon = () =>{
+  return(
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 7V12H17M12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z" stroke="#2D2D2D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+</svg>
+
+  )
+}
+
+export { UzbFlagIcon, RusFlagIcon, MechanicIcon,DriverIcon, ResetPasswordIcon,HomePagesIcon,SearchIcon,NotificationIcon,PensilIcon,CheckIcon,CopyIcon,ShareIcon,DowlandIcon,EditIcon,DeleteIcon,ExitIcon,XIcon,RedIcon,WarningIcon,AddIcon,HomeIcon,ProfileIcon,HourIcon};

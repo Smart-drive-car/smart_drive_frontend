@@ -58,18 +58,35 @@ const Cliend = () => {
   }, [searchInput, fetchVehicles]);
 
 
-console.log(cars,"cars");
 
-  return (
-    <section className="p-4 bg-[#F5F6F9] rounded-[20px] h-screen flex flex-col">
-      <div className="flex items-center justify-between shrink-0">
-        <h2 className="text-[20px] font-medium text-[#2D2D2D]">{t("mijozlar")}</h2>
-        <label className="relative w-[30%]">
+ return (
+    <section className="md:p-4 md:bg-[#F5F6F9] rounded-[20px] h-screen flex flex-col overflow-hidden">
+      
+      {/* YUQORI QISM - qotib turadi */}
+      <div className="shrink-0">
+        {/* Desktop header */}
+        <div className="hidden md:flex items-center justify-between mb-3">
+          <h2 className="text-[20px] font-medium text-[#2D2D2D]">{t("mijozlar")}</h2>
+          <label className="relative w-[30%]">
+            <input
+              onChange={(e) => setSearchInput(e.target.value)}
+              type="text"
+              placeholder={t("qidirish")}
+              className="py-3 pl-3 bg-white rounded-[40px] outline-none w-full"
+            />
+            <button className="absolute right-2.5 top-2.5">
+              <SearchIcon />
+            </button>
+          </label>
+        </div>
+
+        {/* Mobile search */}
+        <label className="relative w-full md:hidden block">
           <input
             onChange={(e) => setSearchInput(e.target.value)}
             type="text"
             placeholder={t("qidirish")}
-            className="py-3 pl-3 bg-white rounded-[40px] outline-none w-full"
+            className="py-3 pl-3 bg-[#F5F6F9] rounded-[40px] outline-none w-full"
           />
           <button className="absolute right-2.5 top-2.5">
             <SearchIcon />
@@ -77,11 +94,10 @@ console.log(cars,"cars");
         </label>
       </div>
 
-      <div className="flex-1 overflow-y-auto mt-3 py-4 custom-scrollbar pb-70">
-        
+      {/* PASTKI QISM - faqat shu scroll bo'ladi */}
+      <div className="flex-1 overflow-y-auto md:mt-3 py-4 custom-scrollbar pb-20 md:pb-70">
         {loading ? (
-          /* FAQAT SKELETON (Original card o'lchamida) */
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
             {Array.from({ length: lastCount.current }).map((_, i) => (
               <div key={i} className="bg-white p-3 rounded-[20px] animate-pulse">
                 <div className="flex items-center gap-3 pb-3">
@@ -99,10 +115,9 @@ console.log(cars,"cars");
             ))}
           </div>
         ) : cars.length > 0 ? (
-          /* REAL MA'LUMOTLAR (Sizning original dizayningiz) */
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
             {cars.map((item) => (
-              <div key={item.id} className="bg-[#FFFFFF] p-3 rounded-[20px] mb-0">
+              <div key={item.id} className="bg-[#F5F6F9] md:bg-white p-3 rounded-[20px]">
                 <div className="flex items-center justify-between pb-3">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-200 shrink-0">
@@ -129,20 +144,17 @@ console.log(cars,"cars");
                   </div>
                 </div>
                 <div className="flex items-center justify-between pt-3 border-t border-[#E3E3E3]">
-                  <p>
-                    {item.vehicle?.brand} {item.vehicle?.model}
-                  </p>
+                  <p>{item.vehicle?.brand} {item.vehicle?.model}</p>
                   <p>{item.car_plate_number}</p>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          /* BO'SH HOLAT MATNI */
           <div className="h-full flex items-center justify-center">
-             <p className="text-gray-500 text-lg">
-                {searchInput ? t("hech_nima_topilmadi") : t("malumotlar_yoq")}
-             </p>
+            <p className="text-gray-500 text-lg">
+              {searchInput ? t("hech_nima_topilmadi") : t("malumotlar_yoq")}
+            </p>
           </div>
         )}
       </div>

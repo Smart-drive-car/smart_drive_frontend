@@ -65,7 +65,6 @@ const RegisterLocationPages = () => {
 
   // Default joylashuv — Toshkent markazi
   const [position, setPosition] = useState<Position>(DEFAULT_LOCATION);
-  const [locating, setLocating] = useState(false);
   const [error, setError] = useState("");
 
   // Kontextda saqlangan joylashuv bo'lsa, uni ko'rsatish
@@ -75,33 +74,7 @@ const RegisterLocationPages = () => {
     }
   }, []);
 
-  // Foydalanuvchi tugma bosganida GPS joylashuvini aniqlash
-  const handleGetMyLocation = () => {
-    if (!navigator.geolocation) {
-      setError("Geolokatsiya qo'llab-quvvatlanmaydi");
-      return;
-    }
 
-    setLocating(true);
-    setError("");
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const loc: Position = {
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        };
-        setPosition(loc);
-        setWorkshopLocation(loc);
-        setLocating(false);
-      },
-      () => {
-        setLocating(false);
-        setError("Joylashuv aniqlanmadi. Xaritadan tanlang.");
-      },
-      { enableHighAccuracy: true, timeout: 10000 },
-    );
-  };
 
   // Xaritada bosilganda pozitsiyani yangilash
   const handleMapPick = (pos: Position) => {
@@ -139,38 +112,9 @@ const RegisterLocationPages = () => {
         <LocationPicker onPick={handleMapPick} />
       </MapContainer>
 
-      {/* Yuqori panel: koordinatalar va GPS tugmasi */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-1000 flex items-center gap-2">
-        {/* Koordinatalar */}
-        <div className="bg-white border border-gray-200 text-gray-600 text-xs px-4 py-2 rounded-full shadow">
-          {position.lat.toFixed(5)}, {position.lng.toFixed(5)}
-        </div>
 
-        {/* GPS tugmasi — faqat shu yerda geolocation so'raladi */}
-        <button
-          onClick={handleGetMyLocation}
-          disabled={locating}
-          className="bg-white border border-gray-200 text-gray-700 text-xs font-medium
-                     px-4 py-2 rounded-full shadow hover:bg-gray-50 transition
-                     disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-1.5"
-        >
-          {locating ? (
-            <>
-              <span className="w-3.5 h-3.5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-              Aniqlanmoqda...
-            </>
-          ) : (
-            <>📍 Mening joylashuvim</>
-          )}
-        </button>
-      </div>
 
-      {/* Xarita ustidagi yoriqnoma */}
-      <div className="absolute top-3.5 left-1/2 -translate-x-1/2 z-1000">
-        <p className="bg-black/40 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm">
-          Aniq joylashuv uchun xaritaga bosing
-        </p>
-      </div>
+      
 
       {/* Xato xabari */}
       {error && (

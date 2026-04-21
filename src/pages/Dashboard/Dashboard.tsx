@@ -35,6 +35,7 @@ import LastServisPages from "../../modules/LastServisPages"
         </div>
       ) : (
         <div className="p-7.5">
+          
           <WorkshopHeader/>
           <Service/>
           <Cliend/>

@@ -37,8 +37,8 @@ const WorkshopPassword: React.FC = () => {
 
   return (
     <section className="flex items-center h-screen">
-      <div className="w-80 md:w-100 mx-auto">
-        <p>{t("fill_profile")}</p>
+      <div className="w-90 md:w-100 mx-auto">
+        <p className="text-[14px]">{t("fill_profile")}</p>
         <form
           className="mt-6 flex flex-col gap-3"
           onSubmit={(e) => {
@@ -51,7 +51,7 @@ const WorkshopPassword: React.FC = () => {
           </span>
           <Input.Password
             placeholder={t("placeholder_password")}
-            className="py-3.5! pl-4! bg-[#F5F6F9]! rounded-4xl! text-[#2D2D2D]!    border-none! shadow-none!
+            className="py-3! md:py-3.5! pl-4! bg-[#F5F6F9]! rounded-4xl! text-[#2D2D2D]!    border-none! shadow-none!
     hover:border-none! hover:shadow-none! hover:outline-none!
     focus:border-none! focus:shadow-none! focus:outline-none!
     focus-within:border-none! focus-within:shadow-none! focus-within:outline-none!"
@@ -70,7 +70,7 @@ const WorkshopPassword: React.FC = () => {
           </span>
           <Input.Password
             placeholder={t("placeholder_password_confirm")}
-            className="py-3.5! pl-4! bg-[#F5F6F9]! rounded-4xl! text-[#2D2D2D]! outline-none!
+            className="py-3! md:py-3.5! pl-4! bg-[#F5F6F9]! rounded-4xl! text-[#2D2D2D]! outline-none!
                  border-none! shadow-none!
     hover:border-none! hover:shadow-none! hover:outline-none!
     focus:border-none! focus:shadow-none! focus:outline-none!
@@ -87,7 +87,7 @@ const WorkshopPassword: React.FC = () => {
           />
           {error && <span className="text-red-500 text-sm pl-3">{error}</span>}
           <CustomButton
-            onClick={handleContinue}
+           type="submit"
             text={t("tayyor")}
             className="w-full! py-2.5 bg-[#1E5DE5]! rounded-4xl! mt-6 md:mt-9"
           />

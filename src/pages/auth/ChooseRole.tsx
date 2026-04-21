@@ -20,7 +20,7 @@ const ChooseRole = () => {
 
   return (
     <section className="flex items-center h-screen">
-      <div className="max-w-80 px-3 md:px-0 md:min-w-100 mx-auto text-center">
+      <div className="max-w-90 px-3 md:px-0 md:min-w-100 mx-auto text-center">
         <h2 className="font-medium text-[20px] text-[#2D2D2D]">
           {t("siz_platformaga_qanday_qo‘shilasiz")}
         </h2>

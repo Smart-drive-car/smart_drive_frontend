@@ -7,8 +7,10 @@ import BASE_URL from "../../hooks/Env";
 import { AuthContext, type AuthContextType } from "../../context/UseContext";
 import { toast } from "react-toastify";
 
-const OtpNumber = () => {
-  const navigate = useNavigate();
+
+
+const ForgetPasswordPages = () => {
+      const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [phone, setPhone] = useState("+998");
 
@@ -39,26 +41,26 @@ const OtpNumber = () => {
     return phone.replace(/\D/g, "").substring(3);
   };
 
-  // Register pages
-  const ForRegister = async () => {
+
+  // Forgot password pages
+  const ForgetPassword = async () => {
     const rawNumber = getRawNumber();
     try {
-        setIsForgotPassword(false);
-        const res = await axios.post(`${BASE_URL}/api/auth/send-otp/`, {
+      setIsForgotPassword(true);
+        const res = await axios.post(`${BASE_URL}/api/auth/forgot-password/`, {
           phone_number: rawNumber,
         });
         setCode(res.data.otp_code);
-        console.log(res.data,"code");
-        navigate("/send-otp"); 
-      }
-     catch (err: any) {
-      const msg = err.response?.data?.message || t("xatolik_yuz_berdi");
+        setLoading(false);
+        navigate("/send-otp");
+
+    } catch (err: any) {
+      const msg = err.response?.data?.message || t("telefon_raqam_notogri");
       toast.error(msg);
     } finally {
       setLoading(false);
     }
   };
-
 
   // send otp
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -71,19 +73,10 @@ const OtpNumber = () => {
       setLoading(false);
       return;
     }
-
-    try {
-     await axios.post(`${BASE_URL}/api/auth/send-otp/`, {
-        phone_number: rawNumber,
-      });
-      ForRegister()
-    } catch (err: any) {
-      toast.info(t("royxatdan_otilgan"));
-      setLoading(false);
-    }
+    ForgetPassword();
   };
   return (
-    <section className="containers flex items-center justify-between h-screen">
+     <section className="containers flex items-center justify-between h-screen">
       <div className="max-w-90 md:min-w-100  mx-auto">
         <h2 className="text-[20px] md:text-[24px] font-medium text-[#2D2D2D] text-center">
           {t("kirish")}
@@ -113,7 +106,7 @@ const OtpNumber = () => {
         </form>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default OtpNumber;
+export default ForgetPasswordPages

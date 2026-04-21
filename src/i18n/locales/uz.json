@@ -10,7 +10,7 @@
     "agar_kod_kelmasa_siz_60_soniya_ichida_yangisini_olishingiz_mumkin":"agar kod kelmasa siz 60 soniya ichida yangisini olishingiz mumkin.",
     "telefon_raqamingiz":"telefon raqamingiz",
     "parolni_unutdingzmi":"Parolni unutdingzmi",
-    "parolingizni_yozing":"Parolingizni yozing",
+    "parolingizni_yozing":"Parolingizni kiriting",
     "akaunt_yaratish":"Akaunt yaratish",
     "siz_platformaga_qanday_qo‘shilasiz":"Siz platformaga qanday qo‘shilasiz",
     "mexanik":"Mexanik",
@@ -113,7 +113,6 @@
     "servis_qo'shish":"Servis qo'shish",
      "xizmat_ko’rsatilgan_mashinalar":"Xzmat ko’rsatilgan Mashinalar",
      "xizmat_ko’rsatilgan_mijozlar":"Xizmat ko’rsatilgan mijozlar",
-     "mijozlar":"Mijozlar",
      "qidirish":"Qidirish",
       "qo'shish":"Qo'shish",
     "xizmat_korsatgan_mijozni_qoshing":"Xizmat ko’rsatgan mijozni qo’shing.",
@@ -178,7 +177,12 @@
       "yil_4_xonali":"Yil 4 xonali bo'lishi kerak",
       "probeg_kiriting":"Probegni kiriting",
       "muddati_o'tgan":"Muddati o'tgan",
-      "royxatdan_otilgan":"Bu telefon raqam bilan foydalanuvchi ro'yhatdan o'tgan parolni tiklash sahifasiga yo'naltiriladi",
+      "royxatdan_otilgan":"Bu telefon raqam bilan foydalanuvchi ro'yhatdan o'tgan",
       "rolni_tanlang":"Foydalanuvchi rolini tanlang",
-      "responsive":" Bizning asosiy funksiyalarimiz maksimal darajada qulay bo'lishi uchun desktop qurilmalarga mo'ljallangan. Yo'lda (mobileda) ishlash uchun esa ilovamizdan foydalaning."
+      "responsive":" Bizning asosiy funksiyalarimiz maksimal darajada qulay bo'lishi uchun desktop qurilmalarga mo'ljallangan. Yo'lda (mobileda) ishlash uchun esa ilovamizdan foydalaning.",
+      "servis_nomi":"Servis nomi",
+      "servis_foydalanuvchilari":"Servis foydalanuvchilari shu yerda!",
+      "mijozlar":"Mijozlar",
+      "mashinalar":"Mashinalar"
+
 }

@@ -66,7 +66,7 @@ const RegisterImagesPages = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white min-h-screen p-4 font-sans">
+    <div className="w-85.75! h-61.75!  md:w-115.75! md:h-106.25! mx-auto bg-white min-h-screen p-4 font-sans mt-20 md:mt-0">
       <button onClick={() => navigate(-1)} className="flex items-center gap-3 ml-4 mb-3 cursor-pointer">
         <LeftOutlined className="w-2 h-2" />
         <span className="font-medium text-[#000000] text-[12px]">{t("back")}</span>
@@ -119,7 +119,7 @@ const RegisterImagesPages = () => {
             <div className="bg-white w-7 h-7 p-1 rounded-full flex items-center justify-center shadow-sm group-hover:scale-110 transition">
               <PlusOutlined className="text-gray-400" />
             </div>
-            <span className="text-[10px] text-gray-400 mt-2 font-medium">{t("add_image")}</span>
+            <span className="text-[12px] text-gray-400 mt-2 font-medium ">{t("add_image")}</span>
           </button>
         </div>
       )}

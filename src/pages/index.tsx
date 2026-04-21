@@ -16,5 +16,6 @@ import AddCarsPages from "./Dashboard/AddCarsPages";
 import PhoneNumberEdit from "./Dashboard/PhoneNumberEdit";
 import OtpEditCode from "./Dashboard/OtpEditCode";
 import SearchPages from "./Dashboard/SearchPages";
+import ForgetPasswordPages from "./auth/ForgetPasswordPages";
 
-export {ChooseLanguage,OtpNumber,SendOtp,LogInPages,ChooseRole,DriverRegister,Dashboard,ResetPassword,HomePages,WorkshopRegister,WorkshopPassword,WorkshopMediaLocation,RegisterImagesPages,RegisterLocationPages,AddCarsPages,PhoneNumberEdit,OtpEditCode,SearchPages}
+export {ChooseLanguage,OtpNumber,SendOtp,LogInPages,ChooseRole,DriverRegister,Dashboard,ResetPassword,HomePages,WorkshopRegister,WorkshopPassword,WorkshopMediaLocation,RegisterImagesPages,RegisterLocationPages,AddCarsPages,PhoneNumberEdit,OtpEditCode,SearchPages,ForgetPasswordPages}
