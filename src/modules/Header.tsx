@@ -101,10 +101,18 @@ const Header = () => {
         },
       })
       .then((res) => {
-        setProfileImage(res.data.data.image);
+        const imageUrl = res.data.data?.image || res.data.image;
+        if (imageUrl) {
+          const fullUrl = imageUrl.includes('http') 
+            ? imageUrl 
+            : `${BASE_URL}${imageUrl}`;
+          setProfileImage(fullUrl);
+        }
+        toast.success(t("profile_updated"));
       })
       .catch((err) => {
         console.error("Rasm yuklashda xatolik:", err);
+        toast.error(t("profile_update_error"));
       });
   };
 
@@ -129,7 +137,7 @@ const Header = () => {
       if (imageChanged && selectedFile)
         formData.append("image", selectedFile, selectedFile.name);
 
-      await axios.patch(`${BASE_URL}/api/drivers/profile/update/`, formData, {
+      const response = await axios.patch(`${BASE_URL}/api/drivers/profile/update/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -137,6 +145,15 @@ const Header = () => {
       });
 
       if (nameChanged) setFullName(tempFullName.trim());
+      
+      if (imageChanged && response.data?.image) {
+        const imageUrl = response.data.image;
+        const fullUrl = imageUrl.includes('http')
+          ? imageUrl
+          : `${BASE_URL}${imageUrl}`;
+        setProfileImage(fullUrl);
+      }
+      
       setSelectedFile(null);
       setIsEditingName(false);
       toast.success(t("profile_updated"));
@@ -192,9 +209,13 @@ const Header = () => {
 
         setPhoneNumber(profile.phone_number);
         setFullName(profile.profile?.full_name || "");
-        const profilImg = `${profile.profile.image}`;
-
-        setProfileImage(profilImg);
+        
+        if (profile.profile?.image) {
+          const fullUrl = profile.profile.image.includes('http')
+            ? profile.profile.image
+            : `${BASE_URL}${profile.profile.image}`;
+          setProfileImage(fullUrl);
+        }
       })
       .catch((err) => {
         if (err.response?.status === 401) {
@@ -384,8 +405,6 @@ const Header = () => {
     setNotificationCount(remainingUnreadCount);
   };
 
-
-  console.log(profileImage,"img");
   
 
   return (
@@ -469,7 +488,7 @@ const Header = () => {
           >
             {profileImage && profileImage !== "null" && profileImage !== "undefined" ? (
               <img
-                src={profileImage.includes("blob:") ? profileImage : `${BASE_URL}${profileImage}`}
+                src={profileImage}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
@@ -532,7 +551,7 @@ const Header = () => {
               >
                 {profileImage && profileImage !== "null" && profileImage !== "undefined" ? (
                   <img
-                    src={profileImage.includes("blob:") ? profileImage : `${BASE_URL}${profileImage}`}
+                    src={profileImage}
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />
